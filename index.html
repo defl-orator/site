@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>visuType - Наконец, полноценное приложение для заметок</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ */
+        :root {
+            /* СВЕТЛАЯ ТЕМА */
+            --color-bg: #ffffff;
+            --color-bg-secondary: #f0f2f5; 
+            --color-text-main: #1d1d1f;
+            --color-text-secondary: #86868b;
+            --color-border: #e0e0e0;
+            --color-card-bg: #ffffff;
+            --color-line: #d2d2d7;
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            
+            --watermark-color: rgba(29, 29, 31, 0.05);
+            
+            --footer-overlay: rgba(255, 255, 255, 0.3);
+            --footer-text-head: #1d1d1f;
+            --footer-text-body: #424245;
+
+            --gradient-start: #007AFF;
+            --gradient-end: #00C7BE;
+            
+            --font-family: 'Inter', sans-serif;
+            --card-border-radius: 24px;
+            --transition-main: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* ТЁМНАЯ ТЕМА */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #121212; 
+                --color-bg-secondary: #1c1c1e;
+                --color-text-main: #f5f5f7;
+                --color-text-secondary: #a1a1a6;
+                --color-border: #2c2c2e;
+                --color-card-bg: #252526;
+                --color-line: #48484a;
+                --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                
+                --watermark-color: rgba(255, 255, 255, 0.03);
+                
+                --footer-overlay: rgba(0, 0, 0, 0.0); 
+                --footer-text-head: #ffffff;
+                --footer-text-body: #e5e5e7;
+            }
+            .roadmap-status { opacity: 0.9; }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
+        
+        section { padding: 120px 0; position: relative; }
+        
+        .bg-secondary { background-color: var(--color-bg-secondary); }
+        .bg-primary { background-color: var(--color-bg); }
+
+        /* --- ФЕЙДЫ --- */
+        .section-divider {
+            position: absolute; left: 0; width: 100%; height: 150px; z-index: 1; pointer-events: none;
+        }
+        .divider-top-in-gray {
+            top: 0; background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-secondary));
+        }
+        .divider-bottom-in-gray {
+            bottom: 0; background: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg));
+        }
+        .fade-hero-to-content {
+            position: absolute; top: -150px; left: 0; width: 100%; height: 150px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0), var(--color-bg-secondary));
+            z-index: 1; pointer-events: none;
+        }
+        .fade-content-to-footer {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; 
+            background: linear-gradient(to bottom, var(--color-bg-secondary) 0%, rgba(0,0,0,0) 100%);
+            transform: translateY(99%); z-index: 5; pointer-events: none;
+        }
+
+        h1, h2, h3 { font-weight: 700; line-height: 1.1; color: var(--color-text-main); }
+        
+        .accent-huge {
+            display: block; font-size: 6rem; font-weight: 900; text-transform: uppercase;
+            letter-spacing: -0.03em; line-height: 1; margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        h1 { font-size: 3rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 20px; }
+        h2 { font-size: 3.5rem; text-align: center; margin-bottom: 20px; letter-spacing: -0.01em; }
+        .section-subtitle { text-align: center; font-size: 1.3rem; margin-bottom: 80px; color: var(--color-text-secondary); max-width: 700px; margin-left: auto; margin-right: auto; }
+        p { font-size: 1.2rem; color: var(--color-text-secondary); max-width: 600px; margin: 0 auto; }
+        .gradient-text { background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* КНОПКИ */
+        .button {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 20px 45px; border-radius: 100px; text-decoration: none;
+            font-weight: 600; font-size: 1.1rem; border: none; cursor: pointer;
+            transition: transform var(--transition-main), box-shadow var(--transition-main);
+            z-index: 2;
+        }
+        .button:hover { transform: scale(1.05); }
+        .primary-cta { background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3); }
+        .secondary-cta { background-color: var(--color-bg-secondary); color: var(--color-text-main); border: 1px solid var(--color-border); }
+        .secondary-cta:hover { background-color: var(--color-border); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            text-align: center; position: relative; 
+            padding-top: 0; 
+            padding-bottom: 300px; 
+        }
+
+        .hero-bg-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 120%;
+            z-index: -1; pointer-events: none; will-change: transform;
+            overflow: hidden;
+        }
+        .hero-bg-img {
+            width: 100%; height: 100%; object-fit: cover; object-position: center top;
+            mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+            opacity: 0.8;
+        }
+
+        .hero-background-text {
+            position: absolute; top: -10vh; left: 50%; transform: translateX(-50%);
+            font-size: 16vw; font-weight: 900; z-index: 0;
+            user-select: none; text-transform: uppercase; white-space: nowrap;
+            letter-spacing: -0.02em; pointer-events: none; will-change: transform;
+            color: var(--watermark-color);
+        }
+
+        .hero-animation-container {
+            position: relative; width: 100%; max-width: 1200px; 
+            height: 500px; 
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 80px; 
+            margin-bottom: 0;
+        }
+        
+        .logo-picture {
+            position: relative; z-index: 10; display: block;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15));
+            margin: 0 auto;
+            margin-top: 80px; 
+        }
+        .logo-img { max-height: 320px; width: auto; display: block; margin: 0 auto; }
+        
+        .animation-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+        
+        .lines-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible; }
+        .lines-svg line { stroke: var(--color-line); stroke-width: 2px; stroke-linecap: round; }
+        
+        .bubble-positioner {
+            position: absolute; z-index: 20; 
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes bubble-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bubble-float-wrapper { animation: bubble-float 5s ease-in-out infinite; display: block; }
+
+        .feature-bubble {
+            position: relative; padding: 14px 32px; font-size: 1.3rem; 
+            background-color: var(--color-bg); border: 1px solid var(--color-border);
+            border-radius: 50px; font-weight: 700; color: var(--color-text-main);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12); white-space: nowrap;
+            opacity: 0; transform: scale(0); 
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .hero-content { position: relative; z-index: 20; padding: 0 20px; margin-top: -40px; }
+
+        #hero-scroll-content {
+            opacity: 0; visibility: hidden; transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s;
+            margin-top: 20px;
+        }
+        #hero-scroll-content.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        .hero-cta { display: flex; gap: 20px; justify-content: center; margin-top: 30px; padding-bottom: 20px; }
+
+        /* --- FEATURES SECTION --- */
+        .features-container { display: flex; flex-direction: column; gap: 120px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .feature-row { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; }
+        .feature-row:nth-child(even) { grid-template-columns: 1.2fr 1fr; }
+        .feature-row:nth-child(even) .feature-text { order: 2; }
+        .feature-row:nth-child(even) .feature-image { order: 1; }
+        .feature-text h3 { font-size: 2.5rem; margin-bottom: 20px; }
+
+        .image-wrapper {
+            position: relative; border-radius: var(--card-border-radius); overflow: hidden;
+            cursor: zoom-in; box-shadow: var(--shadow-card); border: none; 
+            transition: transform 0.3s ease; background: var(--color-card-bg);
+        }
+        .image-wrapper:hover { transform: scale(1.02); }
+        .adaptive-img { width: 100%; height: auto; display: block; transition: transform 0.5s ease; }
+        .image-wrapper:hover .adaptive-img { transform: scale(1.05); }
+        .img-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease;
+            display: flex; align-items: center; justify-content: center; z-index: 2;
+            backdrop-filter: blur(2px);
+        }
+        .image-wrapper:hover .img-overlay { opacity: 1; }
+        .open-btn {
+            background: white; color: black; padding: 12px 24px; border-radius: 30px;
+            font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .image-wrapper:hover .open-btn { transform: translateY(0); }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 40px;
+        }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        .lightbox-img {
+            max-width: 90vw; max-height: 90vh; border-radius: 12px;
+            transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+        .lightbox.active .lightbox-img { transform: scale(1); }
+        .lightbox-close {
+            position: absolute; top: 30px; right: 30px; width: 40px; height: 40px;
+            background: rgba(255, 255, 255, 0.2); border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 24px; transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255, 255, 255, 0.4); }
+
+        /* --- ADVANTAGES & THEMES --- */
+        .advantages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+        .advantage { padding: 30px; border-radius: var(--card-border-radius); background-color: var(--color-card-bg); border: none; box-shadow: var(--shadow-card); }
+        .advantage .icon { font-size: 3rem; margin-bottom: 20px; }
+        .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .theme-display img { width: 100%; border-radius: 20px; border: none; transition: 0.3s; box-shadow: var(--shadow-card); }
+        .theme-display img:hover { transform: scale(1.02); }
+        .theme-display h3 { text-align: center; margin-top: 20px; }
+
+        /* --- PRICING --- */
+        .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; align-items: stretch; }
+        .pricing-card { 
+            background: var(--color-card-bg); border: none;
+            border-radius: 32px; padding: 60px 40px; display: flex; flex-direction: column;
+            box-shadow: var(--shadow-card); position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .pricing-card:hover { transform: translateY(-10px); }
+        .pricing-card.pro { border: 2px solid var(--gradient-start); box-shadow: 0 20px 60px rgba(0, 122, 255, 0.15); }
+        
+        .price-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 40px; text-align: center; color: var(--color-text-main); letter-spacing: -0.02em; }
+        .pricing-card ul { list-style: none; margin-bottom: 40px; flex-grow: 1; }
+        .pricing-card ul li { 
+            padding: 15px 0; border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-secondary); font-size: 1.15rem; display: flex; align-items: center; gap: 10px;
+        }
+        .pricing-card ul li:last-child { border-bottom: none; }
+        .pricing-card.pro { padding-bottom: 60px; }
+
+        /* --- ROADMAP --- */
+        .roadmap-card {
+            background: var(--color-card-bg); border-radius: 40px; padding: 20px 0; 
+            border: none; box-shadow: var(--shadow-card);
+            max-width: 900px; margin: 0 auto; overflow: hidden; position: relative; z-index: 2;
+        }
+        section#roadmap { overflow: visible; }
+
+        .roadmap-row {
+            display: grid; grid-template-columns: 180px 1fr 150px; gap: 30px; padding: 30px 50px;
+            border-bottom: 1px solid var(--color-border); align-items: center; transition: background-color 0.3s;
+        }
+        .roadmap-row:last-child { border-bottom: none; }
+        .roadmap-row:hover { background-color: var(--color-bg); }
+        .roadmap-date { font-size: 1.1rem; font-weight: 800; color: var(--gradient-start); text-transform: uppercase; }
+        .roadmap-content h4 { margin-bottom: 5px; font-size: 1.3rem; }
+        .roadmap-content p { font-size: 1rem; margin: 0; }
+        .roadmap-status {
+            display: inline-flex; align-items: center; justify-content: center; padding: 6px 14px;
+            border-radius: 12px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            text-align: center; white-space: nowrap;
+        }
+        .status-done { background: rgba(40, 167, 69, 0.15); color: #28a745; }
+        .status-progress { background: rgba(0, 122, 255, 0.15); color: #007AFF; }
+        .status-planned { background: var(--color-bg); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+
+        /* --- FINAL CTA --- */
+        .final-cta-section {
+            position: relative; width: 100%; min-height: 100vh; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .final-cta-bg {
+            position: absolute; top: -30%; left: 0; width: 100%; height: 160%;
+            z-index: 0; will-change: transform;
+        }
+        .final-cta-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .final-cta-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--footer-overlay); z-index: 1;
+        }
+        .final-cta-content { position: relative; z-index: 2; padding: 0 20px; max-width: 900px; margin: 0 auto; }
+        .final-cta-content h2 { color: var(--footer-text-head); margin-bottom: 30px; font-size: 4rem; text-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .final-cta-content p { color: var(--footer-text-body); margin-bottom: 50px; font-size: 1.5rem; max-width: 700px; }
+
+        .fade-in { opacity: 0; transform: translateY(30px); transition: 0.8s; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 991px) {
+            .hero-background-text { top: -5vh; font-size: 18vw; }
+            .feature-row, .feature-row:nth-child(even) { grid-template-columns: 1fr; }
+            .feature-row, .feature-row:nth-child(even) .feature-text, .feature-row:nth-child(even) .feature-image { grid-template-columns: 1fr; text-align: center; order: initial; }
+            .feature-image { order: -1 !important; margin-bottom: 30px; }
+            .pricing-grid, .themes-grid, .advantages-grid { grid-template-columns: 1fr; }
+            .feature-bubble { font-size: 1.1rem; padding: 12px 24px; }
+            .roadmap-row { grid-template-columns: 1fr; gap: 15px; text-align: center; padding: 30px; }
+            .roadmap-date { margin-bottom: 5px; }
+            .roadmap-status { margin-top: 10px; align-self: center; justify-self: center; }
+            .final-cta-content h2 { font-size: 2.5rem; }
+        }
+        @media (max-width: 768px) {
+            .accent-huge { font-size: 3.5rem; }
+            h1 { font-size: 1.8rem; margin-top: 0; }
+            .logo-img { max-height: 200px; }
+            .hero-animation-container { height: 300px; transform: scale(0.75); margin-top: 80px; }
+            .hero-cta { flex-direction: column; padding-bottom: 20px; }
+            .button { width: 100%; }
+            .final-cta-section { min-height: 80vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-bg-container parallax-bg-hero">
+            <picture>
+                <source srcset="cover_dark.jpg" media="(prefers-color-scheme: dark)">
+                <img src="cover_light.jpg" class="hero-bg-img" alt="Background">
+            </picture>
+        </div>
+
+        <div class="hero-background-text parallax-text">visutype</div>
+
+        <div class="hero-animation-container">
+            <div class="animation-wrapper">
+                <svg class="lines-svg"></svg>
+            </div>
+            <picture class="logo-picture">
+                <source srcset="visutype_logo_dark.png" media="(prefers-color-scheme: dark)">
+                <img src="visutype_logo.png" alt="visuType Logo" class="logo-img">
+            </picture>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="fade-in visible">
+                <span class="accent-huge">Наконец,</span>
+                полноценное приложение<br>для заметок
+            </h1>
+            
+            <div id="hero-scroll-content">
+                <p>visuType — это заметки, карты мыслей и бесконечные холсты. Ваши идеи заслуживают большего, чем просто текст.</p>
+                
+                <div class="hero-cta">
+                    <a href="https://planeta.ru/campaigns/visutype" target="_blank" class="button primary-cta">
+                        Поддержать на Planeta.ru
+                    </a>
+                    <a href="https://t.me/visutype" target="_blank" class="button secondary-cta">
+                        Следить в Telegram
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="features-section bg-secondary">
+            <div class="fade-hero-to-content"></div>
+            <div class="container">
+                <h2 class="fade-in">Все ваши мысли <span class="gradient-text">в одном потоке</span></h2>
+                <div class="features-container">
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <h3>Гибкие заметки</h3>
+                            <p>Пишите свободно. Создавайте структурированный текст, списки и стили с помощью интуитивно понятного блочного редактора.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <picture>
+                                    <source srcset="notes_dark.png" media="(prefers-color-scheme: dark)">
+                                    <img src="notes.png" alt="Notes" class="adaptive-img">
+                                </picture>
+                                <div class="img-overlay"><div class="open-btn">🔍 Открыть</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <h3>Наглядные карты мыслей</h3>
+                            <p>Застряли в тексте? Одним кликом превратите свои списки в красивые интеллект-карты.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <picture>
+                                    <source srcset="mindmap_dark.png" media="(prefers-color-scheme: dark)">
+                                    <img src="mindmap.png" alt="Mind Map" class="adaptive-img">
+                                </picture>
+                                <div class="img-overlay"><div class="open-btn">🔍 Открыть</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <h3>Творческий холст</h3>
+                            <p>Рисуйте схемы, делайте наброски и свободно организуйте любые идеи на бесконечном полотне.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <picture>
+                                    <source srcset="canvas_dark.png" media="(prefers-color-scheme: dark)">
+                                    <img src="canvas.png" alt="Canvas" class="adaptive-img">
+                                </picture>
+                                <div class="img-overlay"><div class="open-btn">🔍 Открыть</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider divider-bottom-in-gray"></div>
+        </section>
+
+        <section id="why-visutype" class="bg-primary">
+            <div class="container">
+                <h2 class="fade-in">Создан для <span class="gradient-text">скорости</span></h2>
+                <div class="advantages-grid">
+                    <div class="advantage fade-in">
+                        <div class="icon">⚡</div>
+                        <h3>Мгновенный отклик</h3>
+                        <p>Полностью нативный опыт без задержек.</p>
+                    </div>
+                    <div class="advantage fade-in" style="transition-delay: 0.1s;">
+                        <div class="icon">✈️</div>
+                        <h3>Работа офлайн</h3>
+                        <p>Ваши данные всегда с вами, даже без интернета.</p>
+                    </div>
+                     <div class="advantage fade-in" style="transition-delay: 0.2s;">
+                        <div class="icon">✨</div>
+                        <h3>Бесшовный поток</h3>
+                        <p>Переключайтесь между режимами за доли секунды.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="themes" class="bg-secondary">
+            <div class="section-divider divider-top-in-gray"></div>
+            <div class="container">
+                <h2 class="fade-in">Выберите <span class="gradient-text">свой стиль</span></h2>
+                <div class="themes-grid">
+                    <div class="theme-display fade-in">
+                        <img src="light_theme.jpg" alt="Светлая тема">
+                        <h3>Дневной свет</h3>
+                    </div>
+                    <div class="theme-display fade-in" style="transition-delay: 0.2s;">
+                        <img src="dark_theme.jpg" alt="Тёмная тема">
+                        <h3>Ночной фокус</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider divider-bottom-in-gray"></div>
+        </section>
+
+        <section id="pricing" class="bg-primary">
+            <div class="container">
+                <h2 class="fade-in">Лучший редактор с Pro <span class="gradient-text">станет ещё лучше</span></h2>
+                <p class="section-subtitle fade-in">Большинству пользователей достаточно базовой версии. Но если вам нужна полная свобода и синхронизация — выбирайте Pro.</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card fade-in">
+                        <div class="price-title">Бесплатно</div>
+                        <ul>
+                            <li>✍️ Блок-ориентированный редактор</li>
+                            <li>📂 Хранение на устройстве</li>
+                            <li>🧱 2 карты мыслей и холста в неделю</li>
+                            <li>🎨 Базовые темы оформления</li>
+                            <li>📥 Импорт заметок из других приложений</li>
+                            <li>📄 Экспорт в PDF</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-card pro fade-in" style="transition-delay: 0.2s;">
+                        <div class="price-title">Pro</div>
+                        <ul>
+                            <li>♾️ Всё, что в Free, и безлимит:</li>
+                            <li>🧠 Неограниченные карты и холсты</li>
+                            <li>☁️ Облачная синхронизация</li>
+                            <li>✨ Полная кастомизация тем</li>
+                            <li>📝 Экспорт в Markdown/Word</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="bg-secondary">
+            <div class="section-divider divider-top-in-gray"></div>
+            <div class="container">
+                <h2 class="fade-in">План развития <span class="gradient-text">visuType</span></h2>
+                <div class="roadmap-card fade-in">
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">Сейчас</div>
+                        <div class="roadmap-content"><h4>MVP на macOS</h4><p>Базовый редактор, локальное хранение, стабильная работа.</p></div>
+                        <div class="roadmap-status status-done">Готово</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">1 Дек 2025</div>
+                        <div class="roadmap-content"><h4>iOS и iPadOS</h4><p>Мобильная версия для iPhone и iPad.</p></div>
+                        <div class="roadmap-status status-progress">Скоро</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">1 Янв 2026</div>
+                        <div class="roadmap-content"><h4>Синхронизация</h4><p>Бесшовная работа между вашими устройствами через облако.</p></div>
+                        <div class="roadmap-status status-planned">В планах</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">1 Июня 2026</div>
+                        <div class="roadmap-content"><h4>Релиз в App Store</h4><p>Официальный выход приложения для широкой аудитории.</p></div>
+                        <div class="roadmap-status status-planned">В планах</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">1 Сент 2026</div>
+                        <div class="roadmap-content"><h4>Windows & Android</h4><p>Выход на все популярные платформы.</p></div>
+                        <div class="roadmap-status status-planned">В планах</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date">Конец 2026</div>
+                        <div class="roadmap-content"><h4>AI Генерация</h4><p>Интеграция ИИ для автоматического создания карт мыслей.</p></div>
+                        <div class="roadmap-status status-planned">В планах</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fade-content-to-footer"></div>
+        </section>
+        
+        <section class="final-cta-section fade-in">
+            <div class="final-cta-bg parallax-bg-footer">
+                <picture>
+                    <source srcset="footer_dark.jpg" media="(prefers-color-scheme: dark)">
+                    <img src="footer_light.jpg" class="final-cta-img" alt="Background">
+                </picture>
+            </div>
+            <div class="final-cta-overlay"></div>
+            
+            <div class="final-cta-content">
+                <h2>Помогите воплотить <span class="gradient-text">visuType</span> в жизнь!</h2>
+                <p>Ваша поддержка ускорит разработку. Получите ранний доступ и бонусы.</p>
+                <a href="https://planeta.ru/campaigns/visutype" target="_blank" class="button primary-cta">
+                    🚀 Поддержать проект
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+        <img src="" alt="Full view" class="lightbox-img" id="lightbox-img">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <script>
+    // --- LIGHTBOX ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    function openLightbox(wrapper) {
+        const img = wrapper.querySelector('img');
+        if (img) { lightboxImg.src = img.currentSrc; lightbox.classList.add('active'); }
+    }
+    function closeLightbox() { lightbox.classList.remove('active'); }
+    lightbox.addEventListener('click', function(e) { if (e.target === lightbox) closeLightbox(); });
+
+    // --- ANIMATIONS & PARALLAX ---
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const heroBg = document.querySelector('.parallax-bg-hero');
+        const heroText = document.querySelector('.parallax-text');
+        const footerSection = document.querySelector('.final-cta-section');
+        const footerBg = document.querySelector('.parallax-bg-footer');
+
+        window.addEventListener('scroll', function() {
+            const scrolled = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
+            if(heroText) heroText.style.transform = `translate(-50%, ${scrolled * 0.15}px)`;
+
+            if (footerSection && footerBg) {
+                const sectionTop = footerSection.offsetTop;
+                if (scrolled + windowHeight > sectionTop) {
+                    const distance = scrolled + windowHeight - sectionTop;
+                    footerBg.style.transform = `translateY(${distance * 0.2}px)`; 
+                }
+            }
+        });
+
+        const scrollContent = document.getElementById('hero-scroll-content');
+        const checkScroll = () => {
+            if (window.scrollY > 10) scrollContent.classList.add('visible');
+            else scrollContent.classList.remove('visible');
+        };
+        checkScroll();
+        window.addEventListener('scroll', checkScroll);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // --- ANIME JS ---
+        const wrapper = document.querySelector('.animation-wrapper');
+        const svg = document.querySelector('.lines-svg');
+        
+        // КООРДИНАТЫ ДЛЯ 7 БЛОКОВ (Ближе к центру)
+        const bubblesData = [
+            { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },     // ВЕРХ
+            { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 }, // Верх-Право
+            { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },    // Право (Середина)
+            { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },    // Низ-Право
+            { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },         // Низ-Лево
+            { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },        // Лево (Середина)
+            { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }       // Верх-Лево
+        ];
+
+        // Инициализация
+        const indices = bubblesData.map((_, i) => i); 
+        
+        bubblesData.forEach((data, i) => {
+            const positioner = document.createElement('div');
+            positioner.className = 'bubble-positioner';
+            positioner.dataset.index = i;
+            
+            const floatWrapper = document.createElement('div');
+            floatWrapper.className = 'bubble-float-wrapper';
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'feature-bubble';
+            bubble.innerHTML = `<span>${data.text}</span>`; 
+            
+            floatWrapper.appendChild(bubble);
+            positioner.appendChild(floatWrapper);
+            wrapper.appendChild(positioner);
+
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.dataset.index = i;
+            line.setAttribute('x1', '50%'); line.setAttribute('y1', '50%'); 
+            line.setAttribute('x2', '50%'); line.setAttribute('y2', '50%'); 
+            svg.appendChild(line);
+        });
+
+        // Функция перемешивания
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function playCycle() {
+            const tl = anime.timeline({
+                complete: function() { playCycle(); }
+            });
+
+            let appearOrder = shuffle([...indices]);
+            
+            appearOrder.forEach((index, i) => {
+                const delay = i * 1000; 
+                const data = bubblesData[index];
+                const targetLeft = (50 + data.xOffset) + '%';
+                const targetTop = (50 + data.yOffset) + '%';
+
+                tl.add({
+                    targets: [
+                        `.lines-svg line[data-index="${index}"]`,
+                        `.bubble-positioner[data-index="${index}"]`
+                    ],
+                    x2: targetLeft, y2: targetTop,
+                    left: targetLeft, top: targetTop,
+                    opacity: [0, 1],
+                    duration: 1000, easing: 'easeOutExpo'
+                }, delay); 
+
+                tl.add({
+                    targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
+                    scale: [0, 1], opacity: [0, 1],
+                    duration: 800, easing: 'easeOutElastic(1, .5)'
+                }, delay + 100);
+            });
+
+            const appearDurationTotal = (indices.length - 1) * 1000 + 1000; 
+            const stayDuration = 3000;
+            const disappearStartTime = appearDurationTotal + stayDuration;
+
+            let disappearOrder = shuffle([...indices]);
+            
+            // БЫСТРОЕ ИСЧЕЗНОВЕНИЕ (50ms задержка, 500ms длительность)
+            disappearOrder.forEach((index, i) => {
+                const delay = disappearStartTime + (i * 50);
+
+                tl.add({
+                    targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
+                    scale: 0, opacity: 0,
+                    duration: 500, easing: 'easeInBack'
+                }, delay);
+
+                tl.add({
+                    targets: [
+                        `.lines-svg line[data-index="${index}"]`,
+                        `.bubble-positioner[data-index="${index}"]`
+                    ],
+                    x2: '50%', y2: '50%',
+                    left: '50%', top: '50%',
+                    opacity: 0,
+                    duration: 500, easing: 'easeInExpo'
+                }, delay + 100);
+            });
+
+            const lastDisappearTime = disappearStartTime + (indices.length - 1) * 50 + 600;
+            tl.add({ duration: 3000 }, lastDisappearTime);
+        }
+
+        playCycle();
+    });
+    </script>
+</body>
+</html>
