@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>visuType - Наконец, полноценное приложение для заметок</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,10 @@
             --color-text-secondary: #86868b;
             --color-border: #e0e0e0;
             --color-card-bg: #ffffff;
-            --color-line: #d2d2d7;
+            
+            /* ИЗМЕНЕНИЕ: Линии теперь черные в светлой теме для контраста */
+            --color-line: #000000; 
+            
             --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             
             --watermark-color: rgba(29, 29, 31, 0.05);
@@ -43,7 +46,10 @@
                 --color-text-secondary: #a1a1a6;
                 --color-border: #2c2c2e;
                 --color-card-bg: #252526;
+                
+                /* В темной теме линии светлые, иначе их не видно */
                 --color-line: #48484a;
+                
                 --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
                 
                 --watermark-color: rgba(255, 255, 255, 0.03);
@@ -56,20 +62,28 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        
+        html { 
+            scroll-behavior: smooth; 
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
 
         body {
             font-family: var(--font-family);
             background-color: var(--color-bg);
             color: var(--color-text-main);
             line-height: 1.6;
-            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+            overflow-x: hidden; 
+            -webkit-overflow-scrolling: touch; 
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
         
-        section { padding: 120px 0; position: relative; }
+        section { padding: 120px 0; position: relative; width: 100%; overflow: hidden; }
         
         .bg-secondary { background-color: var(--color-bg-secondary); }
         .bg-primary { background-color: var(--color-bg); }
@@ -84,11 +98,13 @@
         .divider-bottom-in-gray {
             bottom: 0; background: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg));
         }
-        .fade-hero-to-content {
-            position: absolute; top: -150px; left: 0; width: 100%; height: 150px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0), var(--color-bg-secondary));
-            z-index: 1; pointer-events: none;
+        
+        .hero-bottom-fade {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 150px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--color-bg-secondary) 100%);
+            z-index: 5; pointer-events: none;
         }
+
         .fade-content-to-footer {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; 
             background: linear-gradient(to bottom, var(--color-bg-secondary) 0%, rgba(0,0,0,0) 100%);
@@ -129,7 +145,9 @@
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
             text-align: center; position: relative; 
             padding-top: 0; 
-            padding-bottom: 300px; 
+            padding-bottom: 300px;
+            width: 100%;
+            overflow: hidden;
         }
 
         .hero-bg-container {
@@ -142,6 +160,7 @@
             mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
             opacity: 0.8;
+            transition: transform 0.5s ease;
         }
 
         .hero-background-text {
@@ -165,6 +184,10 @@
             filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15));
             margin: 0 auto;
             margin-top: 80px; 
+            
+            /* ИЗМЕНЕНИЕ: Изначально скрыт для анимации */
+            opacity: 0; 
+            transform: scale(0);
         }
         .logo-img { max-height: 320px; width: auto; display: block; margin: 0 auto; }
         
@@ -216,10 +239,18 @@
             position: relative; border-radius: var(--card-border-radius); overflow: hidden;
             cursor: zoom-in; box-shadow: var(--shadow-card); border: none; 
             transition: transform 0.3s ease; background: var(--color-card-bg);
+            overflow: hidden;
         }
         .image-wrapper:hover { transform: scale(1.02); }
-        .adaptive-img { width: 100%; height: auto; display: block; transition: transform 0.5s ease; }
-        .image-wrapper:hover .adaptive-img { transform: scale(1.05); }
+        
+        .adaptive-img { 
+            width: 100%; height: auto; display: block; 
+            transition: transform 0.5s ease;
+            transform: scale(1.04); 
+        }
+        
+        .image-wrapper:hover .adaptive-img { transform: scale(1.08); }
+        
         .img-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 0.3s ease;
@@ -262,8 +293,11 @@
         .advantage { padding: 30px; border-radius: var(--card-border-radius); background-color: var(--color-card-bg); border: none; box-shadow: var(--shadow-card); }
         .advantage .icon { font-size: 3rem; margin-bottom: 20px; }
         .themes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .theme-display img { width: 100%; border-radius: 20px; border: none; transition: 0.3s; box-shadow: var(--shadow-card); }
-        .theme-display img:hover { transform: scale(1.02); }
+        .theme-display img { 
+            width: 100%; border-radius: 20px; border: none; transition: 0.3s; box-shadow: var(--shadow-card); 
+            transform: scale(1.01);
+        }
+        .theme-display img:hover { transform: scale(1.03); }
         .theme-display h3 { text-align: center; margin-top: 20px; }
 
         /* --- PRICING --- */
@@ -273,15 +307,17 @@
             border-radius: 32px; padding: 60px 40px; display: flex; flex-direction: column;
             box-shadow: var(--shadow-card); position: relative;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-width: 0;
         }
         .pricing-card:hover { transform: translateY(-10px); }
         .pricing-card.pro { border: 2px solid var(--gradient-start); box-shadow: 0 20px 60px rgba(0, 122, 255, 0.15); }
         
         .price-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 40px; text-align: center; color: var(--color-text-main); letter-spacing: -0.02em; }
-        .pricing-card ul { list-style: none; margin-bottom: 40px; flex-grow: 1; }
+        .pricing-card ul { list-style: none; margin-bottom: 40px; flex-grow: 1; padding: 0; }
         .pricing-card ul li { 
             padding: 15px 0; border-bottom: 1px solid var(--color-border);
             color: var(--color-text-secondary); font-size: 1.15rem; display: flex; align-items: center; gap: 10px;
+            word-wrap: break-word;
         }
         .pricing-card ul li:last-child { border-bottom: none; }
         .pricing-card.pro { padding-bottom: 60px; }
@@ -321,7 +357,7 @@
             position: absolute; top: -30%; left: 0; width: 100%; height: 160%;
             z-index: 0; will-change: transform;
         }
-        .final-cta-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .final-cta-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
         .final-cta-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--footer-overlay); z-index: 1;
@@ -345,7 +381,19 @@
             .roadmap-status { margin-top: 10px; align-self: center; justify-self: center; }
             .final-cta-content h2 { font-size: 2.5rem; }
         }
+
         @media (max-width: 768px) {
+            .container { padding: 0 20px; } 
+
+            .hero-bg-img {
+                transform: scale(1.15);
+                transform-origin: center top; 
+            }
+            .final-cta-img {
+                transform: scale(1.15);
+                transform-origin: center bottom;
+            }
+
             .accent-huge { font-size: 3.5rem; }
             h1 { font-size: 1.8rem; margin-top: 0; }
             .logo-img { max-height: 200px; }
@@ -353,6 +401,11 @@
             .hero-cta { flex-direction: column; padding-bottom: 20px; }
             .button { width: 100%; }
             .final-cta-section { min-height: 80vh; }
+
+            .pricing-card {
+                padding: 30px 20px; 
+                width: 100%; 
+            }
         }
     </style>
 </head>
@@ -397,11 +450,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Фейд внизу Hero секции -->
+        <div class="hero-bottom-fade"></div>
     </header>
 
     <main>
         <section class="features-section bg-secondary">
-            <div class="fade-hero-to-content"></div>
             <div class="container">
                 <h2 class="fade-in">Все ваши мысли <span class="gradient-text">в одном потоке</span></h2>
                 <div class="features-container">
@@ -608,6 +663,16 @@
     // --- ANIMATIONS & PARALLAX ---
     document.addEventListener("DOMContentLoaded", function() {
         
+        // --- ИЗМЕНЕНИЕ: Анимация появления логотипа при загрузке ---
+        anime({
+            targets: '.logo-picture',
+            opacity: [0, 1],
+            scale: [0.5, 1], // Стартуем с половины размера
+            duration: 1200,
+            delay: 500, // Задержка 0.5 секунды
+            easing: 'easeOutElastic(1, .6)' // Эластичный "выстрел"
+        });
+
         const heroBg = document.querySelector('.parallax-bg-hero');
         const heroText = document.querySelector('.parallax-text');
         const footerSection = document.querySelector('.final-cta-section');
@@ -644,25 +709,70 @@
         });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // --- ANIME JS ---
+        // --- ANIME JS & BUBBLES ---
         const wrapper = document.querySelector('.animation-wrapper');
         const svg = document.querySelector('.lines-svg');
         
-        // КООРДИНАТЫ ДЛЯ 7 БЛОКОВ (Ближе к центру)
-        const bubblesData = [
-            { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },     // ВЕРХ
-            { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 }, // Верх-Право
-            { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },    // Право (Середина)
-            { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },    // Низ-Право
-            { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },         // Низ-Лево
-            { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },        // Лево (Середина)
-            { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }       // Верх-Лево
+        const bubbleTexts = [
+            "Минимализм ✨",
+            "Синхронизация ☁️",
+            "Карты мыслей 🧠",
+            "Кастомизация 🎨",
+            "Холсты 🎨",
+            "Скорость ⚡️",
+            "Заметки ✍️"
         ];
 
-        // Инициализация
-        const indices = bubblesData.map((_, i) => i); 
+        const allCoordinates = [
+            { xOffset: 0, yOffset: -45 },     // ВЕРХ
+            { xOffset: 30, yOffset: -28 },    // Верх-Право
+            { xOffset: 42, yOffset: 0 },      // Право (Середина)
+            { xOffset: 28, yOffset: 25 },     // Низ-Право
+            { xOffset: -28, yOffset: 25 },    // Низ-Лево
+            { xOffset: -42, yOffset: 0 },     // Лево (Середина)
+            { xOffset: -30, yOffset: -28 }    // Верх-Лево
+        ];
+
+        const mobileCoordinates = [
+            { xOffset: -30, yOffset: -28 },   // Верх-Лево
+            { xOffset: 0, yOffset: -45 },     // ВЕРХ
+            { xOffset: 30, yOffset: -28 }     // Верх-Право
+        ];
+
+        function shuffle(array) {
+            let currentArray = [...array];
+            for (let i = currentArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentArray[i], currentArray[j]] = [currentArray[j], currentArray[i]];
+            }
+            return currentArray;
+        }
+
+        const isMobile = window.innerWidth < 768;
+        let activeData = [];
         
-        bubblesData.forEach((data, i) => {
+        if (isMobile) {
+            const shuffledTexts = shuffle(bubbleTexts).slice(0, 3);
+            activeData = mobileCoordinates.map((coord, index) => ({
+                text: shuffledTexts[index],
+                xOffset: coord.xOffset,
+                yOffset: coord.yOffset
+            }));
+        } else {
+            activeData = [
+                 { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },
+                 { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 },
+                 { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },
+                 { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },
+                 { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },
+                 { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },
+                 { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }
+            ];
+        }
+
+        const indices = activeData.map((_, i) => i); 
+        
+        activeData.forEach((data, i) => {
             const positioner = document.createElement('div');
             positioner.className = 'bubble-positioner';
             positioner.dataset.index = i;
@@ -685,15 +795,6 @@
             svg.appendChild(line);
         });
 
-        // Функция перемешивания
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
         function playCycle() {
             const tl = anime.timeline({
                 complete: function() { playCycle(); }
@@ -703,9 +804,17 @@
             
             appearOrder.forEach((index, i) => {
                 const delay = i * 1000; 
-                const data = bubblesData[index];
+                const data = activeData[index];
                 const targetLeft = (50 + data.xOffset) + '%';
                 const targetTop = (50 + data.yOffset) + '%';
+
+                // ИЗМЕНЕНИЕ: Анимация "Пульс" логотипа при вылете блока
+                tl.add({
+                    targets: '.logo-picture',
+                    scale: [1, 1.03, 1], // Легкое увеличение
+                    duration: 300,
+                    easing: 'easeOutQuad'
+                }, delay);
 
                 tl.add({
                     targets: [
@@ -731,9 +840,16 @@
 
             let disappearOrder = shuffle([...indices]);
             
-            // БЫСТРОЕ ИСЧЕЗНОВЕНИЕ (50ms задержка, 500ms длительность)
             disappearOrder.forEach((index, i) => {
                 const delay = disappearStartTime + (i * 50);
+
+                // ИЗМЕНЕНИЕ: Анимация "Дрожание" (Shake) логотипа при сворачивании
+                tl.add({
+                    targets: '.logo-picture',
+                    translateX: [0, -2, 2, -2, 0], // Горизонтальная тряска
+                    duration: 300,
+                    easing: 'easeInOutSine'
+                }, delay + 100);
 
                 tl.add({
                     targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
@@ -756,8 +872,9 @@
             const lastDisappearTime = disappearStartTime + (indices.length - 1) * 50 + 600;
             tl.add({ duration: 3000 }, lastDisappearTime);
         }
-
-        playCycle();
+        
+        // Запуск цикла только после появления логотипа (через 1.5 сек суммарно)
+        setTimeout(playCycle, 1500);
     });
     </script>
 </body>
