@@ -15,23 +15,19 @@
             --color-bg-secondary: #f0f2f5; 
             --color-text-main: #1d1d1f;
             --color-text-secondary: #86868b;
-            --color-border: #e0e0e0;
+            
+            /* Сделал границы чуть темнее для лучшей видимости */
+            --color-border: #d1d1d6;
+            
             --color-card-bg: #ffffff;
-            
-            /* ИЗМЕНЕНИЕ: Линии теперь черные в светлой теме для контраста */
             --color-line: #000000; 
-            
             --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            
             --watermark-color: rgba(29, 29, 31, 0.05);
-            
             --footer-overlay: rgba(255, 255, 255, 0.3);
             --footer-text-head: #1d1d1f;
             --footer-text-body: #424245;
-
             --gradient-start: #007AFF;
             --gradient-end: #00C7BE;
-            
             --font-family: 'Inter', sans-serif;
             --card-border-radius: 24px;
             --transition-main: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -44,16 +40,11 @@
                 --color-bg-secondary: #1c1c1e;
                 --color-text-main: #f5f5f7;
                 --color-text-secondary: #a1a1a6;
-                --color-border: #2c2c2e;
+                --color-border: #38383a; /* Светлее для темной темы */
                 --color-card-bg: #252526;
-                
-                /* В темной теме линии светлые, иначе их не видно */
                 --color-line: #48484a;
-                
                 --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                
                 --watermark-color: rgba(255, 255, 255, 0.03);
-                
                 --footer-overlay: rgba(0, 0, 0, 0.0); 
                 --footer-text-head: #ffffff;
                 --footer-text-body: #e5e5e7;
@@ -80,6 +71,23 @@
             -webkit-overflow-scrolling: touch; 
             transition: background-color 0.5s ease, color 0.5s ease;
         }
+        
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--color-bg);
+            z-index: 99999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loader-spinner {
+            width: 50px; height: 50px;
+            border: 5px solid var(--color-bg-secondary);
+            border-top: 5px solid var(--gradient-start);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
         
@@ -89,15 +97,9 @@
         .bg-primary { background-color: var(--color-bg); }
 
         /* --- ФЕЙДЫ --- */
-        .section-divider {
-            position: absolute; left: 0; width: 100%; height: 150px; z-index: 1; pointer-events: none;
-        }
-        .divider-top-in-gray {
-            top: 0; background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-secondary));
-        }
-        .divider-bottom-in-gray {
-            bottom: 0; background: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg));
-        }
+        .section-divider { position: absolute; left: 0; width: 100%; height: 150px; z-index: 1; pointer-events: none; }
+        .divider-top-in-gray { top: 0; background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-secondary)); }
+        .divider-bottom-in-gray { bottom: 0; background: linear-gradient(to bottom, var(--color-bg-secondary), var(--color-bg)); }
         
         .hero-bottom-fade {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 150px;
@@ -105,11 +107,23 @@
             z-index: 5; pointer-events: none;
         }
 
+        /* Фейд между Roadmap и Footer (ПК) */
         .fade-content-to-footer {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; 
-            background: linear-gradient(to bottom, var(--color-bg-secondary) 0%, rgba(0,0,0,0) 100%);
-            transform: translateY(99%); z-index: 5; pointer-events: none;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 250px; 
+            background: linear-gradient(to bottom, var(--color-bg-secondary) 10%, rgba(0,0,0,0) 100%);
+            /* Свисаем вниз, чтобы наехать на следующую секцию */
+            transform: translateY(99%); 
+            z-index: 10; 
+            pointer-events: none;
         }
+        
+        /* Мобильные фейды */
+        .mobile-fade-top, .mobile-fade-bottom {
+            display: none;
+            position: absolute; left: 0; width: 100%; z-index: 4; pointer-events: none;
+        }
+        .mobile-fade-top { top: 0; height: 100px; background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(0,0,0,0) 100%); }
+        .mobile-fade-bottom { bottom: 0; height: 100px; background: linear-gradient(to top, var(--color-bg) 0%, rgba(0,0,0,0) 100%); }
 
         h1, h2, h3 { font-weight: 700; line-height: 1.1; color: var(--color-text-main); }
         
@@ -177,6 +191,7 @@
             display: flex; align-items: center; justify-content: center;
             margin-top: 80px; 
             margin-bottom: 0;
+            will-change: opacity;
         }
         
         .logo-picture {
@@ -184,8 +199,6 @@
             filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15));
             margin: 0 auto;
             margin-top: 80px; 
-            
-            /* ИЗМЕНЕНИЕ: Изначально скрыт для анимации */
             opacity: 0; 
             transform: scale(0);
         }
@@ -246,10 +259,10 @@
         .adaptive-img { 
             width: 100%; height: auto; display: block; 
             transition: transform 0.5s ease;
-            transform: scale(1.04); 
+            transform: scale(1.01); 
         }
         
-        .image-wrapper:hover .adaptive-img { transform: scale(1.08); }
+        .image-wrapper:hover .adaptive-img { transform: scale(1.05); }
         
         .img-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -325,14 +338,21 @@
         /* --- ROADMAP --- */
         .roadmap-card {
             background: var(--color-card-bg); border-radius: 40px; padding: 20px 0; 
-            border: none; box-shadow: var(--shadow-card);
-            max-width: 900px; margin: 0 auto; overflow: hidden; position: relative; z-index: 2;
+            /* ИСПРАВЛЕНИЕ: Убрана border: none, если он мешал, но главное - границы внутри */
+            border: none; 
+            box-shadow: var(--shadow-card);
+            max-width: 900px; margin: 0 auto; 
+            overflow: hidden; position: relative; z-index: 2;
         }
+        
+        /* ИСПРАВЛЕНИЕ: Для корректного отображения фейда внизу секции */
         section#roadmap { overflow: visible; }
 
         .roadmap-row {
             display: grid; grid-template-columns: 180px 1fr 150px; gap: 30px; padding: 30px 50px;
-            border-bottom: 1px solid var(--color-border); align-items: center; transition: background-color 0.3s;
+            /* ИСПРАВЛЕНИЕ: Явная граница с переменной */
+            border-bottom: 1px solid var(--color-border); 
+            align-items: center; transition: background-color 0.3s;
         }
         .roadmap-row:last-child { border-bottom: none; }
         .roadmap-row:hover { background-color: var(--color-bg); }
@@ -370,10 +390,16 @@
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 991px) {
-            .hero-background-text { top: -5vh; font-size: 18vw; }
+            /* ИСПРАВЛЕНИЕ: Текст выше, но не слишком */
+            .hero-background-text { top: 5vh; font-size: 18vw; }
+            
             .feature-row, .feature-row:nth-child(even) { grid-template-columns: 1fr; }
-            .feature-row, .feature-row:nth-child(even) .feature-text, .feature-row:nth-child(even) .feature-image { grid-template-columns: 1fr; text-align: center; order: initial; }
-            .feature-image { order: -1 !important; margin-bottom: 30px; }
+            .feature-row, .feature-row:nth-child(even) .feature-text, .feature-row:nth-child(even) .feature-image { 
+                text-align: center; 
+                order: initial; 
+            }
+            .feature-image { margin-bottom: 30px; margin-top: 30px; }
+            
             .pricing-grid, .themes-grid, .advantages-grid { grid-template-columns: 1fr; }
             .feature-bubble { font-size: 1.1rem; padding: 12px 24px; }
             .roadmap-row { grid-template-columns: 1fr; gap: 15px; text-align: center; padding: 30px; }
@@ -384,6 +410,19 @@
 
         @media (max-width: 768px) {
             .container { padding: 0 20px; } 
+
+            /* ИСПРАВЛЕНИЕ: Кнопки теперь имеют макс. ширину и центрированы */
+            .button { 
+                width: 100%; 
+                max-width: 340px; 
+                padding: 16px 24px; 
+                font-size: 1rem; 
+                margin: 0 auto; /* Центровка */
+            }
+
+            .hero-content { margin-top: 40px; }
+
+            .mobile-fade-top, .mobile-fade-bottom { display: block; }
 
             .hero-bg-img {
                 transform: scale(1.15);
@@ -399,7 +438,6 @@
             .logo-img { max-height: 200px; }
             .hero-animation-container { height: 300px; transform: scale(0.75); margin-top: 80px; }
             .hero-cta { flex-direction: column; padding-bottom: 20px; }
-            .button { width: 100%; }
             .final-cta-section { min-height: 80vh; }
 
             .pricing-card {
@@ -411,7 +449,13 @@
 </head>
 <body>
 
+    <!-- ПРЕЛОАДЕР -->
+    <div id="preloader">
+        <div class="loader-spinner"></div>
+    </div>
+
     <header class="hero">
+        <div class="mobile-fade-top"></div>
         <div class="hero-bg-container parallax-bg-hero">
             <picture>
                 <source srcset="cover_dark.jpg" media="(prefers-color-scheme: dark)">
@@ -451,7 +495,6 @@
             </div>
         </div>
 
-        <!-- Фейд внизу Hero секции -->
         <div class="hero-bottom-fade"></div>
     </header>
 
@@ -620,6 +663,7 @@
                 </div>
             </div>
 
+            <!-- Фейд между Roadmap и Footer -->
             <div class="fade-content-to-footer"></div>
         </section>
         
@@ -631,6 +675,7 @@
                 </picture>
             </div>
             <div class="final-cta-overlay"></div>
+            <div class="mobile-fade-bottom"></div>
             
             <div class="final-cta-content">
                 <h2>Помогите воплотить <span class="gradient-text">visuType</span> в жизнь!</h2>
@@ -650,6 +695,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     
     <script>
+    // --- PRELOADER SCRIPT ---
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
+        preloader.style.opacity = '0';
+        preloader.style.visibility = 'hidden';
+        setTimeout(function() {
+             anime({
+                targets: '.logo-picture',
+                opacity: [0, 1],
+                scale: [0.5, 1], 
+                duration: 1200,
+                easing: 'easeOutElastic(1, .6)' 
+            });
+            setTimeout(playCycle, 1000);
+        }, 500);
+    });
+
     // --- LIGHTBOX ---
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
@@ -663,20 +725,11 @@
     // --- ANIMATIONS & PARALLAX ---
     document.addEventListener("DOMContentLoaded", function() {
         
-        // --- ИЗМЕНЕНИЕ: Анимация появления логотипа при загрузке ---
-        anime({
-            targets: '.logo-picture',
-            opacity: [0, 1],
-            scale: [0.5, 1], // Стартуем с половины размера
-            duration: 1200,
-            delay: 500, // Задержка 0.5 секунды
-            easing: 'easeOutElastic(1, .6)' // Эластичный "выстрел"
-        });
-
         const heroBg = document.querySelector('.parallax-bg-hero');
         const heroText = document.querySelector('.parallax-text');
         const footerSection = document.querySelector('.final-cta-section');
         const footerBg = document.querySelector('.parallax-bg-footer');
+        const heroAnim = document.querySelector('.hero-animation-container');
 
         window.addEventListener('scroll', function() {
             const scrolled = window.scrollY;
@@ -684,6 +737,12 @@
 
             if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
             if(heroText) heroText.style.transform = `translate(-50%, ${scrolled * 0.15}px)`;
+            
+            if (heroAnim) {
+                let opacity = 1 - (scrolled / 300);
+                if (opacity < 0) opacity = 0;
+                heroAnim.style.opacity = opacity;
+            }
 
             if (footerSection && footerBg) {
                 const sectionTop = footerSection.offsetTop;
@@ -708,36 +767,97 @@
             });
         });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    });
 
-        // --- ANIME JS & BUBBLES ---
+    // --- ANIME JS & BUBBLES ---
+    function playCycle() {
         const wrapper = document.querySelector('.animation-wrapper');
         const svg = document.querySelector('.lines-svg');
         
-        const bubbleTexts = [
-            "Минимализм ✨",
-            "Синхронизация ☁️",
-            "Карты мыслей 🧠",
-            "Кастомизация 🎨",
-            "Холсты 🎨",
-            "Скорость ⚡️",
-            "Заметки ✍️"
-        ];
+        if(wrapper.children.length === 1) { 
+            const bubbleTexts = [
+                "Минимализм ✨",
+                "Синхронизация ☁️",
+                "Карты мыслей 🧠",
+                "Кастомизация 🎨",
+                "Холсты 🎨",
+                "Скорость ⚡️",
+                "Заметки ✍️"
+            ];
 
-        const allCoordinates = [
-            { xOffset: 0, yOffset: -45 },     // ВЕРХ
-            { xOffset: 30, yOffset: -28 },    // Верх-Право
-            { xOffset: 42, yOffset: 0 },      // Право (Середина)
-            { xOffset: 28, yOffset: 25 },     // Низ-Право
-            { xOffset: -28, yOffset: 25 },    // Низ-Лево
-            { xOffset: -42, yOffset: 0 },     // Лево (Середина)
-            { xOffset: -30, yOffset: -28 }    // Верх-Лево
-        ];
+            const allCoordinates = [
+                { xOffset: 0, yOffset: -45 },     
+                { xOffset: 30, yOffset: -28 },    
+                { xOffset: 42, yOffset: 0 },      
+                { xOffset: 28, yOffset: 25 },     
+                { xOffset: -28, yOffset: 25 },    
+                { xOffset: -42, yOffset: 0 },     
+                { xOffset: -30, yOffset: -28 }    
+            ];
 
-        const mobileCoordinates = [
-            { xOffset: -30, yOffset: -28 },   // Верх-Лево
-            { xOffset: 0, yOffset: -45 },     // ВЕРХ
-            { xOffset: 30, yOffset: -28 }     // Верх-Право
-        ];
+            const mobileCoordinates = [
+                { xOffset: -30, yOffset: -28 },   
+                { xOffset: 0, yOffset: -45 },     
+                { xOffset: 30, yOffset: -28 }     
+            ];
+
+            function shuffle(array) {
+                let currentArray = [...array];
+                for (let i = currentArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [currentArray[i], currentArray[j]] = [currentArray[j], currentArray[i]];
+                }
+                return currentArray;
+            }
+
+            const isMobile = window.innerWidth < 768;
+            let activeData = [];
+            
+            if (isMobile) {
+                const shuffledTexts = shuffle(bubbleTexts).slice(0, 3);
+                activeData = mobileCoordinates.map((coord, index) => ({
+                    text: shuffledTexts[index],
+                    xOffset: coord.xOffset,
+                    yOffset: coord.yOffset
+                }));
+            } else {
+                activeData = [
+                    { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },
+                    { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 },
+                    { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },
+                    { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },
+                    { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },
+                    { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },
+                    { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }
+                ];
+            }
+
+            window.indices = activeData.map((_, i) => i); 
+            window.activeData = activeData;
+
+            activeData.forEach((data, i) => {
+                const positioner = document.createElement('div');
+                positioner.className = 'bubble-positioner';
+                positioner.dataset.index = i;
+                
+                const floatWrapper = document.createElement('div');
+                floatWrapper.className = 'bubble-float-wrapper';
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'feature-bubble';
+                bubble.innerHTML = `<span>${data.text}</span>`; 
+                
+                floatWrapper.appendChild(bubble);
+                positioner.appendChild(floatWrapper);
+                wrapper.appendChild(positioner);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.dataset.index = i;
+                line.setAttribute('x1', '50%'); line.setAttribute('y1', '50%'); 
+                line.setAttribute('x2', '50%'); line.setAttribute('y2', '50%'); 
+                svg.appendChild(line);
+            });
+        }
 
         function shuffle(array) {
             let currentArray = [...array];
@@ -748,134 +868,80 @@
             return currentArray;
         }
 
-        const isMobile = window.innerWidth < 768;
-        let activeData = [];
-        
-        if (isMobile) {
-            const shuffledTexts = shuffle(bubbleTexts).slice(0, 3);
-            activeData = mobileCoordinates.map((coord, index) => ({
-                text: shuffledTexts[index],
-                xOffset: coord.xOffset,
-                yOffset: coord.yOffset
-            }));
-        } else {
-            activeData = [
-                 { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },
-                 { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 },
-                 { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },
-                 { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },
-                 { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },
-                 { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },
-                 { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }
-            ];
-        }
-
-        const indices = activeData.map((_, i) => i); 
-        
-        activeData.forEach((data, i) => {
-            const positioner = document.createElement('div');
-            positioner.className = 'bubble-positioner';
-            positioner.dataset.index = i;
-            
-            const floatWrapper = document.createElement('div');
-            floatWrapper.className = 'bubble-float-wrapper';
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'feature-bubble';
-            bubble.innerHTML = `<span>${data.text}</span>`; 
-            
-            floatWrapper.appendChild(bubble);
-            positioner.appendChild(floatWrapper);
-            wrapper.appendChild(positioner);
-
-            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            line.dataset.index = i;
-            line.setAttribute('x1', '50%'); line.setAttribute('y1', '50%'); 
-            line.setAttribute('x2', '50%'); line.setAttribute('y2', '50%'); 
-            svg.appendChild(line);
+        const tl = anime.timeline({
+            complete: function() { playCycle(); }
         });
 
-        function playCycle() {
-            const tl = anime.timeline({
-                complete: function() { playCycle(); }
-            });
-
-            let appearOrder = shuffle([...indices]);
-            
-            appearOrder.forEach((index, i) => {
-                const delay = i * 1000; 
-                const data = activeData[index];
-                const targetLeft = (50 + data.xOffset) + '%';
-                const targetTop = (50 + data.yOffset) + '%';
-
-                // ИЗМЕНЕНИЕ: Анимация "Пульс" логотипа при вылете блока
-                tl.add({
-                    targets: '.logo-picture',
-                    scale: [1, 1.03, 1], // Легкое увеличение
-                    duration: 300,
-                    easing: 'easeOutQuad'
-                }, delay);
-
-                tl.add({
-                    targets: [
-                        `.lines-svg line[data-index="${index}"]`,
-                        `.bubble-positioner[data-index="${index}"]`
-                    ],
-                    x2: targetLeft, y2: targetTop,
-                    left: targetLeft, top: targetTop,
-                    opacity: [0, 1],
-                    duration: 1000, easing: 'easeOutExpo'
-                }, delay); 
-
-                tl.add({
-                    targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
-                    scale: [0, 1], opacity: [0, 1],
-                    duration: 800, easing: 'easeOutElastic(1, .5)'
-                }, delay + 100);
-            });
-
-            const appearDurationTotal = (indices.length - 1) * 1000 + 1000; 
-            const stayDuration = 3000;
-            const disappearStartTime = appearDurationTotal + stayDuration;
-
-            let disappearOrder = shuffle([...indices]);
-            
-            disappearOrder.forEach((index, i) => {
-                const delay = disappearStartTime + (i * 50);
-
-                // ИЗМЕНЕНИЕ: Анимация "Дрожание" (Shake) логотипа при сворачивании
-                tl.add({
-                    targets: '.logo-picture',
-                    translateX: [0, -2, 2, -2, 0], // Горизонтальная тряска
-                    duration: 300,
-                    easing: 'easeInOutSine'
-                }, delay + 100);
-
-                tl.add({
-                    targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
-                    scale: 0, opacity: 0,
-                    duration: 500, easing: 'easeInBack'
-                }, delay);
-
-                tl.add({
-                    targets: [
-                        `.lines-svg line[data-index="${index}"]`,
-                        `.bubble-positioner[data-index="${index}"]`
-                    ],
-                    x2: '50%', y2: '50%',
-                    left: '50%', top: '50%',
-                    opacity: 0,
-                    duration: 500, easing: 'easeInExpo'
-                }, delay + 100);
-            });
-
-            const lastDisappearTime = disappearStartTime + (indices.length - 1) * 50 + 600;
-            tl.add({ duration: 3000 }, lastDisappearTime);
-        }
+        let appearOrder = shuffle([...window.indices]);
         
-        // Запуск цикла только после появления логотипа (через 1.5 сек суммарно)
-        setTimeout(playCycle, 1500);
-    });
+        appearOrder.forEach((index, i) => {
+            const delay = i * 1000; 
+            const data = window.activeData[index];
+            const targetLeft = (50 + data.xOffset) + '%';
+            const targetTop = (50 + data.yOffset) + '%';
+
+            tl.add({
+                targets: '.logo-picture',
+                scale: [1, 1.03, 1], 
+                duration: 300,
+                easing: 'easeOutQuad'
+            }, delay);
+
+            tl.add({
+                targets: [
+                    `.lines-svg line[data-index="${index}"]`,
+                    `.bubble-positioner[data-index="${index}"]`
+                ],
+                x2: targetLeft, y2: targetTop,
+                left: targetLeft, top: targetTop,
+                opacity: [0, 1],
+                duration: 1000, easing: 'easeOutExpo'
+            }, delay); 
+
+            tl.add({
+                targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
+                scale: [0, 1], opacity: [0, 1],
+                duration: 800, easing: 'easeOutElastic(1, .5)'
+            }, delay + 100);
+        });
+
+        const appearDurationTotal = (window.indices.length - 1) * 1000 + 1000; 
+        const stayDuration = 3000;
+        const disappearStartTime = appearDurationTotal + stayDuration;
+
+        let disappearOrder = shuffle([...window.indices]);
+        
+        disappearOrder.forEach((index, i) => {
+            const delay = disappearStartTime + (i * 50);
+
+            tl.add({
+                targets: '.logo-picture',
+                translateX: [0, -2, 2, -2, 0],
+                duration: 300,
+                easing: 'easeInOutSine'
+            }, delay + 100);
+
+            tl.add({
+                targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
+                scale: 0, opacity: 0,
+                duration: 500, easing: 'easeInBack'
+            }, delay);
+
+            tl.add({
+                targets: [
+                    `.lines-svg line[data-index="${index}"]`,
+                    `.bubble-positioner[data-index="${index}"]`
+                ],
+                x2: '50%', y2: '50%',
+                left: '50%', top: '50%',
+                opacity: 0,
+                duration: 500, easing: 'easeInExpo'
+            }, delay + 100);
+        });
+
+        const lastDisappearTime = disappearStartTime + (window.indices.length - 1) * 50 + 600;
+        tl.add({ duration: 3000 }, lastDisappearTime);
+    }
     </script>
 </body>
 </html>
