@@ -15,14 +15,10 @@
             --color-bg-secondary: #f0f2f5; 
             --color-text-main: #1d1d1f;
             --color-text-secondary: #86868b;
-            
-            /* Сделал границы чуть темнее для лучшей видимости */
             --color-border: #d1d1d6;
-            
             --color-card-bg: #ffffff;
             --color-line: #000000; 
             --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            --watermark-color: rgba(29, 29, 31, 0.05);
             --footer-overlay: rgba(255, 255, 255, 0.3);
             --footer-text-head: #1d1d1f;
             --footer-text-body: #424245;
@@ -40,11 +36,10 @@
                 --color-bg-secondary: #1c1c1e;
                 --color-text-main: #f5f5f7;
                 --color-text-secondary: #a1a1a6;
-                --color-border: #38383a; /* Светлее для темной темы */
+                --color-border: #38383a; 
                 --color-card-bg: #252526;
                 --color-line: #48484a;
                 --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                --watermark-color: rgba(255, 255, 255, 0.03);
                 --footer-overlay: rgba(0, 0, 0, 0.0); 
                 --footer-text-head: #ffffff;
                 --footer-text-body: #e5e5e7;
@@ -107,17 +102,14 @@
             z-index: 5; pointer-events: none;
         }
 
-        /* Фейд между Roadmap и Footer (ПК) */
         .fade-content-to-footer {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 250px; 
             background: linear-gradient(to bottom, var(--color-bg-secondary) 10%, rgba(0,0,0,0) 100%);
-            /* Свисаем вниз, чтобы наехать на следующую секцию */
             transform: translateY(99%); 
             z-index: 10; 
             pointer-events: none;
         }
         
-        /* Мобильные фейды */
         .mobile-fade-top, .mobile-fade-bottom {
             display: none;
             position: absolute; left: 0; width: 100%; z-index: 4; pointer-events: none;
@@ -177,19 +169,11 @@
             transition: transform 0.5s ease;
         }
 
-        .hero-background-text {
-            position: absolute; top: -10vh; left: 50%; transform: translateX(-50%);
-            font-size: 16vw; font-weight: 900; z-index: 0;
-            user-select: none; text-transform: uppercase; white-space: nowrap;
-            letter-spacing: -0.02em; pointer-events: none; will-change: transform;
-            color: var(--watermark-color);
-        }
-
         .hero-animation-container {
             position: relative; width: 100%; max-width: 1200px; 
             height: 500px; 
             display: flex; align-items: center; justify-content: center;
-            margin-top: 80px; 
+            margin-top: 120px; 
             margin-bottom: 0;
             will-change: opacity;
         }
@@ -198,12 +182,42 @@
             position: relative; z-index: 10; display: block;
             filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15));
             margin: 0 auto;
-            margin-top: 80px; 
             opacity: 0; 
             transform: scale(0);
+            will-change: transform, opacity;
         }
         .logo-img { max-height: 320px; width: auto; display: block; margin: 0 auto; }
         
+        /* АНИМАЦИЯ ТЕКСТА VISUTYPE */
+        .hero-title-anim {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            
+            /* Увеличенный размер шрифта */
+            font-size: 8rem; /* Для десктопа */
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            
+            color: transparent;
+            
+            /* Размер фона 300% для плавного переливания */
+            background-size: 300% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Светлое свечение (Glow) вместо тёмной тени */
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.4));
+            
+            will-change: transform, opacity, background-position;
+        }
+
         .animation-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
         
         .lines-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible; }
@@ -228,7 +242,9 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12); white-space: nowrap;
             opacity: 0; transform: scale(0); 
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            line-height: 1; 
         }
+        .feature-bubble span { display: inline-block; }
 
         .hero-content { position: relative; z-index: 20; padding: 0 20px; margin-top: -40px; }
 
@@ -338,19 +354,16 @@
         /* --- ROADMAP --- */
         .roadmap-card {
             background: var(--color-card-bg); border-radius: 40px; padding: 20px 0; 
-            /* ИСПРАВЛЕНИЕ: Убрана border: none, если он мешал, но главное - границы внутри */
             border: none; 
             box-shadow: var(--shadow-card);
             max-width: 900px; margin: 0 auto; 
             overflow: hidden; position: relative; z-index: 2;
         }
         
-        /* ИСПРАВЛЕНИЕ: Для корректного отображения фейда внизу секции */
         section#roadmap { overflow: visible; }
 
         .roadmap-row {
             display: grid; grid-template-columns: 180px 1fr 150px; gap: 30px; padding: 30px 50px;
-            /* ИСПРАВЛЕНИЕ: Явная граница с переменной */
             border-bottom: 1px solid var(--color-border); 
             align-items: center; transition: background-color 0.3s;
         }
@@ -390,9 +403,6 @@
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 991px) {
-            /* ИСПРАВЛЕНИЕ: Текст выше, но не слишком */
-            .hero-background-text { top: 5vh; font-size: 18vw; }
-            
             .feature-row, .feature-row:nth-child(even) { grid-template-columns: 1fr; }
             .feature-row, .feature-row:nth-child(even) .feature-text, .feature-row:nth-child(even) .feature-image { 
                 text-align: center; 
@@ -410,40 +420,27 @@
 
         @media (max-width: 768px) {
             .container { padding: 0 20px; } 
-
-            /* ИСПРАВЛЕНИЕ: Кнопки теперь имеют макс. ширину и центрированы */
             .button { 
                 width: 100%; 
                 max-width: 340px; 
                 padding: 16px 24px; 
                 font-size: 1rem; 
-                margin: 0 auto; /* Центровка */
+                margin: 0 auto; 
             }
-
             .hero-content { margin-top: 40px; }
-
             .mobile-fade-top, .mobile-fade-bottom { display: block; }
-
-            .hero-bg-img {
-                transform: scale(1.15);
-                transform-origin: center top; 
-            }
-            .final-cta-img {
-                transform: scale(1.15);
-                transform-origin: center bottom;
-            }
-
+            .hero-bg-img { transform: scale(1.15); transform-origin: center top; }
+            .final-cta-img { transform: scale(1.15); transform-origin: center bottom; }
             .accent-huge { font-size: 3.5rem; }
             h1 { font-size: 1.8rem; margin-top: 0; }
             .logo-img { max-height: 200px; }
             .hero-animation-container { height: 300px; transform: scale(0.75); margin-top: 80px; }
             .hero-cta { flex-direction: column; padding-bottom: 20px; }
             .final-cta-section { min-height: 80vh; }
-
-            .pricing-card {
-                padding: 30px 20px; 
-                width: 100%; 
-            }
+            .pricing-card { padding: 30px 20px; width: 100%; }
+            
+            /* Адаптив для текста анимации: ОЧЕНЬ БОЛЬШОЙ ШРИФТ */
+            .hero-title-anim { font-size: 15vw; }
         }
     </style>
 </head>
@@ -463,16 +460,19 @@
             </picture>
         </div>
 
-        <div class="hero-background-text parallax-text">visutype</div>
-
         <div class="hero-animation-container">
             <div class="animation-wrapper">
                 <svg class="lines-svg"></svg>
             </div>
+            
+            <!-- Логотип -->
             <picture class="logo-picture">
                 <source srcset="visutype_logo_dark.png" media="(prefers-color-scheme: dark)">
                 <img src="visutype_logo.png" alt="visuType Logo" class="logo-img">
             </picture>
+            
+            <!-- Текст для второй фазы анимации -->
+            <div class="hero-title-anim">visuType</div>
         </div>
 
         <div class="hero-content">
@@ -700,15 +700,18 @@
         const preloader = document.getElementById('preloader');
         preloader.style.opacity = '0';
         preloader.style.visibility = 'hidden';
+        
         setTimeout(function() {
              anime({
                 targets: '.logo-picture',
                 opacity: [0, 1],
                 scale: [0.5, 1], 
-                duration: 1200,
-                easing: 'easeOutElastic(1, .6)' 
+                duration: 1000,
+                easing: 'easeOutElastic(1, .6)',
+                complete: function() {
+                    setTimeout(playCycle, 500);
+                }
             });
-            setTimeout(playCycle, 1000);
         }, 500);
     });
 
@@ -724,9 +727,7 @@
 
     // --- ANIMATIONS & PARALLAX ---
     document.addEventListener("DOMContentLoaded", function() {
-        
         const heroBg = document.querySelector('.parallax-bg-hero');
-        const heroText = document.querySelector('.parallax-text');
         const footerSection = document.querySelector('.final-cta-section');
         const footerBg = document.querySelector('.parallax-bg-footer');
         const heroAnim = document.querySelector('.hero-animation-container');
@@ -736,10 +737,9 @@
             const windowHeight = window.innerHeight;
 
             if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
-            if(heroText) heroText.style.transform = `translate(-50%, ${scrolled * 0.15}px)`;
             
             if (heroAnim) {
-                let opacity = 1 - (scrolled / 300);
+                let opacity = 1 - (scrolled / 400);
                 if (opacity < 0) opacity = 0;
                 heroAnim.style.opacity = opacity;
             }
@@ -769,11 +769,13 @@
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     });
 
-    // --- ANIME JS & BUBBLES ---
+    // --- ГЛАВНАЯ АНИМАЦИЯ ---
     function playCycle() {
         const wrapper = document.querySelector('.animation-wrapper');
         const svg = document.querySelector('.lines-svg');
-        
+        const heroTitle = document.querySelector('.hero-title-anim');
+
+        // Инициализация пузырей (один раз)
         if(wrapper.children.length === 1) { 
             const bubbleTexts = [
                 "Минимализм ✨",
@@ -785,16 +787,16 @@
                 "Заметки ✍️"
             ];
 
-            const allCoordinates = [
-                { xOffset: 0, yOffset: -45 },     
-                { xOffset: 30, yOffset: -28 },    
-                { xOffset: 42, yOffset: 0 },      
-                { xOffset: 28, yOffset: 25 },     
-                { xOffset: -28, yOffset: 25 },    
-                { xOffset: -42, yOffset: 0 },     
-                { xOffset: -30, yOffset: -28 }    
+            const desktopCoordinates = [
+                { xOffset: 0, yOffset: -45 },
+                { xOffset: 30, yOffset: -28 },
+                { xOffset: 42, yOffset: 0 },
+                { xOffset: 28, yOffset: 25 },
+                { xOffset: -28, yOffset: 25 },
+                { xOffset: -42, yOffset: 0 },
+                { xOffset: -30, yOffset: -28 }
             ];
-
+            
             const mobileCoordinates = [
                 { xOffset: -30, yOffset: -28 },   
                 { xOffset: 0, yOffset: -45 },     
@@ -821,15 +823,11 @@
                     yOffset: coord.yOffset
                 }));
             } else {
-                activeData = [
-                    { text: "Минимализм ✨", xOffset: 0, yOffset: -45 },
-                    { text: "Синхронизация ☁️", xOffset: 30, yOffset: -28 },
-                    { text: "Карты мыслей 🧠", xOffset: 42, yOffset: 0 },
-                    { text: "Кастомизация 🎨", xOffset: 28, yOffset: 25 },
-                    { text: "Холсты 🎨", xOffset: -28, yOffset: 25 },
-                    { text: "Скорость ⚡️", xOffset: -42, yOffset: 0 },
-                    { text: "Заметки ✍️", xOffset: -30, yOffset: -28 }
-                ];
+                activeData = desktopCoordinates.map((coord, index) => ({
+                    text: bubbleTexts[index],
+                    xOffset: coord.xOffset,
+                    yOffset: coord.yOffset
+                }));
             }
 
             window.indices = activeData.map((_, i) => i); 
@@ -868,24 +866,35 @@
             return currentArray;
         }
 
+        // --- ГЕНЕРАТОР БЕСШОВНЫХ ГРАДИЕНТОВ ---
+        // Формат: Color1 -> Color2 -> Color1 (для идеальной петли)
+        const seamlessGradients = [
+            'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 50%, #FF9A9E 100%)', // Pastel Pink Loop
+            'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 50%, #a18cd1 100%)', // Purple Pink Loop
+            'linear-gradient(135deg, #84fab0 0%, #8fd3f4 50%, #84fab0 100%)', // Mint Blue Loop
+            'linear-gradient(135deg, #fccb90 0%, #d57eeb 50%, #fccb90 100%)', // Orange Purple Loop
+            'linear-gradient(135deg, #00c6fb 0%, #005bea 50%, #00c6fb 100%)', // Deep Blue Loop
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 50%, #43e97b 100%)', // Greenish Loop
+            'linear-gradient(135deg, #fa709a 0%, #fee140 50%, #fa709a 100%)', // Red Yellow Loop
+            'linear-gradient(135deg, #30cfd0 0%, #330867 50%, #30cfd0 100%)'  // Teal Indigo Loop
+        ];
+        
+        const randomGradient = seamlessGradients[Math.floor(Math.random() * seamlessGradients.length)];
+        heroTitle.style.backgroundImage = randomGradient;
+
+        // --- TIMELINE ---
         const tl = anime.timeline({
             complete: function() { playCycle(); }
         });
 
         let appearOrder = shuffle([...window.indices]);
         
+        // 1. ПОЯВЛЕНИЕ ПУЗЫРЕЙ
         appearOrder.forEach((index, i) => {
-            const delay = i * 1000; 
+            const delay = i * 800; 
             const data = window.activeData[index];
             const targetLeft = (50 + data.xOffset) + '%';
             const targetTop = (50 + data.yOffset) + '%';
-
-            tl.add({
-                targets: '.logo-picture',
-                scale: [1, 1.03, 1], 
-                duration: 300,
-                easing: 'easeOutQuad'
-            }, delay);
 
             tl.add({
                 targets: [
@@ -895,37 +904,34 @@
                 x2: targetLeft, y2: targetTop,
                 left: targetLeft, top: targetTop,
                 opacity: [0, 1],
-                duration: 1000, easing: 'easeOutExpo'
+                duration: 1200, easing: 'easeOutExpo'
             }, delay); 
 
             tl.add({
                 targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
                 scale: [0, 1], opacity: [0, 1],
-                duration: 800, easing: 'easeOutElastic(1, .5)'
-            }, delay + 100);
+                duration: 1000, easing: 'easeOutElastic(1, .8)'
+            }, delay + 200);
         });
 
-        const appearDurationTotal = (window.indices.length - 1) * 1000 + 1000; 
-        const stayDuration = 3000;
-        const disappearStartTime = appearDurationTotal + stayDuration;
-
-        let disappearOrder = shuffle([...window.indices]);
+        const disappearStartTime = appearOrder.length * 800 + 2000; 
         
-        disappearOrder.forEach((index, i) => {
-            const delay = disappearStartTime + (i * 50);
+        let disappearOrder = shuffle([...window.indices]);
+        const lastBubbleIndex = disappearOrder.length - 1;
+        const animationStep = 50; 
+        
+        const lastBubbleAnimStart = disappearStartTime + (lastBubbleIndex * animationStep);
+        const logoCollapseTime = lastBubbleAnimStart + 200;
 
-            tl.add({
-                targets: '.logo-picture',
-                translateX: [0, -2, 2, -2, 0],
-                duration: 300,
-                easing: 'easeInOutSine'
-            }, delay + 100);
+        // 2. ИСЧЕЗНОВЕНИЕ ПУЗЫРЕЙ
+        disappearOrder.forEach((index, i) => {
+            const animOffset = disappearStartTime + (i * animationStep);
 
             tl.add({
                 targets: `.bubble-positioner[data-index="${index}"] .feature-bubble`,
                 scale: 0, opacity: 0,
-                duration: 500, easing: 'easeInBack'
-            }, delay);
+                duration: 400, easing: 'easeInBack'
+            }, animOffset);
 
             tl.add({
                 targets: [
@@ -936,11 +942,67 @@
                 left: '50%', top: '50%',
                 opacity: 0,
                 duration: 500, easing: 'easeInExpo'
-            }, delay + 100);
+            }, animOffset + 100);
         });
 
-        const lastDisappearTime = disappearStartTime + (window.indices.length - 1) * 50 + 600;
-        tl.add({ duration: 3000 }, lastDisappearTime);
+        // 3. СВОРАЧИВАНИЕ ЛОГОТИПА
+        tl.add({
+            targets: '.logo-picture',
+            scale: [1, 0],
+            opacity: [1, 0],
+            duration: 600,
+            easing: 'easeInOutBack'
+        }, logoCollapseTime); 
+
+        // 4. ПОЯВЛЕНИЕ ТЕКСТА VISUTYPE
+        tl.add({
+            targets: '.hero-title-anim',
+            opacity: [0, 1],
+            scale: [0, 1],
+            translateX: '-50%', 
+            translateY: '-50%',
+            duration: 1000,
+            easing: 'easeOutElastic(1, .6)'
+        }, '-=200');
+
+        // 5. АНИМАЦИЯ ГРАДИЕНТА (БЕСШОВНАЯ)
+        // Двигаем фон ровно на один цикл (0% -> 100%).
+        // Так как градиент определен как A->B->A, переход будет идеальным.
+        tl.add({
+            targets: '.hero-title-anim',
+            backgroundPosition: ['0% center', '100% center'], 
+            duration: 3000, 
+            easing: 'linear'
+        }, '-=800');
+
+        // Легкое покачивание текста
+        tl.add({
+            targets: '.hero-title-anim',
+            translateY: ['-50%', '-52%', '-50%'],
+            translateX: '-50%',
+            duration: 3000,
+            easing: 'easeInOutSine'
+        }, '-=3000');
+
+        // 6. ИСЧЕЗНОВЕНИЕ ТЕКСТА
+        tl.add({
+            targets: '.hero-title-anim',
+            scale: [1, 1.2], 
+            opacity: 0,
+            translateX: '-50%', 
+            translateY: '-50%',
+            duration: 500,
+            easing: 'easeInBack'
+        });
+
+        // 7. ВОЗВРАЩЕНИЕ ЛОГОТИПА
+        tl.add({
+            targets: '.logo-picture',
+            scale: [0, 1],
+            opacity: [0, 1],
+            duration: 800,
+            easing: 'easeOutElastic(1, .8)'
+        }, '-=200');
     }
     </script>
 </body>
