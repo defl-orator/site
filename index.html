@@ -134,12 +134,12 @@
             font-size: 3rem; 
             font-weight: 700; 
             letter-spacing: -0.01em; 
-            margin-bottom: -10px; /* Вплотную к стрелке */
+            margin-bottom: 0px; 
         }
 
         .scroll-down-arrow {
             display: block;
-            margin: 5px auto 30px; /* 5px от заголовка, 30px до текста */
+            margin: 5px auto -15px; /* ИЗМЕНЕНО по запросу */
             width: 30px; 
             height: 30px;
             border-bottom: 3px solid var(--color-text-main);
@@ -302,7 +302,7 @@
         /* 2. Карта мыслей */
         .mindmap-header {
             display: flex; flex-direction: column; align-items: center; gap: 10px; 
-            margin-bottom: 30px; /* УВЕЛИЧЕННЫЙ ОТСТУП */
+            margin-bottom: 30px; 
         }
         .mindmap-plain-text {
             font-size: 2.5rem; font-weight: 700; line-height: 1.1; color: var(--color-text-main);
@@ -378,6 +378,31 @@
         }
         .theme-display img:hover { transform: scale(1.03); }
         .theme-display h3 { text-align: center; margin-top: 20px; }
+
+        /* --- COMPARISON TABLE --- */
+        .table-container {
+            max-width: 1000px; margin: 0 auto; overflow-x: auto;
+            border-radius: 32px; box-shadow: var(--shadow-card);
+            background: var(--color-card-bg); border: 1px solid var(--color-border);
+        }
+        .comparison-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .comparison-table th, .comparison-table td {
+            padding: 20px; text-align: center; border-bottom: 1px solid var(--color-border);
+            font-size: 1.1rem; color: var(--color-text-secondary);
+        }
+        .comparison-table th {
+            font-weight: 700; color: var(--color-text-main); background: var(--color-bg-secondary);
+            text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.05em;
+        }
+        .comparison-table .row-name { text-align: left; font-weight: 700; color: var(--color-text-main); padding-left: 40px; }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .visutype-row td { background: rgba(0, 122, 255, 0.05); color: var(--color-text-main); font-weight: 700; font-size: 1.3rem; }
+        .visutype-row .row-name { color: var(--gradient-start); font-size: 1.3rem; }
+        
+        .table-legend {
+            margin-top: 20px; text-align: center; font-size: 0.9rem; color: var(--color-text-secondary);
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+        }
 
         /* --- PRICING & ROADMAP --- */
         .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; align-items: stretch; }
@@ -509,6 +534,8 @@
                 margin-top: 30px; /* Отступ для телефонов */
                 margin-bottom: 20px;
             }
+            .comparison-table th, .comparison-table td { padding: 15px 10px; font-size: 1rem; }
+            .comparison-table .row-name { padding-left: 20px; }
         }
     </style>
 </head>
@@ -519,7 +546,7 @@
     <header class="hero">
         <div class="mobile-fade-top"></div>
         <div class="hero-bg-container parallax-bg-hero">
-            <!-- data-no-mobile="true" - не меняем на mobile картинку, но тему меняем -->
+            <!-- data-no-mobile="true" -->
             <img src="cover_light.jpg" class="hero-bg-img" id="hero-bg-el" data-base="cover" data-ext="jpg" data-no-mobile="true" alt="Background">
         </div>
 
@@ -650,6 +677,93 @@
             <div class="section-divider divider-bottom-in-gray"></div>
         </section>
 
+        <!-- COMPARISON SECTION -->
+        <section id="comparison" class="bg-secondary">
+            <!-- Верхний разделитель (с белого на серый) -->
+            <div class="section-divider divider-top-in-gray"></div>
+
+            <div class="container">
+                <h2 class="fade-in"><span data-i18n="comp_head_1">Чем visuType</span> <span class="gradient-text" data-i18n="comp_head_2">лучше остальных</span>?</h2>
+                <p class="section-subtitle fade-in" data-i18n="comp_subtitle">Полным набором необходимых инструментов для ведения заметок, не добавляя лишнего.</p>
+                
+                <div class="table-container fade-in">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th data-i18n="comp_col_1">Карты мыслей</th>
+                                <th data-i18n="comp_col_2">Холсты</th>
+                                <th data-i18n="comp_col_3">Кастомизация</th>
+                                <th data-i18n="comp_col_4">Скорость</th>
+                                <th data-i18n="comp_col_5">Минимализм</th>
+                                <th data-i18n="comp_col_6">Ассистент</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- visuType -->
+                            <tr class="visutype-row">
+                                <td class="row-name">visuType</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <!-- Notion -->
+                            <tr>
+                                <td class="row-name">Notion</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>🟨</td>
+                                <td>🟨</td>
+                                <td>🟨</td>
+                                <td>❌</td>
+                            </tr>
+                            <!-- Obsidian -->
+                            <tr>
+                                <td class="row-name">Obsidian</td>
+                                <td>🟨</td>
+                                <td>✅</td>
+                                <td>🟨</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                            </tr>
+                            <!-- Craft -->
+                            <tr>
+                                <td class="row-name">Craft</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                            <!-- Apple Notes -->
+                            <tr>
+                                <td class="row-name">Apple Notes</td>
+                                <td>❌</td>
+                                <td>🟨</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>❌</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table-legend">
+                        <span>✅ <span data-i18n="legend_full">полная реализация</span></span>
+                        <span>🟨 <span data-i18n="legend_part">частичная реализация</span></span>
+                        <span>❌ <span data-i18n="legend_none">не реализовано</span></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Нижний разделитель (с серого на белый) -->
+            <div class="section-divider divider-bottom-in-gray"></div>
+        </section>
+
         <section id="pricing" class="bg-primary">
             <div class="container">
                 <h2 class="fade-in"><span data-i18n="price_head_1">Лучший редактор с</span> <span class="text-gradient-pro">Pro</span> <span data-i18n="price_head_2">станет</span> <span class="text-gradient-pro" data-i18n="price_head_3">ещё лучше</span></h2>
@@ -691,7 +805,7 @@
                 </div>
                 <div class="roadmap-card fade-in">
                     <div class="roadmap-row">
-                        <div class="roadmap-date" data-i18n="road_item_1_date">Сейчас</div>
+                        <div class="roadmap-date" data-i18n="road_item_1_date">Релиз</div>
                         <div class="roadmap-content"><h4 data-i18n="road_item_1_title">macOS, iOS и iPadOS</h4><p data-i18n="road_item_1_desc">Сначала — стабильность. Базовый редактор и хранение.</p></div>
                         <div class="roadmap-status status-done" data-i18n="status_done">Готово</div>
                     </div>
@@ -802,6 +916,20 @@
             theme_head_2: "свой стиль",
             theme_light: "Светлая тема",
             theme_dark: "Тёмная тема",
+
+            // --- COMPARISON ---
+            comp_head_1: "Чем visuType",
+            comp_head_2: "лучше остальных",
+            comp_subtitle: "Полным набором необходимых инструментов для ведения заметок, не добавляя лишнего.",
+            comp_col_1: "Карты мыслей",
+            comp_col_2: "Холсты",
+            comp_col_3: "Кастомизация",
+            comp_col_4: "Скорость",
+            comp_col_5: "Минимализм",
+            comp_col_6: "Ассистент",
+            legend_full: "полная реализация",
+            legend_part: "частичная реализация",
+            legend_none: "не реализовано",
             
             // PRICING
             price_head_1: "Лучший редактор с",
@@ -825,7 +953,7 @@
             // ROADMAP
             road_head_1: "План развития",
             road_step_1: "Этап 1: MVP",
-            road_item_1_date: "Сейчас",
+            road_item_1_date: "Релиз",
             road_item_1_title: "macOS, iOS и iPadOS",
             road_item_1_desc: "Сначала — стабильность. Базовый редактор и хранение.",
             status_done: "Готово",
@@ -852,7 +980,7 @@
             
             // FOOTER CTA
             footer_head_1: "Поддержите visuType,",
-            footer_head_2: "", // Оставляем пустым, так как текст в градиенте
+            footer_head_2: "",
             footer_desc: "Ваш вклад ускорит разработку и добавит новые функции.",
             btn_support_big: "🚀 Поддержать проект",
             
@@ -899,6 +1027,20 @@
             theme_head_2: "your style",
             theme_light: "Light Theme",
             theme_dark: "Dark Theme",
+
+            // --- COMPARISON ---
+            comp_head_1: "How is visuType",
+            comp_head_2: "better?",
+            comp_subtitle: "A complete set of necessary note-taking tools without the clutter.",
+            comp_col_1: "Mind Maps",
+            comp_col_2: "Canvases",
+            comp_col_3: "Customization",
+            comp_col_4: "Speed",
+            comp_col_5: "Minimalism",
+            comp_col_6: "Assistant",
+            legend_full: "fully implemented",
+            legend_part: "partially implemented",
+            legend_none: "not implemented",
             
             // PRICING
             price_head_1: "The best editor with",
@@ -922,7 +1064,7 @@
             // ROADMAP
             road_head_1: "Development Roadmap",
             road_step_1: "Stage 1: MVP",
-            road_item_1_date: "Now",
+            road_item_1_date: "Release",
             road_item_1_title: "macOS, iOS & iPadOS",
             road_item_1_desc: "First — stability. Basic editor and local storage.",
             status_done: "Done",
