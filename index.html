@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>visuType</title>
+    
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="favicon.png"> <!-- Основная иконка (32x32 или 96x96) -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png"> <!-- Для iPhone/iPad (180x180) -->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> <!-- Для старых браузеров -->
-    <!-- GOOGLE FONTS: INTER -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -128,29 +129,29 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* ЗАГОЛОВОК И СТРЕЛКА */
+        /* ЗАГОЛОВОК HERO И СТРЕЛКА */
         h1 { 
             font-size: 3rem; 
             font-weight: 700; 
             letter-spacing: -0.01em; 
-            margin-bottom: -10px; /* Минимальный отступ до стрелки на ПК */
+            margin-bottom: -10px; /* Вплотную к стрелке */
         }
 
         .scroll-down-arrow {
             display: block;
-            margin: 0 auto 30px; /* 0 сверху (вплотную), 30px снизу */
-            width: 24px; 
-            height: 24px;
+            margin: 5px auto 30px; /* 5px от заголовка, 30px до текста */
+            width: 30px; 
+            height: 30px;
             border-bottom: 3px solid var(--color-text-main);
             border-right: 3px solid var(--color-text-main);
             transform: rotate(45deg);
             animation: arrowBlink 2s infinite;
             opacity: 0.8;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
             cursor: pointer;
         }
 
-        /* Класс для полного скрытия (перебивает анимацию) */
+        /* Класс для полного скрытия */
         .scroll-down-arrow.hidden {
             opacity: 0 !important;
             visibility: hidden;
@@ -301,7 +302,7 @@
         /* 2. Карта мыслей */
         .mindmap-header {
             display: flex; flex-direction: column; align-items: center; gap: 10px; 
-            margin-bottom: 30px; /* Отступ увеличен */
+            margin-bottom: 30px; /* УВЕЛИЧЕННЫЙ ОТСТУП */
         }
         .mindmap-plain-text {
             font-size: 2.5rem; font-weight: 700; line-height: 1.1; color: var(--color-text-main);
@@ -321,7 +322,7 @@
             margin: 0 5px; opacity: 0.5;
         }
 
-        /* 3. Творческий (радуга с анимацией) */
+        /* 3. Творческий (радуга) */
         .rainbow-text {
             background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
             background-size: 200%;
@@ -469,7 +470,7 @@
             /* ЦЕНТРИРОВАНИЕ ТЕКСТА НА МОБИЛЬНЫХ */
             .feature-text {
                 order: 2; text-align: center;
-                padding: 30px 20px; /* Равномерные отступы */
+                padding: 30px 20px; 
                 display: flex; flex-direction: column; justify-content: center; align-items: center;
                 min-height: 150px;
             }
@@ -503,9 +504,9 @@
             .ai-content { padding: 30px 20px; }
             .hero-title-anim { font-size: 15vw; }
             
-            /* ОПУСКАЕМ СТРЕЛКУ НА МОБИЛЬНЫХ */
+            /* МОБИЛЬНАЯ СТРЕЛКА - НИЖЕ */
             .scroll-down-arrow {
-                margin-top: 40px; /* Отступ сверху */
+                margin-top: 30px; /* Отступ для телефонов */
                 margin-bottom: 20px;
             }
         }
@@ -518,7 +519,7 @@
     <header class="hero">
         <div class="mobile-fade-top"></div>
         <div class="hero-bg-container parallax-bg-hero">
-            <!-- data-no-mobile="true" запрещает подстановку _mobile -->
+            <!-- data-no-mobile="true" - не меняем на mobile картинку, но тему меняем -->
             <img src="cover_light.jpg" class="hero-bg-img" id="hero-bg-el" data-base="cover" data-ext="jpg" data-no-mobile="true" alt="Background">
         </div>
 
@@ -528,7 +529,7 @@
             </div>
             
             <div class="logo-picture">
-                <!-- Логотип тоже без mobile версии -->
+                <!-- Логотип тоже адаптируется (light/dark), но без mobile -->
                 <img src="visutype_logo_light.png" alt="visuType Logo" class="logo-img" id="logo-el" data-base="visutype_logo" data-ext="png" data-no-mobile="true">
             </div>
             
@@ -537,17 +538,17 @@
 
         <div class="hero-content">
             <h1 class="fade-in visible">
-                <span class="accent-huge" data-i18n="hero_accent">Наконец,</span>
-                <span data-i18n="hero_title">полноценное приложение<br>для заметок</span>
+                <span class="accent-huge" data-i18n="hero_accent">Заметки,</span>
+                <span data-i18n="hero_title">карты мыслей и холсты —<br>в одном приложении</span>
             </h1>
             
-            <!-- Стрелка -->
+            <!-- СТРЕЛКА -->
             <div class="scroll-down-arrow" id="scroll-arrow"></div>
             
             <div id="hero-scroll-content">
-                <p data-i18n="hero_desc">visuType — это заметки, карты мыслей и бесконечные холсты. Ваши идеи заслуживают большего, чем просто текст.</p>
+                <p data-i18n="hero_desc">Где удобно писать, рисовать, строить связи и мыслить нелинейно.</p>
                 <div class="hero-cta">
-                    <a href="https://planeta.ru/campaigns/visutype" target="_blank" class="button primary-cta" data-i18n="btn_support">Поддержать на Planeta.ru</a>
+                    <a href="https://planeta.ru/campaigns/visutype" target="_blank" class="button primary-cta" data-i18n="btn_support">Поддержать разработку visuType</a>
                     <a href="https://t.me/visutype" target="_blank" class="button secondary-cta" data-i18n="btn_telegram">Следить в Telegram</a>
                 </div>
             </div>
@@ -568,11 +569,10 @@
                                 <span class="wavy-word" id="wavy-title">Гибкие</span>
                                 <span data-i18n="feat_1_title_suffix"> заметки</span>
                             </h3>
-                            <p data-i18n="feat_1_desc">Хорошо вами знакомые с большим функционалом форматирования.</p>
+                            <p data-i18n="feat_1_desc">Заметки, к которым вы привыкли — только удобнее и мощнее.</p>
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
-                                <!-- Здесь mobile версия НУЖНА, атрибут не ставим -->
                                 <img src="notes_light.png" alt="Notes" class="adaptive-img" data-base="notes" data-ext="png">
                                 <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Открыть</div></div>
                             </div>
@@ -589,7 +589,7 @@
                                     <span class="mm-capsule capsule-2" data-i18n="feat_2_cap_2">мыслей</span>
                                 </div>
                             </div>
-                            <p data-i18n="feat_2_desc">Самый эффективный способ структурирования и запоминания информации.</p>
+                            <p data-i18n="feat_2_desc">Стройте идеи визуально: связи, ветки, персонализация — всё под рукой.</p>
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
@@ -605,7 +605,7 @@
                                 <span class="rainbow-text" data-i18n="feat_3_rainbow">Творческий</span>
                                 <span data-i18n="feat_3_suffix"> холст</span>
                             </h3>
-                            <p data-i18n="feat_3_desc">Рисуйте что вам угодно: схемы, формулы, рисунки... Всё, что невозможно напечатать текстом.</p>
+                            <p data-i18n="feat_3_desc">Для схем, формул, эскизов и идей, которые легче изобразить, чем описать.</p>
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
@@ -626,7 +626,7 @@
                     <img src="assistant_light.png" alt="AI Assistant Interface" class="ai-assistant-img" data-base="assistant" data-ext="png">
                     <div class="ai-content">
                         <h3 data-i18n="ai_title">Ваш личный ассистент прямо в приложении</h3>
-                        <p data-i18n="ai_desc">Забудьте про нейросети. Помощник на главном экране станет вашим лучшим другом для улучшения вашего опыта внутри приложения. Подстраивается под ваши предпочтения, реагирует на ваши действия, и всё без подключения к сети.</p>
+                        <p data-i18n="ai_desc">Умный помощник, который подсказывает, комментирует и помогает находить нужное. Работает прямо на устройстве — без интернета.</p>
                     </div>
                 </div>
             </div>
@@ -639,11 +639,11 @@
                 <div class="themes-grid">
                     <div class="theme-display fade-in">
                         <img src="light_theme.png" alt="Светлая тема">
-                        <h3 data-i18n="theme_light">Дневной свет</h3>
+                        <h3 data-i18n="theme_light">Светлая тема</h3>
                     </div>
                     <div class="theme-display fade-in" style="transition-delay: 0.2s;">
                         <img src="dark_theme.png" alt="Тёмная тема">
-                        <h3 data-i18n="theme_dark">Ночной фокус</h3>
+                        <h3 data-i18n="theme_dark">Тёмная тема</h3>
                     </div>
                 </div>
             </div>
@@ -653,7 +653,7 @@
         <section id="pricing" class="bg-primary">
             <div class="container">
                 <h2 class="fade-in"><span data-i18n="price_head_1">Лучший редактор с</span> <span class="text-gradient-pro">Pro</span> <span data-i18n="price_head_2">станет</span> <span class="text-gradient-pro" data-i18n="price_head_3">ещё лучше</span></h2>
-                <p class="section-subtitle fade-in" data-i18n="price_subtitle">Хотя базовой версии большинству будет достаточно, для лучшего опыта существует Pro.</p>
+                <p class="section-subtitle fade-in" data-i18n="price_subtitle">Бесплатная версия подходит большинству. Pro — для тех, кто работает каждый день и хочет максимум возможностей.</p>
                 
                 <div class="pricing-grid">
                     <div class="pricing-card fade-in">
@@ -691,8 +691,8 @@
                 </div>
                 <div class="roadmap-card fade-in">
                     <div class="roadmap-row">
-                        <div class="roadmap-date" data-i18n="road_item_1_date">Релиз</div>
-                        <div class="roadmap-content"><h4 data-i18n="road_item_1_title">macOS, iOS и iPadOS</h4><p data-i18n="road_item_1_desc">Базовый редактор, локальное хранение, стабильная работа всех модулей.</p></div>
+                        <div class="roadmap-date" data-i18n="road_item_1_date">Сейчас</div>
+                        <div class="roadmap-content"><h4 data-i18n="road_item_1_title">macOS, iOS и iPadOS</h4><p data-i18n="road_item_1_desc">Сначала — стабильность. Базовый редактор и хранение.</p></div>
                         <div class="roadmap-status status-done" data-i18n="status_done">Готово</div>
                     </div>
                 </div>
@@ -703,7 +703,7 @@
                 <div class="roadmap-card fade-in">
                     <div class="roadmap-row">
                         <div class="roadmap-date" data-i18n="road_item_2_date">1 Янв 2026</div>
-                        <div class="roadmap-content"><h4 data-i18n="road_item_2_title">Облачная синхронизация</h4><p data-i18n="road_item_2_desc">Бесшовная работа между вашими устройствами через облако.</p></div>
+                        <div class="roadmap-content"><h4 data-i18n="road_item_2_title">Облачная синхронизация</h4><p data-i18n="road_item_2_desc">Потом — синхронизация. Бесшовная работа между устройствами.</p></div>
                         <div class="roadmap-status status-progress" data-i18n="status_dev">В разработке</div>
                     </div>
                     <div class="roadmap-row">
@@ -719,12 +719,12 @@
                 <div class="roadmap-card fade-in">
                     <div class="roadmap-row">
                         <div class="roadmap-date" data-i18n="road_item_4_date">1 Сент 2026</div>
-                        <div class="roadmap-content"><h4 data-i18n="road_item_4_title">Windows & Android</h4><p data-i18n="road_item_4_desc">Выход на все популярные платформы.</p></div>
+                        <div class="roadmap-content"><h4 data-i18n="road_item_4_title">Windows & Android</h4><p data-i18n="road_item_4_desc">Затем — выход на все популярные платформы.</p></div>
                         <div class="roadmap-status status-planned" data-i18n="status_plan">В планах</div>
                     </div>
                     <div class="roadmap-row">
                         <div class="roadmap-date" data-i18n="road_item_5_date">Конец 2026</div>
-                        <div class="roadmap-content"><h4 data-i18n="road_item_5_title">Интеграции ИИ</h4><p data-i18n="road_item_5_desc">Глубокая интеграция локальных нейросетей для генерации контента.</p></div>
+                        <div class="roadmap-content"><h4 data-i18n="road_item_5_title">Интеграции ИИ</h4><p data-i18n="road_item_5_desc">И напоследок — ИИ-инструменты и локальная генерация.</p></div>
                         <div class="roadmap-status status-planned" data-i18n="status_plan">В планах</div>
                     </div>
                 </div>
@@ -741,8 +741,8 @@
             <div class="mobile-fade-bottom"></div>
             
             <div class="final-cta-content">
-                <h2><span data-i18n="footer_head_1">Помогите воплотить</span> <span class="gradient-text">visuType</span> <span data-i18n="footer_head_2">в жизнь!</span></h2>
-                <p data-i18n="footer_desc">Ваша поддержка ускорит разработку. Получите ранний доступ и бонусы.</p>
+                <h2><span data-i18n="footer_head_1">Поддержите visuType,</span> <span class="gradient-text">получите скидку и ранний доступ.</span></h2>
+                <p data-i18n="footer_desc">Ваш вклад ускорит разработку и добавит новые функции.</p>
                 <a href="https://planeta.ru/campaigns/visutype" target="_blank" class="button primary-cta" data-i18n="btn_support_big">🚀 Поддержать проект</a>
             </div>
         </section>
@@ -763,143 +763,197 @@
     // --- ПЕРЕВОДЫ ---
     const translations = {
         ru: {
-            hero_accent: "Наконец,",
-            hero_title: "полноценное приложение<br>для заметок",
-            hero_desc: "visuType — это заметки, карты мыслей и бесконечные холсты. Ваши идеи заслуживают большего, чем просто текст.",
-            btn_support: "Поддержать на Planeta.ru",
+            // HERO
+            hero_accent: "Заметки,",
+            hero_title: "карты мыслей и холсты —<br>в одном приложении",
+            hero_desc: "Где удобно писать, рисовать, строить связи и мыслить нелинейно.",
+            btn_support: "Поддержать разработку visuType",
             btn_telegram: "Следить в Telegram",
+            
+            // ФИЧИ ЗАГОЛОВОК
             feat_head_1: "Все ваши мысли",
             feat_head_2: "в одном потоке",
+            
+            // ФИЧА 1: ЗАМЕТКИ
             wavy_title: "Гибкие",
             feat_1_title_suffix: " заметки",
-            feat_1_desc: "Хорошо вами знакомые с большим функционалом форматирования.",
+            feat_1_desc: "Заметки, к которым вы привыкли — только удобнее и мощнее.",
             btn_open: "🔍 Открыть",
+            
+            // ФИЧА 2: КАРТЫ МЫСЛЕЙ
             feat_2_plain_text: "Наглядные",
             feat_2_cap_1: "карты",
             feat_2_cap_2: "мыслей",
-            feat_2_desc: "Самый эффективный способ структурирования и запоминания информации.",
+            feat_2_desc: "Стройте идеи визуально: связи, ветки, персонализация — всё под рукой.",
+            
+            // ФИЧА 3: ХОЛСТ
             feat_3_rainbow: "Творческий",
             feat_3_suffix: " холст",
-            feat_3_desc: "Рисуйте что вам угодно: схемы, формулы, рисунки... Всё, что невозможно напечатать текстом.",
+            feat_3_desc: "Для схем, формул, эскизов и идей, которые легче изобразить, чем описать.",
+            
+            // AI АССИСТЕНТ
             ai_head_1: "Умные технологии",
             ai_head_2: "на вашей стороне",
             ai_title: "Ваш личный ассистент прямо в приложении",
-            ai_desc: "Забудьте про нейросети. Помощник на главном экране станет вашим лучшим другом для улучшения вашего опыта внутри приложения. Подстраивается под ваши предпочтения, реагирует на ваши действия, и всё без подключения к сети.",
+            ai_desc: "Умный помощник, который подсказывает, комментирует и помогает находить нужное. Работает прямо на устройстве — без интернета.",
+            
+            // ТЕМЫ
             theme_head_1: "Выберите",
             theme_head_2: "свой стиль",
-            theme_light: "Дневной свет",
-            theme_dark: "Ночной фокус",
+            theme_light: "Светлая тема",
+            theme_dark: "Тёмная тема",
+            
+            // PRICING
             price_head_1: "Лучший редактор с",
             price_head_2: "станет",
             price_head_3: "ещё лучше",
-            price_subtitle: "Хотя базовой версии большинству будет достаточно, для лучшего опыта существует Pro.",
+            price_subtitle: "Бесплатная версия подходит большинству. Pro — для тех, кто работает каждый день и хочет максимум возможностей.",
+            
             price_free_1: "✍️ Лучший редактор заметок",
             price_free_2: "📂 Хранение на устройстве",
             price_free_3: "🧱 2 карты мыслей и холста в неделю",
             price_free_4: "🎨 Базовые темы оформления",
             price_free_5: "📥 Импорт заметок из других приложений",
             price_free_6: "📄 Базовый экспорт заметок в PDF",
+            
             price_pro_1: "♾️ Всё, что в базовой версии",
             price_pro_2: "🧠 Безлимитные карты мыслей и холсты",
             price_pro_3: "☁️ Синхронизация заметок между устройствами",
             price_pro_4: "✨ Безлимитная кастомизация",
             price_pro_5: "🛠 Расширенные настройки экспорта заметок",
+            
+            // ROADMAP
             road_head_1: "План развития",
             road_step_1: "Этап 1: MVP",
-            road_item_1_date: "Релиз",
+            road_item_1_date: "Сейчас",
             road_item_1_title: "macOS, iOS и iPadOS",
-            road_item_1_desc: "Базовый редактор, локальное хранение, стабильная работа всех модулей.",
+            road_item_1_desc: "Сначала — стабильность. Базовый редактор и хранение.",
             status_done: "Готово",
+            
             road_step_2: "Этап 2: Экосистема",
             road_item_2_date: "1 Янв 2026",
             road_item_2_title: "Облачная синхронизация",
-            road_item_2_desc: "Бесшовная работа между вашими устройствами через облако.",
+            road_item_2_desc: "Потом — синхронизация. Бесшовная работа между устройствами.",
             status_dev: "В разработке",
+            
             road_item_3_date: "1 Июня 2026",
             road_item_3_title: "Релиз в App Store",
             road_item_3_desc: "Официальный выход приложения для широкой аудитории.",
             status_plan: "В планах",
+            
             road_step_3: "Этап 3: Расширение",
             road_item_4_date: "1 Сент 2026",
             road_item_4_title: "Windows & Android",
-            road_item_4_desc: "Выход на все популярные платформы.",
+            road_item_4_desc: "Затем — выход на все популярные платформы.",
+            
             road_item_5_date: "Конец 2026",
             road_item_5_title: "Интеграции ИИ",
-            road_item_5_desc: "Глубокая интеграция локальных нейросетей для генерации контента.",
-            footer_head_1: "Помогите воплотить",
-            footer_head_2: "в жизнь!",
-            footer_desc: "Ваша поддержка ускорит разработку. Получите ранний доступ и бонусы.",
+            road_item_5_desc: "И напоследок — ИИ-инструменты и локальная генерация.",
+            
+            // FOOTER CTA
+            footer_head_1: "Поддержите visuType,",
+            footer_head_2: "", // Оставляем пустым, так как текст в градиенте
+            footer_desc: "Ваш вклад ускорит разработку и добавит новые функции.",
             btn_support_big: "🚀 Поддержать проект",
+            
+            // ПУЗЫРИ
             bubble_texts: [ "Минимализм ✨", "Синхронизация ☁️", "Карты мыслей 🧠", "Кастомизация 🎨", "Холсты 🎨", "Скорость ⚡️", "Заметки ✍️" ]
         },
         en: {
-            hero_accent: "Finally,",
-            hero_title: "a complete app<br>for taking notes",
-            hero_desc: "visuType is notes, mind maps, and infinite canvases. Your ideas deserve more than just text.",
-            btn_support: "Support on Planeta.ru",
+            // HERO
+            hero_accent: "Notes,",
+            hero_title: "mind maps and canvases —<br>in one app",
+            hero_desc: "Where it's convenient to write, draw, build connections, and think non-linearly.",
+            btn_support: "Support development",
             btn_telegram: "Follow in Telegram",
+            
+            // FEAT HEADER
             feat_head_1: "All your thoughts",
             feat_head_2: "in one flow",
+            
+            // FEAT 1
             wavy_title: "Flexible",
             feat_1_title_suffix: " notes",
-            feat_1_desc: "Familiar to you with extensive formatting functionality.",
+            feat_1_desc: "Notes you are used to — just more convenient and powerful.",
             btn_open: "🔍 Open",
+            
+            // FEAT 2
             feat_2_plain_text: "Visual",
             feat_2_cap_1: "mind",
             feat_2_cap_2: "maps",
-            feat_2_desc: "The most effective way to structure and memorize information.",
+            feat_2_desc: "Build ideas visually: connections, branches, personalization — everything at hand.",
+            
+            // FEAT 3
             feat_3_rainbow: "Creative",
             feat_3_suffix: " canvas",
-            feat_3_desc: "Draw whatever you want: schemes, formulas, sketches... Everything impossible to type as text.",
+            feat_3_desc: "For diagrams, formulas, sketches, and ideas that are easier to depict than describe.",
+            
+            // AI
             ai_head_1: "Smart technologies",
             ai_head_2: "on your side",
             ai_title: "Your personal assistant right in the app",
-            ai_desc: "Forget about neural networks. The assistant on the main screen will become your best friend for improving your experience within the app. Adapts to your preferences, reacts to your actions, all without connecting to the network.",
+            ai_desc: "A smart assistant that suggests, comments, and helps find what you need. Works right on the device — without internet.",
+            
+            // THEMES
             theme_head_1: "Choose",
             theme_head_2: "your style",
-            theme_light: "Daylight",
-            theme_dark: "Night focus",
+            theme_light: "Light Theme",
+            theme_dark: "Dark Theme",
+            
+            // PRICING
             price_head_1: "The best editor with",
             price_head_2: "will become",
             price_head_3: "even better",
-            price_subtitle: "Although the basic version will be enough for most, Pro exists for the best experience.",
+            price_subtitle: "The free version suits most. Pro is for those who work every day and want maximum possibilities.",
+            
             price_free_1: "✍️ Best note editor",
             price_free_2: "📂 Local storage",
             price_free_3: "🧱 2 mind maps & canvases per week",
             price_free_4: "🎨 Basic themes",
             price_free_5: "📥 Import from other apps",
             price_free_6: "📄 Basic PDF export",
+            
             price_pro_1: "♾️ Everything in Basic",
             price_pro_2: "🧠 Unlimited mind maps & canvases",
             price_pro_3: "☁️ Sync between devices",
             price_pro_4: "✨ Unlimited customization",
             price_pro_5: "🛠 Advanced export settings",
+            
+            // ROADMAP
             road_head_1: "Development Roadmap",
             road_step_1: "Stage 1: MVP",
-            road_item_1_date: "Release",
+            road_item_1_date: "Now",
             road_item_1_title: "macOS, iOS & iPadOS",
-            road_item_1_desc: "Basic editor, local storage, stable modules.",
+            road_item_1_desc: "First — stability. Basic editor and local storage.",
             status_done: "Done",
+            
             road_step_2: "Stage 2: Ecosystem",
             road_item_2_date: "Jan 1, 2026",
             road_item_2_title: "Cloud Sync",
-            road_item_2_desc: "Seamless work between your devices via cloud.",
+            road_item_2_desc: "Then — sync. Seamless work between devices.",
             status_dev: "In progress",
+            
             road_item_3_date: "June 1, 2026",
             road_item_3_title: "App Store Release",
             road_item_3_desc: "Official release for a wide audience.",
             status_plan: "Planned",
+            
             road_step_3: "Stage 3: Expansion",
             road_item_4_date: "Sept 1, 2026",
             road_item_4_title: "Windows & Android",
-            road_item_4_desc: "Expansion to all popular platforms.",
+            road_item_4_desc: "Then — expansion to all popular platforms.",
+            
             road_item_5_date: "End 2026",
             road_item_5_title: "AI Integrations",
-            road_item_5_desc: "Deep integration of local neural networks for content generation.",
-            footer_head_1: "Help bring",
-            footer_head_2: "to life!",
-            footer_desc: "Your support will speed up development. Get early access and bonuses.",
+            road_item_5_desc: "Finally — AI tools and local generation.",
+            
+            // FOOTER CTA
+            footer_head_1: "Support visuType,",
+            footer_head_2: "",
+            footer_desc: "Your contribution will speed up development and add new features.",
             btn_support_big: "🚀 Support project",
+            
+            // BUBBLES
             bubble_texts: [ "Minimalism ✨", "Sync ☁️", "Mind Maps 🧠", "Customization 🎨", "Canvases 🎨", "Speed ⚡️", "Notes ✍️" ]
         }
     };
@@ -948,7 +1002,7 @@
             // 1. Тема
             newSrc += isDark ? '_dark' : '_light';
             
-            // 2. Мобильность (если не запрещено)
+            // 2. Мобильность
             if (isMobile && !noMobile) {
                 newSrc += '_mobile';
             }
@@ -992,13 +1046,12 @@
     const arrow = document.getElementById('scroll-arrow');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 5) {
-            arrow.classList.add('hidden'); // Используем класс для скрытия
+            arrow.classList.add('hidden'); 
         } else {
             arrow.classList.remove('hidden');
         }
     });
     
-    // Клик по стрелке скроллит вниз
     if(arrow) {
         arrow.addEventListener('click', () => {
             const content = document.getElementById('hero-scroll-content');
@@ -1106,7 +1159,6 @@
             });
         }
 
-        // Градиенты для тем
         const darkThemeGradients = [
             { css: 'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 50%, #FF9A9E 100%)', color: 'rgba(255, 154, 158, 0.6)' },
             { css: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 50%, #a18cd1 100%)', color: 'rgba(161, 140, 209, 0.6)' }, 
