@@ -402,11 +402,14 @@
             .roadmap-separator { width: 100%; padding: 0 20px; }
             .hero-right-content { padding-left: 0; padding-bottom: 20px; }
             
-            .final-cta-content-grid { grid-template-columns: 1fr; text-align: center; height: auto; padding-bottom: 400px; }
-            .footer-text-side { align-items: center; }
+            /* FIXED FOOTER MOBILE */
+            .final-cta-section { height: auto; min-height: auto; padding: 60px 0 0 0; }
+            .final-cta-content-grid { display: flex; flex-direction: column; gap: 40px; padding-bottom: 0; height: auto; }
+            .footer-text-side { align-items: center; text-align: center; }
             .footer-text-side p { margin-left: auto; margin-right: auto; }
-            .footer-vizy-side { height: 400px; width: 100%; position: absolute; bottom: 0; left: 0; }
-            .footer-asst-img { transform: translateY(0); }
+            
+            .footer-vizy-side { position: relative; width: 100%; height: auto; min-height: 350px; bottom: auto; left: auto; margin-top: 20px; }
+            .footer-asst-img { transform: translateY(0); max-height: 350px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
         }
 
         @media (max-width: 768px) {
@@ -437,8 +440,8 @@
             .final-cta-img { transform: scale(1.15); transform-origin: center bottom; }
             
             .footer-asst-img { max-height: 300px; }
-            .final-cta-content-grid { padding-bottom: 300px; }
-            .footer-vizy-side { height: 300px; }
+            .final-cta-content-grid { padding-bottom: 0; }
+            .footer-vizy-side { min-height: 300px; }
 
             .mindmap-plain-text { font-size: 1.8rem !important; }
             .mm-capsule { font-size: 1.2rem; padding: 6px 16px; }
@@ -643,8 +646,8 @@
 
                 <div class="roadmap-separator fade-in"><div class="separator-line line-left"></div><span data-i18n="road_step_2">Этап 2: Экосистема</span><div class="separator-line line-right"></div></div>
                 <div class="roadmap-card fade-in">
-                    <div class="roadmap-row"><div class="roadmap-date" data-i18n="road_item_2_date">до 1 Янв 2026</div><div class="roadmap-content"><h4 data-i18n="road_item_2_title">Облачная синхронизация</h4><p data-i18n="road_item_2_desc">Потом — синхронизация. Бесшовная работа между устройствами.</p></div><div class="roadmap-status status-progress" data-i18n="status_dev">В разработке</div></div>
-                    <div class="roadmap-row"><div class="roadmap-date" data-i18n="road_item_localization_date">до 1 Июня 2026</div><div class="roadmap-content"><h4 data-i18n="road_item_localization_title">Локализация</h4><p data-i18n="road_item_localization_desc">Испанский, китайский, немецкий, японский и корейский языки.</p></div><div class="roadmap-status status-planned" data-i18n="status_plan">В планах</div></div>
+                    <div class="roadmap-row"><div class="roadmap-date" data-i18n="road_item_2_date">до 1 Янв 2026</div><div class="roadmap-content"><h4 data-i18n="road_item_2_title">Облачная синхронизация</h4><p data-i18n="road_item_2_desc">Потом — синхронизация. Бесшовная работа между устройствами.</p></div><div class="roadmap-status status-done" data-i18n="status_done">Готово</div></div>
+                    <div class="roadmap-row"><div class="roadmap-date" data-i18n="road_item_localization_date">до 1 Июня 2026</div><div class="roadmap-content"><h4 data-i18n="road_item_localization_title">Локализация</h4><p data-i18n="road_item_localization_desc">Испанский, китайский, немецкий, японский и корейский языки.</p></div><div class="roadmap-status status-progress" data-i18n="status_dev">В разработке</div></div>
                     <div class="roadmap-row"><div class="roadmap-date" data-i18n="road_item_3_date">до 1 Июня 2026</div><div class="roadmap-content"><h4 data-i18n="road_item_3_title">Релиз в App Store</h4><p data-i18n="road_item_3_desc">Официальный выход приложения для широкой аудитории.</p></div><div class="roadmap-status status-planned" data-i18n="status_plan">В планах</div></div>
                 </div>
                 
@@ -1063,7 +1066,7 @@
     setHeroGreeting();
     renderCarousels();
     updateImages();
-    initFooterAnimation(); // Restored footer animation
+    initFooterAnimation(); 
     
     darkModeQuery.addEventListener('change', updateImages);
     window.addEventListener('resize', updateImages);
