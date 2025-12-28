@@ -52,10 +52,19 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; width: 100%; -webkit-text-size-adjust: 100%; }
+        
+        /* FIX: Убираем горизонтальный скролл на мобильных */
+        html, body { 
+            width: 100%; 
+            max-width: 100%;
+            overflow-x: hidden; 
+            position: relative;
+        }
+
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: var(--font-family); background-color: var(--color-bg); color: var(--color-text-main);
-            line-height: 1.6; width: 100%; position: relative; overflow-x: hidden; 
+            line-height: 1.6; 
             transition: background-color 0.5s ease, color 0.5s ease;
         }
         
@@ -73,7 +82,9 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
-        section { padding: 100px 0; position: relative; width: 100%; overflow: visible; }
+        
+        /* overflow-x: clip предотвращает растягивание страницы дочерними элементами */
+        section { padding: 100px 0; position: relative; width: 100%; overflow-x: clip; }
         .bg-secondary { background-color: var(--color-bg-secondary); }
         .bg-primary { background-color: var(--color-bg); }
 
@@ -157,8 +168,11 @@
             border: 1px solid var(--color-border); font-weight: 600;
             max-width: 320px; text-align: center;
             box-shadow: var(--shadow-card);
-            opacity: 0; transform: translateY(-10px); animation: fadeInBubble 0.8s ease forwards 0.5s;
+            opacity: 0; transform: translateY(-10px); 
+            animation: fadeInBubble 0.8s ease forwards 0.5s;
             position: relative;
+            /* Added transition for smooth text switching */
+            transition: opacity 0.5s ease;
         }
         .hero-vizy-greeting-bubble::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); border-width: 0 10px 10px 10px; border-style: solid; border-color: transparent transparent var(--color-border) transparent; }
         .hero-vizy-greeting-bubble::after { content: ''; position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); border-width: 0 10px 10px 10px; border-style: solid; border-color: transparent transparent var(--bubble-bg) transparent; }
@@ -655,8 +669,8 @@
             
             <div class="final-cta-content-grid">
                 <div class="footer-text-side">
-                    <h2><span data-i18n="footer_news_head">Следите за <span class="gradient-text">новостями проекта</span></span></h2>
-                    <p data-i18n="footer_news_desc">Узнавайте первыми о новых функциях, релизах и обновлениях visuType.</p>
+                    <h2><span data-i18n="footer_news_head">Понравилось?</span></h2>
+                    <p data-i18n="footer_news_desc">Если зашло, то переходи в наш телеграм канал. Там все новости и анонсы нашего приложения.</p>
                     <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
                          <svg class="tg-icon" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42l10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701l0 0l-.362 5.09c.53 0 .764-.242 1.06-.519l2.547-2.463l5.295 3.91c.976.54 1.677.262 1.92-1.026l3.475-16.37c.356-1.426-.539-2.071-1.637-1.589z"/></svg>
                         <span data-i18n="btn_news">Читать в Telegram</span>
@@ -688,8 +702,8 @@
             comment_comparison: "Хм, давай подумаем... Почему мы? Я тут табличку составил, всё честно!",
             comment_pricing: "Бесплатно — круто. Но с Pro ты становишься просто космос. Зацени условия.",
             comment_roadmap: "Я жду не дождусь этих обновлений! Вот наш план захвата мира (ну или просто разработки).",
-            footer_news_head: 'Следите за <span class="gradient-text">новостями проекта</span>',
-            footer_news_desc: "Узнавайте первыми о новых функциях, релизах и обновлениях visuType.",
+            footer_news_head: 'Понравилось?',
+            footer_news_desc: "Если зашло, то переходи в наш телеграм канал. Там все новости и анонсы нашего приложения.",
             asst_bottom_disclaimer: "Мы все очень разные, поэтому советую подумать перед выбором своего помощника, чтобы опыт в приложении был на высшем уровне.",
             
             feat_1_title_suffix: " заметки", feat_1_desc: "Заметки, к которым вы привыкли — только удобнее и мощнее.",
@@ -747,8 +761,8 @@
             comment_comparison: "Hmm, let's think... Why us? I made a chart, totally honest!",
             comment_pricing: "Free is cool. But Pro sends you to space. Check the terms.",
             comment_roadmap: "I can't wait for these updates! Here is our plan for world domination (or just development).",
-            footer_news_head: 'Follow <span class="gradient-text">project news</span>',
-            footer_news_desc: "Be the first to know about new features, releases, and updates.",
+            footer_news_head: 'Liked what you saw?',
+            footer_news_desc: "If so, join our Telegram channel. All news and announcements of our application are there.",
             asst_bottom_disclaimer: "We are all very different, so I advise you to think before choosing your assistant so that the experience in the application is at the highest level.",
 
             feat_1_title_suffix: " notes", feat_1_desc: "Notes you are used to — just more convenient and powerful.",
@@ -812,6 +826,8 @@
     let easterEggIndex = 0;
     let easterEggTimer = null;
     let easterEggActive = true;
+    let isFirstEasterEgg = true; // Flag for timing control
+    let initialGreetingText = ""; // Store the very first greeting
 
     function applyLanguage(lang) {
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -903,7 +919,8 @@
     function setHeroGreeting() {
         // Initial greeting
         const list = randomGreetings[userLang];
-        document.getElementById('hero-random-greeting').textContent = list[Math.floor(Math.random() * list.length)];
+        initialGreetingText = list[Math.floor(Math.random() * list.length)]; // Save initial text
+        document.getElementById('hero-random-greeting').textContent = initialGreetingText;
         
         // Start Easter Egg logic
         startEasterEggTimer();
@@ -912,16 +929,34 @@
     function startEasterEggTimer() {
         if (!easterEggActive) return;
         
+        // 30 seconds for the first trigger, 10 seconds for subsequent triggers
+        const delay = isFirstEasterEgg ? 30000 : 10000;
+        
         easterEggTimer = setTimeout(() => {
             if (!easterEggActive) return;
             
-            // If userLang is 'ru' use russian phrases, else default english fallback or just nothing
+            isFirstEasterEgg = false; // Next time it will be 10 seconds
+            
+            // If userLang is 'ru' use russian phrases
             if (userLang === 'ru' && easterEggIndex < easterEggPhrases.length) {
-                document.getElementById('hero-random-greeting').textContent = easterEggPhrases[easterEggIndex];
+                changeGreetingWithAnimation(easterEggPhrases[easterEggIndex]);
                 easterEggIndex++;
                 startEasterEggTimer();
             }
-        }, 10000); // 10 seconds
+        }, delay);
+    }
+
+    function changeGreetingWithAnimation(text) {
+        const bubble = document.getElementById('hero-random-greeting');
+        // Fade out
+        bubble.style.opacity = '0';
+        
+        // Change text after fade out complete (0.5s matches css transition)
+        setTimeout(() => {
+            bubble.textContent = text;
+            // Fade in
+            bubble.style.opacity = '1';
+        }, 500);
     }
 
     // --- FOOTER ASSISTANT ANIMATION ---
@@ -987,14 +1022,18 @@
         if (scrolled > 100 && easterEggActive) {
             easterEggActive = false;
             clearTimeout(easterEggTimer);
-            document.getElementById('hero-random-greeting').textContent = translations[userLang].hero_return;
+            // Restore initial greeting text when user scrolls away
+            document.getElementById('hero-random-greeting').textContent = initialGreetingText;
+            document.getElementById('hero-random-greeting').style.opacity = '1';
         }
 
-        // Parallax
+        // Parallax for Hero
         const heroBg = document.getElementById('hero-bg-el');
+        if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px) scale(1.1)`;
+        
+        // Parallax for Footer
         const footerBg = document.getElementById('footer-bg-el');
         const footerSection = document.querySelector('.final-cta-section');
-        if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px) scale(1.1)`;
         if (footerSection && footerBg) {
             const sectionTop = footerSection.offsetTop;
             const windowHeight = window.innerHeight;
@@ -1024,7 +1063,7 @@
     setHeroGreeting();
     renderCarousels();
     updateImages();
-    initFooterAnimation();
+    initFooterAnimation(); // Restored footer animation
     
     darkModeQuery.addEventListener('change', updateImages);
     window.addEventListener('resize', updateImages);
