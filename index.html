@@ -104,7 +104,6 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* FIX: Убираем горизонтальный скролл на мобильных */
         html, body { 
             width: 100%; 
             max-width: 100%;
@@ -125,16 +124,10 @@
             display: flex; align-items: center; justify-content: center;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .loader-spinner {
-            width: 50px; height: 50px; border: 5px solid var(--color-bg-secondary);
-            border-top: 5px solid var(--gradient-start); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
         
-        /* overflow-x: clip предотвращает растягивание страницы дочерними элементами */
         section { padding: 100px 0; position: relative; width: 100%; overflow-x: clip; }
         .bg-secondary { background-color: var(--color-bg-secondary); }
         .bg-primary { background-color: var(--color-bg); }
@@ -333,12 +326,10 @@
         .btn-prev { left: -20px; }
         .btn-next { right: -20px; }
 
-        /* THEMES MARQUEE (Used on ALL devices now) */
         .themes-marquee-container {
             width: 100%; overflow: hidden; position: relative; display: flex; padding: 100px 0;
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
-        /* Increased duration to 60s because content length doubled */
         .themes-marquee-track { display: flex; gap: 80px; animation: marqueeScroll 60s linear infinite; width: max-content; }
         .theme-item { display: flex; flex-direction: column; align-items: center; width: 400px; transition: transform 0.3s ease; }
         .theme-item:hover { transform: scale(1.05); }
@@ -498,33 +489,410 @@
             .mm-capsule { font-size: 1.2rem; padding: 6px 16px; }
             .mm-line { width: 20px; }
         }
+        /* === INTRO OVERLAY === */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--color-bg); z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            transition: background-color 0.8s ease;
+        }
+
+        /* === NAVBAR (Градиент) === */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 80px; /* Высота шапки */
+            z-index: 1000;
+            
+            /* Градиент вместо плашки */
+            background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(255,255,255,0) 100%);
+            backdrop-filter: blur(4px); /* Легкое размытие */
+            
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+            
+            /* Скрыта до конца анимации */
+            opacity: 0; transform: translateY(-20px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .navbar { background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(0,0,0,0) 100%); }
+        }
+
+        .nav-container {
+            width: 100%; max-width: 1200px; padding: 0 40px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .nav-logo-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-text-main); }
+        .nav-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .nav-brand { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.02em; }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { 
+            text-decoration: none; color: var(--color-text-secondary); 
+            font-weight: 600; font-size: 1rem; transition: color 0.2s; 
+        }
+        .nav-links a:hover { color: var(--gradient-start); }
+
+        /* Язык (Клик) */
+        .lang-custom { position: relative; font-family: 'JetBrains Mono', monospace; font-weight: 700; cursor: pointer; color: var(--color-text-main); padding: 5px; }
+        .lang-list {
+            position: absolute; top: 100%; right: 0;
+            background: var(--color-card-bg); border: 1px solid var(--color-border);
+            border-radius: 12px; padding: 10px; 
+            display: none; /* Скрыто по умолчанию */
+            flex-direction: column; gap: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-width: 60px; text-align: center;
+            margin-top: 10px;
+        }
+        .lang-list.show { display: flex; animation: fadeIn 0.2s ease; }
+        .lang-list span:hover { color: var(--gradient-start); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Адаптив */
+        @media (max-width: 900px) {
+            .nav-links { display: none; } /* Скрываем ссылки на мобильном */
+            .nav-container { padding: 0 20px; }
+        }
+
+        /* Исходное состояние элементов Hero */
+        body:not(.animation-done) .hero-title-main, 
+        body:not(.animation-done) .hero-subtitle-anim-wrapper,
+        body:not(.animation-done) .telegram-cta,
+        body:not(.animation-done) .hero-vizy-greeting-bubble {
+            opacity: 0; transform: translateY(20px); filter: blur(5px);
+        }
+
+        /* Конечное состояние */
+        body.animation-done .hero-title-main, 
+        body.animation-done .hero-subtitle-anim-wrapper,
+        body.animation-done .telegram-cta,
+        body.animation-done .hero-vizy-greeting-bubble {
+            opacity: 1; transform: translateY(0); filter: blur(0);
+            transition: 1s ease;
+        }
+
+        /* Задержки для красоты */
+        body.animation-done .hero-subtitle-anim-wrapper { transition-delay: 0.1s; }
+        body.animation-done .telegram-cta { transition-delay: 0.2s; }
+
+        /* 1. Контейнер для центровки всего в интро (Ассистент, Баббл, Лоадер) */
+        .intro-center-wrapper {
+            position: relative; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+        }
+
+        /* 2. Ассистент в интро */
+        #intro-vizy {
+            width: 200px; height: auto;
+            object-fit: contain;
+            will-change: transform, opacity;
+            z-index: 10;
+            opacity: 0; 
+            transform: scale(0.8); 
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+        }
+
+        /* 3. Баббл с текстом */
+        .intro-bubble {
+            background: var(--bubble-bg); color: var(--bubble-text);
+            padding: 12px 24px; border-radius: 20px;
+            border: 1px solid var(--color-border);
+            font-weight: 600; font-size: 1rem;
+            position: absolute; 
+            top: 100%; /* Под ассистентом */
+            margin-top: 15px;
+            left: 50%; transform: translateX(-50%) translateY(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            opacity: 0; 
+            white-space: nowrap;
+            z-index: 11;
+            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .intro-bubble.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        /* Стрелочка пузыря (смотрит вверх на ассистента) */
+        .intro-bubble::before { 
+            content: ''; position: absolute; 
+            top: -10px; /* Поднимаем стрелку на верхнюю грань */
+            left: 50%; transform: translateX(-50%); 
+            border-width: 0 10px 10px 10px; /* Рисуем треугольник вверх */
+            border-style: solid; 
+            border-color: transparent transparent var(--color-border) transparent; 
+        }
+        .intro-bubble::after { 
+            content: ''; position: absolute; 
+            top: -8.5px; 
+            left: 50%; transform: translateX(-50%); 
+            border-width: 0 10px 10px 10px; 
+            border-style: solid; 
+            border-color: transparent transparent var(--bubble-bg) transparent; 
+        }
+
+        /* 4. Лоадер  */
+        .loader-spinner {
+            width: 50px; height: 50px; 
+            border: 5px solid var(--color-bg-secondary);
+            border-top: 5px solid var(--gradient-start); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 5. СКРЫВАЕМ элементы Hero до конца анимации */
+        
+        /* Скрываем логотип "visuType" и "Home for ideas" пока идет анимация */
+        body:not(.animation-done) .hero-logo-img,
+        body:not(.animation-done) .hero-title-main, 
+        body:not(.animation-done) .hero-subtitle-anim-wrapper,
+        body:not(.animation-done) .telegram-cta,
+        body:not(.animation-done) .hero-vizy-greeting-bubble {
+            opacity: 0; 
+            transform: translateY(20px); 
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        /* Скрываем целевого ассистента в Hero, пока летит Intro ассистент */
+        body:not(.animation-done) .hero-vizy-main-img {
+            opacity: 0 !important;
+            animation: none !important; /* Отключаем анимацию полета "на месте" */
+        }
+
+        /* Когда класс добавлен - плавно проявляем */
+        body.animation-done .hero-logo-img,
+        body.animation-done .hero-vizy-main-img {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Восстанавливаем анимацию покачивания для Hero ассистента после приземления */
+        body.animation-done .hero-vizy-main-img {
+            animation: floatVizy 6s ease-in-out infinite;
+        }
+
+        /* 1. Скрываем элементы Hero до конца анимации */
+        body:not(.animation-done) .hero-logo-row,    /* Логотип + visuType */
+        body:not(.animation-done) .hero-subtitle-anim-wrapper, /* Текст Home for... */
+        body:not(.animation-done) .telegram-cta,      /* Кнопка */
+        body:not(.animation-done) .hero-vizy-greeting-bubble, /* Финальный баббл */
+        body:not(.animation-done) .scroll-down-arrow,
+        body:not(.animation-done) .navbar {
+            opacity: 0; 
+            transform: translateY(30px); 
+            filter: blur(10px);
+            pointer-events: none;
+        }
+
+        /* Скрываем целевого ассистента в Hero, пока летит Intro */
+        body:not(.animation-done) .hero-vizy-main-img {
+            opacity: 0 !important;
+            animation: none !important; 
+        }
+
+        /* 2. Появление элементов после класса .animation-done */
+        body.animation-done .hero-logo-row,
+        body.animation-done .hero-subtitle-anim-wrapper,
+        body.animation-done .telegram-cta,
+        body.animation-done .navbar,
+        body.animation-done .scroll-down-arrow {
+            opacity: 1; 
+            transform: translateY(0); 
+            filter: blur(0);
+            /* Общая настройка перехода */
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s ease;
+        }
+
+        /* 3. Асинхронные задержки (Как во втором файле) */
+        body.animation-done .navbar { transition-delay: 0.0s; }
+        body.animation-done .hero-logo-row { transition-delay: 0.1s; }
+        body.animation-done .hero-subtitle-anim-wrapper { transition-delay: 0.25s; }
+        body.animation-done .telegram-cta { transition-delay: 0.4s; }
+        body.animation-done .scroll-down-arrow { transition-delay: 0.8s; }
+
+        /* Ассистент появляется сразу после полета */
+        body.animation-done .hero-vizy-main-img {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            animation: floatVizy 6s ease-in-out infinite;
+        }
+
+        /* Баббл появляется самым последним */
+        body.animation-done .hero-vizy-greeting-bubble {
+            opacity: 1; 
+            transform: translateY(0);
+            filter: blur(0);
+            transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s; /* Большая задержка 0.8s */
+        }
+
+        /* === NEW CAPSULE NAVBAR STYLES === */
+        .navbar-wrapper {
+            position: fixed;
+            top: 25px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+            padding: 0 20px;
+            /* Плавность появления */
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Скрываем до конца анимации */
+        body:not(.animation-done) .navbar-wrapper {
+            opacity: 0;
+            transform: translateY(-30px);
+            pointer-events: none;
+        }
+
+        .glass-capsule {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 100px;
+            padding: 8px 16px 8px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .glass-capsule {
+                background: rgba(28, 28, 30, 0.7);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Маска логотипа (КРУГЛАЯ) */
+        .nav-left { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-text-main); }
+        .logo-mask {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%; 
+            overflow: hidden;  
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent; 
+        }
+        .nav-brand { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+
+        /* Навигация (центр) */
+        .nav-center { display: flex; gap: 5px; }
+        .nav-center a {
+            text-decoration: none; color: var(--color-text-secondary);
+            font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border-radius: 50px;
+            transition: 0.2s;
+        }
+        .nav-center a:hover { color: var(--color-text-main); background: rgba(0,0,0,0.05); }
+
+        /* Язык (право) */
+        .nav-right {
+            border-left: none;
+            padding-left: 0;
+        }
+        .lang-custom { position: relative; font-weight: 700; font-size: 0.85rem; }
+
+        /* Скрытие ссылок на мобильных */
+        @media (max-width: 900px) {
+            .nav-center { display: none; }
+            .navbar-wrapper { top: 15px; }
+            .nav-right { border: none; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="preloader"><div class="loader-spinner"></div></div>
+    <!-- 1. INTRO OVERLAY  -->
+    <script>
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+    </script>
+
+    <!-- 1. INTRO OVERLAY -->
+    <div id="intro-overlay">
+        <div class="intro-center-wrapper" id="intro-wrapper">
+            <!-- Сначала виден только лоадер -->
+            <div class="loader-spinner" id="intro-loader"></div>
+            
+            <!-- Ассистент скрыт (display: none), пока не загрузится -->
+            <img src="images/vizy_greeting.png" id="intro-vizy" alt="Vizy Intro" style="display: none;">
+            
+            <!-- Баббл скрыт -->
+            <div id="intro-bubble" class="intro-bubble">
+                <span id="intro-bubble-text">...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. NAVBAR -->
+    <nav class="navbar-wrapper" id="navbar">
+        <div class="glass-capsule">
+            <!-- Лево: Логотип (круглый) и Название -->
+            <a href="#" class="nav-left" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+                <div class="logo-mask">
+                    <img src="images/visutype_logo_light.png" alt="Logo" class="nav-logo-img">
+                </div>
+                <span class="nav-brand">visuType</span>
+            </a>
+
+            <!-- Центр: Ссылки (скрыты на мобилках) -->
+            <div class="nav-center">
+                <a href="#features" data-i18n="nav_feat">Features</a>
+                <a href="#customization" data-i18n="nav_style">Style</a>
+                <a href="#pricing" data-i18n="nav_price">Pricing</a>
+                <a href="#roadmap" data-i18n="nav_roadmap">Roadmap</a>
+            </div>
+
+            <!-- Право: Язык -->
+            <div class="nav-right">
+                <div class="lang-custom" id="lang-switcher">
+                    <span class="current-lang" onclick="toggleLangMenu(event)">EN</span>
+                    <div class="lang-list" id="lang-list">
+                        <span onclick="setLang('en')">EN</span>
+                        <span onclick="setLang('ru')">RU</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- HERO -->
     <header class="hero">
         <div class="hero-bg-container parallax-bg-hero">
-            <img src="cover_light.jpg" class="hero-bg-img" id="hero-bg-el" data-base="cover" data-ext="jpg" data-no-mobile="true" alt="Background">
+            <img src="images/cover_light.jpg" class="hero-bg-img" id="hero-bg-el" data-base="cover" data-ext="jpg" data-no-mobile="true" alt="Background">
         </div>
 
         <div class="container" style="height: 100%;">
             <div class="hero-new-grid">
                 
-                <!-- ЛЕВАЯ ЧАСТЬ -->
+                <!-- LEFT PART -->
                 <div class="hero-left-vizy">
-                    <img src="vizy_greeting.png" alt="Vizy Assistant" class="hero-vizy-main-img">
+                    <img src="images/vizy_greeting.png" alt="Vizy Assistant" class="hero-vizy-main-img">
                     <div class="hero-vizy-greeting-bubble" id="hero-random-greeting">
-                        <!-- JS phrase -->
+                        <!-- JS phrase will appear here -->
                     </div>
                 </div>
 
-                <!-- ПРАВАЯ ЧАСТЬ -->
+                <!-- RIGHT PART -->
                 <div class="hero-right-content">
                     <div class="hero-logo-row">
-                        <img src="visutype_logo_light.png" alt="visuType Logo" class="hero-logo-img" id="logo-el" data-base="visutype_logo" data-ext="png" data-no-mobile="true">
+                        <img src="images/visutype_logo_light.png" alt="visuType Logo" class="hero-logo-img" id="logo-el" data-base="visutype_logo" data-ext="png" data-no-mobile="true">
                         <h1 class="hero-title-main">visuType</h1>
                     </div>
                     
@@ -544,7 +912,7 @@
                     </div>
 
                     <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <svg class="tg-icon" viewBox="0 0 24 24">...</svg> 
+                        <svg class="tg-icon" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42l10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701l0 0l-.362 5.09c.53 0 .764-.242 1.06-.519l2.547-2.463l5.295 3.91c.976.54 1.677.262 1.92-1.026l3.475-16.37c.356-1.426-.539-2.071-1.637-1.589z"/></svg>
                         <span data-i18n="btn_telegram">Try it out</span>
                     </a>
                 </div>
@@ -557,250 +925,322 @@
     </header>
 
     <main>
-        <!-- HERO -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <div class="hero-subtitle-anim-wrapper">
-                        <div class="static-prefix" data-i18n="hero_home">Your home for</div>
-                        <div class="rolling-text-container">
-                            <div class="rolling-list animate-scroll">
-                                <span class="rolling-word" data-i18n="word_1">convenient</span>
-                                <span class="rolling-word" data-i18n="word_2">cozy</span>
-                                <span class="rolling-word" data-i18n="word_3">beautiful</span>
-                                <span class="rolling-word" data-i18n="word_4">functional</span>
-                                <span class="rolling-word" data-i18n="word_5">visual</span>
-                                <span class="rolling-word" data-i18n="word_1">convenient</span>
+        <!-- FEATURES -->
+        <section class="features-section bg-secondary">
+            <div class="container">
+                <div class="vizy-narrator-block fade-in">
+                    <img src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_features">Look what I can do! Everything to make your ideas feel at home.</div>
+                </div>
+
+                <div class="features-container">
+                    <!-- Feature 1 -->
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <h3><span class="wavy-word" id="wavy-title">Flexible</span><span data-i18n="feat_1_title_suffix"> notes</span></h3>
+                            <p data-i18n="feat_1_desc">Notes you are used to — just more convenient and powerful.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <img src="images/notes_light.png" alt="Flexible Notes Interface" class="adaptive-img" data-base="notes" data-ext="png">
+                                <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
                             </div>
                         </div>
-                        <div style="margin-top: 5px;" data-i18n="hero_suffix">notes</div>
                     </div>
-                </h1>
-                <div class="hero-buttons">
-                    <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <!-- SVG код оставляем как есть, это вектор -->
-                        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.665 3.717L2.963 10.552C1.755 11.037 1.764 11.711 2.744 12.011L7.29 13.43L17.807 6.793C18.304 6.491 18.76 6.654 18.388 6.985L9.886 14.654L9.888 14.655L9.576 19.336C10.033 19.336 10.235 19.127 10.491 18.88L12.673 16.758L17.213 20.112C18.05 20.573 18.65 20.336 18.86 19.338L21.838 5.308C22.143 4.085 21.365 3.531 20.665 3.717Z" fill="currentColor"/></svg>
-                        <span data-i18n="btn_telegram">Try it out</span>
-                    </a>
-                    <a href="https://t.me/visutype_news" target="_blank" class="button news-cta" data-i18n="btn_news">Read in Telegram</a>
-                </div>
-            </div>
-        </section>
+                    
+                    <!-- Feature 2 -->
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <div class="mindmap-header">
+                                <h3 class="mindmap-plain-text" data-i18n="feat_2_plain_text" style="margin: 0;">Visual</h3>
+                                <div class="mindmap-capsules">
+                                    <span class="mm-capsule capsule-1" data-i18n="feat_2_cap_1">mind</span>
+                                    <span class="mm-line"></span>
+                                    <span class="mm-capsule capsule-2" data-i18n="feat_2_cap_2">maps</span>
+                                </div>
+                            </div>
+                            <p data-i18n="feat_2_desc">Build ideas visually: connections, branches, personalization — everything at hand.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <img src="images/mindmap_light.png" alt="Mind Maps Interface" class="adaptive-img" data-base="mindmap" data-ext="png">
+                                <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- NARRATOR -->
-        <div class="vizy-narrator-container">
-            <div class="vizy-narrator-bubble" data-i18n="comment_features">Look what I can do! Everything to make your ideas feel at home.</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img">
-        </div>
-
-        <!-- FEATURES -->
-        <section class="features-section">
-            <!-- Feature 1 -->
-            <div class="feature-card">
-                <div class="feature-text">
-                    <h3><span class="wavy-word" id="wavy-title">Flexible</span><span data-i18n="feat_1_title_suffix"> notes</span></h3>
-                    <p data-i18n="feat_1_desc">Notes you are used to — just more convenient and powerful.</p>
-                </div>
-                <div class="feature-visual notes-visual">
-                    <div class="mock-browser">
-                        <div class="browser-header"><div class="dots"><span></span><span></span><span></span></div><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
-                        <div class="browser-content">
-                            <img src="images/notes_light.png" alt="visuType flexible note editor interface" class="adaptive-img" data-base="notes" data-ext="png">
+                    <!-- Feature 3 -->
+                    <div class="feature-row fade-in">
+                        <div class="feature-text">
+                            <h3><span class="rainbow-text" data-i18n="feat_3_rainbow">Creative</span><span data-i18n="feat_3_suffix"> canvas</span></h3>
+                            <p data-i18n="feat_3_desc">For diagrams, formulas, sketches, and ideas that are easier to depict than describe.</p>
+                        </div>
+                        <div class="feature-image">
+                            <div class="image-wrapper" onclick="openLightbox(this)">
+                                <img src="images/canvas_light.png" alt="Creative Canvas" class="adaptive-img" data-base="canvas" data-ext="png">
+                                <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Feature 2 -->
-            <div class="feature-card reverse">
-                <div class="feature-text">
-                    <h3 class="mindmap-title"><span class="mindmap-plain-text" data-i18n="feat_2_plain_text" style="margin: 0;">Visual</span><div class="mindmap-capsules"><span class="mm-capsule capsule-1" data-i18n="feat_2_cap_1">mind</span><span class="mm-line"></span><span class="mm-capsule capsule-2" data-i18n="feat_2_cap_2">maps</span></div></h3>
-                    <p data-i18n="feat_2_desc">Build ideas visually: connections, branches, personalization — everything at hand.</p>
-                </div>
-                <div class="feature-visual mindmap-visual">
-                    <img src="images/mindmap_light.png" alt="visuType mind mapping tool example" class="adaptive-img" data-base="mindmap" data-ext="png">
-                </div>
-            </div>
-            <!-- Feature 3 -->
-            <div class="feature-card">
-                <div class="feature-text">
-                    <h3><span class="rainbow-text" data-i18n="feat_3_rainbow">Creative</span><span data-i18n="feat_3_suffix"> canvas</span></h3>
-                    <p data-i18n="feat_3_desc">For diagrams, formulas, sketches, and ideas that are easier to depict than describe.</p>
-                </div>
-                <div class="feature-visual canvas-visual">
-                    <img src="images/canvas_light.png" alt="Infinite creative canvas in visuType" class="adaptive-img" data-base="canvas" data-ext="png">
-                </div>
-            </div>
+            <div class="section-divider divider-bottom-in-gray"></div>
         </section>
 
-        <!-- CAROUSEL -->
-        <div class="vizy-narrator-container right-aligned">
-            <div class="vizy-narrator-bubble" data-i18n="comment_custom">Wow! You can dress up the app to fit your mood? Look at the outfits I found!</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img mirror">
-        </div>
+        <!-- CUSTOMIZATION (THEMES) -->
+        <section id="customization" class="bg-primary">
+            <div class="container">
+                <div class="vizy-narrator-block fade-in">
+                    <img src="images/vizy_surprised.png" alt="Vizy Surprised" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_custom">Wow! You can dress up the app to fit your mood? Look at the outfits I found!</div>
+                </div>
 
-        <section class="carousel-section">
-            <div class="carousel-header">
-                <h2 class="carousel-title"><span data-i18n="theme_head_1">Choose</span> <span class="highlight" data-i18n="theme_head_2">your style</span></h2>
-            </div>
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    <!-- Все картинки теперь в images/ -->
-                    <div class="carousel-item"><img src="images/theme_normal.png" alt="Standard Light Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_normal">Standard</div></div>
-                    <div class="carousel-item"><img src="images/theme_normal_dark.png" alt="Standard Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_normal_dark">Standard Dark</div></div>
-                    <div class="carousel-item"><img src="images/theme_girly.png" alt="Girly Pink Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_girly">Girly</div></div>
-                    <div class="carousel-item"><img src="images/theme_girly_dark.png" alt="Girly Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_girly_dark">Girly Dark</div></div>
-                    <div class="carousel-item"><img src="images/theme_emerald.png" alt="Emerald Green Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_emerald">Emerald</div></div>
-                    <div class="carousel-item"><img src="images/theme_emerald_dark.png" alt="Emerald Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_emerald_dark">Emerald Dark</div></div>
-                    <div class="carousel-item"><img src="images/theme_space.png" alt="Space Blue Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_space">Space</div></div>
-                    <div class="carousel-item"><img src="images/theme_space_dark.png" alt="Space Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_space_dark">Space Dark</div></div>
-                    <div class="carousel-item"><img src="images/theme_noir.png" alt="Noir Monochrome Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_noir">Noir</div></div>
-                    <div class="carousel-item"><img src="images/theme_noir_dark.png" alt="Noir Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_noir_dark">Noir Dark</div></div>
-                    
-                    <!-- Дубликаты -->
-                    <div class="carousel-item"><img src="images/theme_normal.png" alt="Standard Light Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_normal">Standard</div></div>
-                    <div class="carousel-item"><img src="images/theme_normal_dark.png" alt="Standard Dark Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_normal_dark">Standard Dark</div></div>
-                    <div class="carousel-item"><img src="images/theme_girly.png" alt="Girly Pink Theme" class="carousel-img"><div class="carousel-label" data-i18n="theme_girly">Girly</div></div>
+                <div class="carousel-header" style="text-align: center; margin-bottom: 30px;">
+                    <h2 class="carousel-title"><span data-i18n="theme_head_1">Choose</span> <span class="highlight gradient-text" data-i18n="theme_head_2">your style</span></h2>
+                </div>
+
+                <!-- OLD STRUCTURE: Marquee Container -->
+                <div class="themes-marquee-container fade-in">
+                    <div class="themes-marquee-track" id="themes-marquee-track"></div>
                 </div>
             </div>
         </section>
 
         <!-- ASSISTANTS -->
-        <div class="vizy-narrator-container">
-            <div class="vizy-narrator-bubble" data-i18n="comment_home_atmosphere">Make yourself at home! I'm here to create coziness and help with everything.</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img">
-        </div>
+        <section id="ai-assistant" class="bg-secondary">
+            <div class="section-divider divider-top-in-gray"></div>
+            <div class="container">
+                
+                <div class="vizy-narrator-block fade-in" style="margin-bottom: 30px;">
+                    <img src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_home_atmosphere">Make yourself at home! I'm here to create comfort and help with everything.</div>
+                </div>
 
-        <section class="assistant-section">
-            <div class="assistant-content">
-                <div class="assistant-image">
-                    <img src="images/assistant_light.png" alt="AI Assistants Interface" class="adaptive-img" data-base="assistant" data-ext="png">
+                <div class="ai-interface-preview fade-in">
+                    <img src="images/assistant_light.png" alt="App Interface with Assistant" data-base="assistant" data-ext="png">
                 </div>
                 
-                <div class="vizy-narrator-container right-aligned">
+                <div class="vizy-narrator-block fade-in" style="margin-top:80px;">
+                    <img src="images/vizy_cute.png" alt="Vizy Cute" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_assistants">And these are my friends (and me). Maybe you'll like someone more than me... 😪(😅)</div>
-                    <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img mirror">
                 </div>
 
-                <div class="assistants-grid">
-                    <div class="assistant-card"><div class="assistant-avatar"><img src="images/ava_alex.png" alt="Alex AI Assistant"></div><div class="assistant-info"><h4 data-i18n="asst_alex_name">Alex</h4><p data-i18n="asst_alex_desc">The most modest and intellectual one.</p></div></div>
-                    <div class="assistant-card"><div class="assistant-avatar"><img src="images/ava_vizy.png" alt="Vizy AI Assistant"></div><div class="assistant-info"><h4 data-i18n="asst_vizy_name">Vizy</h4><p data-i18n="asst_vizy_desc">I'm kind of in charge here.</p></div></div>
-                    <div class="assistant-card"><div class="assistant-avatar"><img src="images/ava_zhenya.png" alt="Zhenya AI Assistant"></div><div class="assistant-info"><h4 data-i18n="asst_zhenya_name">Zhenya</h4><p data-i18n="asst_zhenya_desc">If you like comedies about bad boys.</p></div></div>
-                    <div class="assistant-card"><div class="assistant-avatar"><img src="images/ava_valya.png" alt="Valya AI Assistant"></div><div class="assistant-info"><h4 data-i18n="asst_valya_name">Valya</h4><p data-i18n="asst_valya_desc">You will never meet a cuter assistant.</p></div></div>
+                <!-- OLD STRUCTURE: 3D Carousel Wrapper -->
+                <div class="carousel-wrapper-common fade-in">
+                    <button class="carousel-nav-btn btn-prev" onclick="moveCarousel('asst', -1)">‹</button>
+                    <div class="carousel-track" id="asst-track"></div>
+                    <button class="carousel-nav-btn btn-next" onclick="moveCarousel('asst', 1)">›</button>
                 </div>
-                <div class="assistant-disclaimer" data-i18n="asst_bottom_disclaimer">We are all very different, so I suggest thinking before choosing your assistant.</div>
+                
+                <div class="asst-disclaimer-text fade-in" data-i18n="asst_bottom_disclaimer">
+                    We are all very different, so I suggest thinking before choosing your assistant.
+                </div>
             </div>
+            <div class="section-divider divider-bottom-in-gray"></div>
         </section>
 
         <!-- COMPARISON -->
-        <div class="vizy-narrator-container">
-            <div class="vizy-narrator-bubble" data-i18n="comment_comparison">Hmm, let's think... Why us? I made a chart, fair and square!</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img">
-        </div>
-        
-        <section class="comparison-section">
-            <div class="comparison-table-wrapper">
-                <table class="comparison-table">
-                    <thead><tr><th></th><th class="visutype-col">visuType</th><th class="competitor-col">Obsidian</th><th class="competitor-col">Notion</th><th class="competitor-col">Apple Notes</th></tr></thead>
-                    <tbody>
-                        <tr><td data-i18n="comp_col_1">Mind Maps</td><td class="check">✔</td><td class="cross">plugins</td><td class="cross">✘</td><td class="cross">✘</td></tr>
-                        <tr><td data-i18n="comp_col_2">Canvas</td><td class="check">✔</td><td class="check">✔</td><td class="cross">✘</td><td class="cross">iPad only</td></tr>
-                        <tr><td data-i18n="comp_col_3">Customization</td><td class="check">Max</td><td class="check">CSS</td><td class="cross">Low</td><td class="cross">Low</td></tr>
-                        <tr><td data-i18n="comp_col_4">Speed</td><td class="check">High</td><td class="check">High</td><td class="cross">Low</td><td class="check">High</td></tr>
-                        <tr><td data-i18n="comp_col_5">Minimalism</td><td class="check">✔</td><td class="check">✔</td><td class="cross">✘</td><td class="check">✔</td></tr>
-                        <tr><td data-i18n="comp_col_6">Assistant</td><td class="check">Soulful</td><td class="cross">✘</td><td class="cross">Robotic</td><td class="cross">Robotic</td></tr>
-                    </tbody>
-                </table>
+        <section id="comparison" class="bg-primary">
+            <div class="container">
+                <div class="vizy-narrator-block fade-in">
+                    <img src="images/vizy_thinking.png" alt="Vizy Thinking" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_comparison">Hmm, let's think... Why us? I made a chart, fair and square!</div>
+                </div>
+
+                <div class="table-container fade-in">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th data-i18n="comp_col_1">Mind Maps</th>
+                                <th data-i18n="comp_col_2">Canvas</th>
+                                <th data-i18n="comp_col_3">Customization</th>
+                                <th data-i18n="comp_col_4">Speed</th>
+                                <th data-i18n="comp_col_5">Minimalism</th>
+                                <th data-i18n="comp_col_6">Assistant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="visutype-row">
+                                <td class="row-name">visuType</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr><td class="row-name">Notion</td><td>❌</td><td>❌</td><td>🟨</td><td>🟨</td><td>🟨</td><td>❌</td></tr>
+                            <tr><td class="row-name">Obsidian</td><td>🟨</td><td>✅</td><td>🟨</td><td>✅</td><td>❌</td><td>❌</td></tr>
+                            <tr><td class="row-name">Craft</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                            <tr><td class="row-name">Apple Notes</td><td>❌</td><td>🟨</td><td>❌</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                        </tbody>
+                    </table>
+                     <div class="table-legend">
+                         <span>✅ <span data-i18n="legend_full">fully implemented</span></span>
+                         <span>🟨 <span data-i18n="legend_part">partially implemented</span></span>
+                         <span>❌ <span data-i18n="legend_none">not implemented</span></span>
+                     </div>
+                </div>
             </div>
         </section>
 
         <!-- PRICING -->
-        <div class="vizy-narrator-container right-aligned">
-            <div class="vizy-narrator-bubble" data-i18n="comment_pricing">Free is cool. But with Pro you become cosmic. Check out the terms.</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img mirror">
-        </div>
-
-        <section class="pricing-section">
-            <div class="pricing-container">
-                <div class="pricing-card free">
-                    <div class="pricing-header"><h3>Free</h3><div class="price">0 ₽</div></div>
-                    <ul class="pricing-features">
-                        <li data-i18n="price_free_1">✍️ Best note editor for comfort</li>
-                        <li data-i18n="price_free_2">☁️ iCloud note synchronization</li>
-                        <li data-i18n="price_free_3">🎨 Basic themes/palettes</li>
-                        <li data-i18n="price_free_4">📥 Import notes from other apps</li>
-                        <li data-i18n="price_free_5">📄 Basic export of notes / mind maps / canvases</li>
-                    </ul>
+        <section id="pricing" class="bg-secondary">
+            <div class="section-divider divider-top-in-gray"></div>
+            <div class="container">
+                <div class="vizy-narrator-block fade-in">
+                    <img src="images/vizy_cool.png" alt="Vizy Cool" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_pricing">Free is cool. But with Pro you become cosmic. Check out the terms.</div>
                 </div>
-                <div class="pricing-card pro">
-                    <div class="pricing-header"><h3>Pro</h3><div class="price" data-i18n="price_pro_cost">$2.99 / mo</div></div>
-                    <ul class="pricing-features">
-                        <li data-i18n="price_pro_1">♾️ Everything in Free</li>
-                        <li data-i18n="price_pro_2">✨ Unlimited customization</li>
-                        <li data-i18n="price_pro_3">🚀 Early access to new features</li>
-                        <li data-i18n="price_pro_4">💬 Unique dialogues with assistants</li>
-                        <li data-i18n="price_pro_5">📤 Advanced export</li>
-                        <li data-i18n="price_pro_6">🌐 Publish note as a website</li>
-                    </ul>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card fade-in">
+                        <div class="price-title">Free</div>
+                        <ul>
+                            <li data-i18n="price_free_1">✍️ Best note editor for comfort</li>
+                            <li data-i18n="price_free_2">☁️ iCloud note synchronization</li>
+                            <li data-i18n="price_free_3">🎨 Basic themes/palettes</li>
+                            <li data-i18n="price_free_4">📥 Import notes from other apps</li>
+                            <li data-i18n="price_free_5">📄 Basic export of notes / mind maps / canvases</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-card pro fade-in" style="transition-delay: 0.2s;">
+                        <div class="price-title">Pro</div>
+                        <ul>
+                            <li data-i18n="price_pro_1">♾️ Everything in Free</li>
+                            <li data-i18n="price_pro_2">✨ Unlimited customization</li>
+                            <li data-i18n="price_pro_5">📤 Advanced export</li>
+                            <li data-i18n="price_pro_6">🌐 Publish note as a website</li>
+                            <li data-i18n="price_pro_3">🚀 Early access to new features</li>
+                            <li data-i18n="price_pro_4">💬 Unique dialogues with assistants</li>
+                        </ul>
+                        <div class="price-cost-bottom text-gradient-pro" data-i18n="price_pro_cost">$4.99 / mo</div>
+                    </div>
                 </div>
             </div>
+            <div class="section-divider divider-bottom-in-gray"></div>
         </section>
 
         <!-- ROADMAP -->
-        <div class="vizy-narrator-container">
-            <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">I can't wait for these updates! Here is our plan for world domination.</div>
-            <img src="images/vizy_narrator.png" alt="Vizy AI Assistant" class="vizy-narrator-img">
-        </div>
+        <section id="roadmap" class="bg-primary">
+            <div class="container">
+                <div class="vizy-narrator-block fade-in">
+                    <img src="images/vizy_waiting.png" alt="Vizy Waiting" class="vizy-narrator-img">
+                    <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">I can't wait for these updates! Here is our plan for world domination.</div>
+                </div>
+                
+                <h2 class="roadmap-title" style="text-align: center; margin-bottom: 40px;" data-i18n="road_head_1">Development Roadmap</h2>
 
-        <section class="roadmap-section">
-            <h2 class="roadmap-title" data-i18n="road_head_1">Development Roadmap</h2>
-            <div class="roadmap-container">
-                <div class="roadmap-line"></div>
-                <div class="roadmap-item done"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_1_date">Now</div><h3 data-i18n="road_item_1_title">macOS, iOS & iPadOS</h3><p data-i18n="road_item_1_desc">First — stability.</p><span class="status-badge done" data-i18n="status_done">Done</span></div></div>
-                <div class="roadmap-item in-progress"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_2_date">by Jan 1, 2026</div><h3 data-i18n="road_item_2_title">Cloud Sync</h3><p data-i18n="road_item_2_desc">Next — synchronization.</p><span class="status-badge dev" data-i18n="status_dev">In Development</span></div></div>
-                <div class="roadmap-item planned"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_localization_date">by June 1, 2026</div><h3 data-i18n="road_item_localization_title">Localization</h3><p data-i18n="road_item_localization_desc">Spanish, Chinese, German, Japanese...</p></div></div>
-                <div class="roadmap-item planned"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_3_date">by June 1, 2026</div><h3 data-i18n="road_item_3_title">App Store Release</h3><p data-i18n="road_item_3_desc">Official app release.</p><span class="status-badge plan" data-i18n="status_plan">Planned</span></div></div>
-                <div class="roadmap-item planned"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_4_date">by Sept 1, 2026</div><h3 data-i18n="road_item_4_title">Windows & Android</h3><p data-i18n="road_item_4_desc">Expansion to all popular platforms.</p></div></div>
-                <div class="roadmap-item planned"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_collab_date">end of 2026</div><h3 data-i18n="road_item_collab_title">Collaboration Mode</h3><p data-i18n="road_item_collab_desc">Work simultaneously.</p></div></div>
-                <div class="roadmap-item planned"><div class="roadmap-dot"></div><div class="roadmap-content"><div class="roadmap-date" data-i18n="road_item_5_date">end of 2026</div><h3 data-i18n="road_item_5_title">AI Integrations</h3><p data-i18n="road_item_5_desc">AI tools and local generation.</p></div></div>
+                <!-- OLD STRUCTURE: Separator -> Card -> Row -->
+                <div class="roadmap-separator fade-in">
+                    <div class="separator-line line-left"></div>
+                    <span data-i18n="road_step_1">Stage 1: MVP</span>
+                    <div class="separator-line line-right"></div>
+                </div>
+                
+                <div class="roadmap-card fade-in">
+                    <div class="roadmap-row">
+                        <div class="roadmap-date" data-i18n="road_item_1_date">Now</div>
+                        <div class="roadmap-content">
+                            <h4 data-i18n="road_item_1_title">macOS, iOS & iPadOS</h4>
+                            <p data-i18n="road_item_1_desc">First — stability.</p>
+                        </div>
+                        <div class="roadmap-status status-done" data-i18n="status_done">Done</div>
+                    </div>
+                </div>
+
+                <div class="roadmap-separator fade-in">
+                    <div class="separator-line line-left"></div>
+                    <span data-i18n="road_step_2">Stage 2: Ecosystem</span>
+                    <div class="separator-line line-right"></div>
+                </div>
+                
+                <div class="roadmap-card fade-in">
+                    <div class="roadmap-row">
+                        <div class="roadmap-date" data-i18n="road_item_2_date">by Jan 1, 2026</div>
+                        <div class="roadmap-content">
+                            <h4 data-i18n="road_item_2_title">Cloud Sync</h4>
+                            <p data-i18n="road_item_2_desc">Next — synchronization.</p>
+                        </div>
+                        <div class="roadmap-status status-done" data-i18n="status_done">Done</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date" data-i18n="road_item_localization_date">by June 1, 2026</div>
+                        <div class="roadmap-content">
+                            <h4 data-i18n="road_item_localization_title">Localization</h4>
+                            <p data-i18n="road_item_localization_desc">Spanish, Chinese, German, Japanese...</p>
+                        </div>
+                        <div class="roadmap-status status-progress" data-i18n="status_dev">In Development</div>
+                    </div>
+                    <div class="roadmap-row">
+                        <div class="roadmap-date" data-i18n="road_item_3_date">by June 1, 2026</div>
+                        <div class="roadmap-content">
+                            <h4 data-i18n="road_item_3_title">App Store Release</h4>
+                            <p data-i18n="road_item_3_desc">Official app release.</p>
+                        </div>
+                        <div class="roadmap-status status-planned" data-i18n="status_plan">Planned</div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-separator fade-in">
+                    <div class="separator-line line-left"></div>
+                    <span data-i18n="road_step_3">Stage 3: Expansion</span>
+                    <div class="separator-line line-right"></div>
+                </div>
+                
+                <div class="roadmap-card fade-in">
+                     <div class="roadmap-row">
+                         <div class="roadmap-date" data-i18n="road_item_4_date">by Sept 1, 2026</div>
+                         <div class="roadmap-content">
+                             <h4 data-i18n="road_item_4_title">Windows & Android</h4>
+                             <p data-i18n="road_item_4_desc">Expansion to all popular platforms.</p>
+                         </div>
+                         <div class="roadmap-status status-planned" data-i18n="status_plan">Planned</div>
+                     </div>
+                     <div class="roadmap-row">
+                         <div class="roadmap-date" data-i18n="road_item_collab_date">end of 2026</div>
+                         <div class="roadmap-content">
+                             <h4 data-i18n="road_item_collab_title">Collaboration Mode</h4>
+                             <p data-i18n="road_item_collab_desc">Work simultaneously.</p>
+                         </div>
+                         <div class="roadmap-status status-planned" data-i18n="status_plan">Planned</div>
+                     </div>
+                     <div class="roadmap-row">
+                         <div class="roadmap-date" data-i18n="road_item_5_date">end of 2026</div>
+                         <div class="roadmap-content">
+                             <h4 data-i18n="road_item_5_title">AI Integrations</h4>
+                             <p data-i18n="road_item_5_desc">AI tools and local generation.</p>
+                         </div>
+                         <div class="roadmap-status status-planned" data-i18n="status_plan">Planned</div>
+                     </div>
+                </div>
             </div>
-            <div class="roadmap-legend"><div class="legend-item"><span class="dot done"></span> <span data-i18n="legend_full">full</span></div><div class="legend-item"><span class="dot in-progress"></span> <span data-i18n="legend_part">partial</span></div><div class="legend-item"><span class="dot planned"></span> <span data-i18n="legend_none">not realized</span></div></div>
         </section>
-
-        <!-- FINAL CTA -->
-        <section class="final-cta-section" style="padding: 80px 0 120px 0; text-align: center;">
-            <div class="hero-content">
-                <h2 class="hero-title" data-i18n="hero_return" style="margin-bottom: 30px; font-size: 2.2rem; line-height: 1.3;">Welcome back! Shall we continue?</h2>
-                <div class="hero-buttons" style="justify-content: center;">
+        
+        <!-- FOOTER / FINAL CTA -->
+        <section class="final-cta-section fade-in">
+            <!-- FADE OVERLAY AT THE TOP OF FOOTER -->
+            <div class="footer-fade-top"></div>
+            
+            <div class="final-cta-bg parallax-bg-footer">
+                <img src="images/footer_light.jpg" class="final-cta-img" id="footer-bg-el" data-base="footer" data-ext="jpg" data-no-mobile="true" alt="Background">
+            </div>
+            <div class="final-cta-overlay"></div>
+            
+            <div class="final-cta-content-grid">
+                <div class="footer-text-side">
+                    <h2><span data-i18n="footer_news_head">Liked it?</span></h2>
+                    <p data-i18n="footer_news_desc">If so, join our Telegram channel.</p>
                     <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.665 3.717L2.963 10.552C1.755 11.037 1.764 11.711 2.744 12.011L7.29 13.43L17.807 6.793C18.304 6.491 18.76 6.654 18.388 6.985L9.886 14.654L9.888 14.655L9.576 19.336C10.033 19.336 10.235 19.127 10.491 18.88L12.673 16.758L17.213 20.112C18.05 20.573 18.65 20.336 18.86 19.338L21.838 5.308C22.143 4.085 21.365 3.531 20.665 3.717Z" fill="currentColor"/></svg>
-                        <span data-i18n="btn_telegram">Try it out</span>
+                         <svg class="tg-icon" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42l10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701l0 0l-.362 5.09c.53 0 .764-.242 1.06-.519l2.547-2.463l5.295 3.91c.976.54 1.677.262 1.92-1.026l3.475-16.37c.356-1.426-.539-2.071-1.637-1.589z"/></svg>
+                        <span data-i18n="btn_news">Read in Telegram</span>
                     </a>
+                </div>
+                
+                <div class="footer-vizy-side" id="footer-asst-container">
+                    <!-- Images inserted by JS for animation -->
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-news-block">
-                <h3 data-i18n="footer_news_head">Liked it?</h3>
-                <p data-i18n="footer_news_desc">If so, join our Telegram channel.</p>
-                <a href="https://t.me/visutype_news" target="_blank" class="button news-cta footer-btn" data-i18n="btn_news">Read in Telegram</a>
-            </div>
-            <div class="footer-divider"></div>
-            <div class="footer-bottom">
-                <div class="copyright">© 2026 visuType. All rights reserved.</div>
-                <div class="footer-socials">
-                    <a href="https://t.me/visutype" target="_blank" aria-label="Join visuType on Telegram">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12C0 18.627 5.373 24 12 24C18.627 24 24 18.627 24 12C24 5.373 18.627 0 12 0ZM17.695 8.78C17.485 10.978 16.58 16.36 16.124 18.803C15.931 19.836 15.553 20.181 15.186 20.214C14.388 20.286 13.782 19.687 13.01 19.181C11.801 18.389 11.118 17.896 9.944 17.123C8.587 16.229 9.467 15.738 10.24 14.935C10.442 14.725 14.075 11.419 14.145 11.12C14.154 11.083 14.162 10.945 14.08 10.872C13.998 10.799 13.876 10.824 13.788 10.844C13.663 10.872 11.666 12.191 7.799 14.802C7.233 15.191 6.721 15.38 6.107 15.367C5.43 15.353 4.127 14.985 3.158 14.67C1.969 14.284 1.023 14.08 1.845 13.42C2.273 13.076 3.449 12.52 10.609 9.568C13.888 8.217 16.488 7.334 17.195 7.334C17.258 7.334 17.695 7.35 17.695 8.78Z" fill="currentColor"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <div id="lightbox" class="lightbox"><div class="lightbox-close" onclick="closeLightbox()">✕</div><img src="" alt="Full view" class="lightbox-img" id="lightbox-img"></div>
-    
+
     <script>
     const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
 
@@ -860,9 +1300,10 @@
             
             legend_full: "полная реализация", legend_part: "частичная реализация", legend_none: "не реализовано",
             
-            // Hero easter egg defaults
             hero_return: "С возвращением! Продолжим?",
-            hero_return_en: "Welcome back! Shall we continue?"
+            hero_return_en: "Welcome back! Shall we continue?",
+
+            nav_feat: "Возможности", nav_style: "Стиль", nav_price: "Цены", nav_roadmap: "План"
         },
         en: {
              hero_home: "Your home for",
@@ -900,7 +1341,7 @@
             theme_noir: "Noir", theme_noir_dark: "Noir Dark",
 
             price_free_1: "✍️ Best note editor experience", price_free_2: "☁️ iCloud note sync", price_free_3: "🎨 Basic themes/palettes", price_free_4: "📥 Import notes from other apps", price_free_5: "📄 Basic export for notes / mind maps / canvases",
-            price_pro_cost: "$6.99 / month",
+            price_pro_cost: "$4.99 / month",
             price_pro_1: "♾️ Everything in Free", 
             price_pro_2: "✨ Unlimited customization: mind maps / covers / emojis / themes / icons", 
             price_pro_3: "🚀 Early access to new features", 
@@ -920,8 +1361,14 @@
             legend_full: "fully implemented", legend_part: "partially implemented", legend_none: "not implemented",
             
             hero_return: "Welcome back! Shall we continue?",
-            hero_return_en: "Welcome back! Shall we continue?"
+            hero_return_en: "Welcome back! Shall we continue?",
+            nav_feat: "Features", nav_style: "Style", nav_price: "Pricing", nav_roadmap: "Roadmap",
         }
+    };
+
+    const introPhrases = {
+        ru: ["Привет!", "Загружаем...", "Секунду...", "Полетели!"],
+        en: ["Hello!", "Loading...", "Just a sec...", "Let's go!"]
     };
 
     const randomGreetings = {
@@ -984,10 +1431,10 @@
     }
 
     const assistantsData = [
-        { id: 'alex', img: 'alex_assistant.png', nameKey: 'asst_alex_name', descKey: 'asst_alex_desc', color: 'linear-gradient(145deg, #4b5563, #1f2937)' },
-        { id: 'vizy', img: 'vizy_assistant.png', nameKey: 'asst_vizy_name', descKey: 'asst_vizy_desc', color: 'linear-gradient(145deg, #007AFF, #00C7BE)' },
-        { id: 'zhenya', img: 'zhenya_assistant.png', nameKey: 'asst_zhenya_name', descKey: 'asst_zhenya_desc', color: 'linear-gradient(145deg, #D4145A, #FBB03B)' },
-        { id: 'valya', img: 'valya_assistant.png', nameKey: 'asst_valya_name', descKey: 'asst_valya_desc', color: 'linear-gradient(145deg, #ff758c, #ff7eb3)' }
+        { id: 'alex', img: 'images/alex_assistant.png', nameKey: 'asst_alex_name', descKey: 'asst_alex_desc', color: 'linear-gradient(145deg, #4b5563, #1f2937)' },
+        { id: 'vizy', img: 'images/vizy_assistant.png', nameKey: 'asst_vizy_name', descKey: 'asst_vizy_desc', color: 'linear-gradient(145deg, #007AFF, #00C7BE)' },
+        { id: 'zhenya', img: 'images/zhenya_assistant.png', nameKey: 'asst_zhenya_name', descKey: 'asst_zhenya_desc', color: 'linear-gradient(145deg, #D4145A, #FBB03B)' },
+        { id: 'valya', img: 'images/valya_assistant.png', nameKey: 'asst_valya_name', descKey: 'asst_valya_desc', color: 'linear-gradient(145deg, #ff758c, #ff7eb3)' }
     ];
 
     const themesData = [
@@ -1023,8 +1470,10 @@
 
         // Render Themes Marquee
         const marqueeTrack = document.getElementById('themes-marquee-track');
-        const content = themesData.map(item => `<div class="theme-item"><img src="" data-base="${item.base}" data-mode="${item.mode}" data-ext="png" alt="${item.id}"><h3>${translations[userLang][item.nameKey]}</h3></div>`).join('');
-        marqueeTrack.innerHTML = content + content; // Duplicate for smooth scroll
+        if(marqueeTrack) {
+            const content = themesData.map(item => `<div class="theme-item"><img src="" data-base="${item.base}" data-mode="${item.mode}" data-ext="png" alt="${item.id}"><h3>${translations[userLang][item.nameKey]}</h3></div>`).join('');
+            marqueeTrack.innerHTML = content + content; 
+        }
 
         updateImages();
     }
@@ -1092,12 +1541,12 @@
     }
 
     // --- FOOTER ASSISTANT ANIMATION ---
-    const footerAssistants = ['vizy_assistant.png', 'alex_assistant.png', 'zhenya_assistant.png', 'valya_assistant.png'];
+    const footerAssistants = ['images/vizy_assistant.png', 'images/alex_assistant.png', 'images/zhenya_assistant.png', 'images/valya_assistant.png'];
     let currentFooterAsst = 0;
 
     function initFooterAnimation() {
         const container = document.getElementById('footer-asst-container');
-        // Create images
+        if(!container) return; 
         footerAssistants.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
@@ -1105,25 +1554,165 @@
             container.appendChild(img);
         });
 
-        // Switch interval (3s) to match half of animation loop
         setInterval(() => {
             const images = document.querySelectorAll('.footer-asst-img');
-            images[currentFooterAsst].classList.remove('active');
-            currentFooterAsst = (currentFooterAsst + 1) % footerAssistants.length;
-            images[currentFooterAsst].classList.add('active');
+            if(images.length > 0) {
+                images[currentFooterAsst].classList.remove('active');
+                currentFooterAsst = (currentFooterAsst + 1) % footerAssistants.length;
+                images[currentFooterAsst].classList.add('active');
+            }
         }, 3000); 
+    }
+
+    /* === SCROLL LOCK ON LOAD === */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    // Блокируем скролл во время интро
+    document.body.style.overflow = 'hidden';
+
+    // Функция ожидания загрузки картинки (чтобы не показать пустоту)
+    function waitForImage(imgElement) {
+        return new Promise((resolve) => {
+            if (imgElement.complete && imgElement.naturalHeight !== 0) {
+                resolve();
+            } else {
+                imgElement.onload = () => resolve();
+                imgElement.onerror = () => resolve(); 
+            }
+        });
+    }
+
+    async function runVizyAnimation() {
+        const introOverlay = document.getElementById('intro-overlay');
+        const introVizy = document.getElementById('intro-vizy');
+        const introBubble = document.querySelector('.intro-bubble');
+        const introLoader = document.getElementById('intro-loader');
+        const targetVizy = document.querySelector('.hero-vizy-main-img'); 
+
+        // 1. Ждем, пока загрузится картинка ассистента
+        await waitForImage(introVizy);
+
+        // 2. Скрываем лоадер и Показываем ассистента по центру
+        introLoader.style.opacity = '0';
+        introLoader.style.display = 'none'; // Убираем из потока
+        
+        introVizy.style.display = 'block';
+        
+        // Небольшой таймаут для срабатывания CSS transition (эффект появления)
+        requestAnimationFrame(() => {
+            introVizy.style.opacity = '1';
+            introVizy.style.transform = 'scale(1)';
+        });
+
+        // Установка текста в баббл
+        const phrases = { ru: "Загружаем...", en: "Loading..." };
+        document.getElementById('intro-bubble-text').textContent = phrases[userLang] || phrases['en'];
+        
+        // Показываем баббл под ассистентом
+        setTimeout(() => { introBubble.classList.add('visible'); }, 300);
+
+        // 3. Пауза перед полетом (чтобы пользователь увидел ассистента)
+        const flightDelay = 1500; 
+
+        setTimeout(() => {
+            // Скрываем баббл перед полетом
+            introBubble.classList.remove('visible');
+            
+            // Подготовка к полету (немного уменьшаем перед рывком)
+            introVizy.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            introVizy.style.transform = 'scale(0.9)';
+
+            // 4. Сам полет
+            setTimeout(() => {
+                const startRect = introVizy.getBoundingClientRect();
+                const targetRect = targetVizy.getBoundingClientRect();
+
+                // Центры элементов
+                const startX = startRect.left + startRect.width / 2;
+                const startY = startRect.top + startRect.height / 2;
+                const targetX = targetRect.left + targetRect.width / 2;
+                const targetY = targetRect.top + targetRect.height / 2;
+
+                const deltaX = targetX - startX;
+                const deltaY = targetY - startY;
+                const scale = targetRect.height / startRect.height;
+
+                // Применяем трансформацию (летим к цели)
+                introVizy.style.transition = 'transform 1.0s cubic-bezier(0.19, 1, 0.22, 1)'; 
+                introVizy.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+
+                // Убираем белый фон
+                introOverlay.style.background = 'transparent';
+
+                // 5. Финал: Включаем интерфейс (Right Content)
+                setTimeout(() => {
+                    document.body.classList.add('animation-done');
+                    
+                    // Подменяем летящую картинку на реальную
+                    setTimeout(() => {
+                         introVizy.style.opacity = '0';
+                         // Убираем оверлей полностью
+                         setTimeout(() => {
+                             introOverlay.style.display = 'none';
+                             document.body.style.overflow = ''; // Возвращаем скролл
+                         }, 200);
+                    }, 100);
+
+                }, 800); // Чуть раньше конца полета запускаем анимацию текста
+
+            }, 400); // Задержка после "сжатия" перед полетом
+
+        }, flightDelay);
+    }
+
+    /* === ЗАПУСК === */
+    window.addEventListener('load', function() {
+        const p = document.getElementById('preloader');
+        if(p) p.style.display = 'none';
+
+        document.querySelector('.current-lang').textContent = userLang.toUpperCase();
+
+        // Запускаем нашу логику
+        runVizyAnimation();
+    });
+
+    /* === LANGUAGE MENU === */
+    function toggleLangMenu(event) {
+        event.stopPropagation();
+        const list = document.getElementById('lang-list');
+        list.classList.toggle('show');
+    }
+
+    // Закрытие меню при клике вне
+    window.addEventListener('click', () => {
+        const list = document.getElementById('lang-list');
+        if (list.classList.contains('show')) list.classList.remove('show');
+    });
+
+    function setLang(lang) {
+        applyLanguage(lang);
+        // Обновляем текст в переключателе
+        document.querySelector('.current-lang').textContent = lang.toUpperCase();
+    }
+
+    // Дополнительная страховка скролла
+    window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
     }
 
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
     function updateImages() {
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isMobile = window.innerWidth < 768; 
+        
         document.querySelectorAll('img[data-base]').forEach(img => {
-            const baseName = img.getAttribute('data-base');
+            const baseName = img.getAttribute('data-base'); 
             const ext = img.getAttribute('data-ext') || 'png';
             const noMobile = img.getAttribute('data-no-mobile') === 'true';
             
-            let newSrc = baseName;
+            let newSrc = 'images/' + baseName; 
+            
             if (isMobile && !noMobile) newSrc += '_mobile';
             
             const mode = img.getAttribute('data-mode');
@@ -1134,6 +1723,7 @@
             }
             
             newSrc += '.' + ext;
+            
             if (!img.src.includes(newSrc)) img.src = newSrc;
         });
     }
