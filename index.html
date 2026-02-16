@@ -109,9 +109,11 @@
             max-width: 100%;
             overflow-x: hidden; 
             position: relative;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
         }
 
-        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        html { -webkit-text-size-adjust: 100%; }
         body {
             font-family: var(--font-family); background-color: var(--color-bg); color: var(--color-text-main);
             line-height: 1.6; 
@@ -128,7 +130,13 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
         
-        section { padding: 100px 0; position: relative; width: 100%; overflow-x: clip; }
+        section { 
+            padding: 100px 0; 
+            position: relative; 
+            width: 100%; 
+            overflow: hidden; 
+            touch-action: pan-y; 
+        }
         .bg-secondary { background-color: var(--color-bg-secondary); }
         .bg-primary { background-color: var(--color-bg); }
 
@@ -390,10 +398,48 @@
         }
 
         /* FINAL CTA / FOOTER */
-        .final-cta-section { position: relative; width: 100%; min-height: 90vh; overflow: hidden; display: flex; align-items: center; }
-        .final-cta-bg { position: absolute; top: -30%; left: 0; width: 100%; height: 160%; z-index: 0; will-change: transform; }
-        .final-cta-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; filter: brightness(1.1); }
-        .final-cta-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--footer-overlay); z-index: 1; }
+        .final-cta-section { 
+            position: relative; 
+            width: 100%; 
+            min-height: 90vh; 
+            clip-path: inset(0); 
+            -webkit-clip-path: inset(0);
+            
+            display: flex; 
+            align-items: center; 
+        }
+
+        .final-cta-bg { 
+            position: absolute; 
+            top: -30%; 
+            left: 0; 
+            width: 100%; 
+            height: 160%; 
+            z-index: 0; 
+            will-change: transform;
+            pointer-events: none; 
+        }
+
+        .final-cta-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            transition: transform 0.5s ease; 
+            filter: brightness(1.1); 
+            pointer-events: none;
+        }
+
+        .final-cta-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: var(--footer-overlay); 
+            z-index: 1; 
+            pointer-events: none;
+        }
         
         .final-cta-content-grid {
             position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 40px;
@@ -842,6 +888,73 @@
             opacity: 1;
         }
 
+        /* === AURORA SKY BACKGROUND === */
+        .hero-bg-container,
+        .footer-bg-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+            background: var(--sky-bg); /* Цвет неба */
+            transition: background 0.5s ease;
+            /* Важно: чтобы клики проходили сквозь фон */
+            pointer-events: none; 
+        }
+
+        .aurora-sky {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            filter: blur(80px); /* Сильное размытие для мягкости */
+            opacity: 0.9;
+        }
+
+        .sky-blob {
+            position: absolute;
+            border-radius: 50%;
+            animation: floatSky 25s infinite ease-in-out alternate;
+            opacity: 0.7;
+        }
+
+        /* === ЦВЕТА (СВЕТЛАЯ ТЕМА - НЕБО) === */
+        :root {
+            --sky-bg: #F0F8FF; /* AliceBlue */
+        }
+
+        /* Блобы для ГЕРОЯ (верх) */
+        .blob-1 { top: -10%; left: -10%; width: 70vw; height: 70vw; background: #E0F7FA; animation-duration: 25s; }
+        .blob-2 { top: 20%; right: -20%; width: 60vw; height: 60vw; background: #E3F2FD; animation-duration: 30s; animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 20%; width: 80vw; height: 60vw; background: #FFFFFF; opacity: 1; animation-duration: 22s; }
+
+        /* Блобы для ФУТЕРА (низ) */
+        .blob-footer-1 { bottom: -20%; left: -10%; width: 80vw; height: 80vw; background: #E0F2F1; animation-duration: 28s; }
+        .blob-footer-2 { top: 10%; right: -10%; width: 60vw; height: 60vw; background: #E1F5FE; animation-duration: 32s; animation-delay: -2s; }
+        .blob-footer-3 { bottom: 20%; left: 30%; width: 50vw; height: 50vw; background: #FFFFFF; opacity: 0.8; animation-duration: 24s; }
+
+        /* === ЦВЕТА (ТЕМНАЯ ТЕМА - КОСМОС) === */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --sky-bg: #050505; /* Почти черный */
+            }
+            .hero-bg-container, .footer-bg-container {
+                background: #050505;
+            }
+            /* Герой */
+            .blob-1 { background: #1A237E; opacity: 0.5; } /* Индиго */
+            .blob-2 { background: #311B92; opacity: 0.4; } /* Фиолетовый */
+            .blob-3 { background: #004D40; opacity: 0.3; } /* Глубокая бирюза */
+            
+            /* Футер */
+            .blob-footer-1 { background: #0D47A1; opacity: 0.5; } /* Синий */
+            .blob-footer-2 { background: #4A148C; opacity: 0.4; } /* Пурпурный */
+            .blob-footer-3 { background: #1B5E20; opacity: 0.3; } /* Зеленый */
+        }
+
+        /* Анимация плавания */
+        @keyframes floatSky {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, -20px) scale(1.1); }
+        }
+
+        /* Удаляем старые стили картинки, если остались */
+        .final-cta-img { display: none; }
+
     </style>
 </head>
 <body>
@@ -901,8 +1014,13 @@
 
     <!-- HERO -->
     <header class="hero">
-        <div class="hero-bg-container parallax-bg-hero">
-            <img src="images/cover_light.jpg" class="hero-bg-img" id="hero-bg-el" data-base="cover" data-ext="jpg" data-no-mobile="true" alt="Background">
+        <div class="hero-bg-container">
+            <div class="aurora-sky">
+                <div class="sky-blob blob-1"></div>
+                <div class="sky-blob blob-2"></div>
+                <div class="sky-blob blob-3"></div>
+            </div>
+            <div class="sky-overlay"></div>
         </div>
 
         <div class="container" style="height: 100%;">
@@ -1243,8 +1361,13 @@
             <!-- FADE OVERLAY AT THE TOP OF FOOTER -->
             <div class="footer-fade-top"></div>
             
-            <div class="final-cta-bg parallax-bg-footer">
-                <img src="images/footer_light.jpg" class="final-cta-img" id="footer-bg-el" data-base="footer" data-ext="jpg" data-no-mobile="true" alt="Background">
+            <div class="footer-bg-container">
+                <div class="aurora-sky">
+                    <div class="sky-blob blob-footer-1"></div>
+                    <div class="sky-blob blob-footer-2"></div>
+                    <div class="sky-blob blob-footer-3"></div>
+                </div>
+                <div class="final-cta-overlay"></div>
             </div>
             <div class="final-cta-overlay"></div>
             
@@ -1590,9 +1713,6 @@
         }, 3000); 
     }
 
-    // Блокируем скролл во время интро
-    document.body.style.overflow = 'hidden';
-
     // Функция ожидания загрузки картинки (чтобы не показать пустоту)
     function waitForImage(imgElement) {
         return new Promise((resolve) => {
@@ -1665,7 +1785,6 @@
         
         setTimeout(() => {
             introOverlay.style.display = 'none';
-            document.body.style.overflow = '';
         }, 200);
     }, flightStartTime + 1100); 
 }
@@ -1737,37 +1856,29 @@
         setTimeout(() => document.getElementById('preloader').style.visibility = 'hidden', 500);
     });
 
+    let ticking = false;
+
     window.addEventListener('scroll', function() {
         const scrolled = window.scrollY;
         
-        // Scroll Arrow
+        // Scroll Arrow (Стрелка)
         const arrow = document.getElementById('scroll-arrow');
-        if (scrolled > 50) arrow.classList.add('hidden'); else arrow.classList.remove('hidden');
-
-        // Easter Egg Interrupt
-        if (scrolled > 100 && easterEggActive) {
-            easterEggActive = false;
-            clearTimeout(easterEggTimer);
-            // Restore initial greeting text when user scrolls away
-            document.getElementById('hero-random-greeting').textContent = initialGreetingText;
-            document.getElementById('hero-random-greeting').style.opacity = '1';
+        if (arrow) {
+            if (scrolled > 50) arrow.classList.add('hidden'); 
+            else arrow.classList.remove('hidden');
         }
 
-        // Parallax for Hero
-        const heroBg = document.getElementById('hero-bg-el');
-        if(heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px) scale(1.1)`;
-        
-        // Parallax for Footer
-        const footerBg = document.getElementById('footer-bg-el');
-        const footerSection = document.querySelector('.final-cta-section');
-        if (footerSection && footerBg) {
-            const sectionTop = footerSection.offsetTop;
-            const windowHeight = window.innerHeight;
-            if (scrolled + windowHeight > sectionTop) {
-                const distance = scrolled + windowHeight - sectionTop;
-                footerBg.style.transform = `translateY(${distance * 0.2}px) scale(1.1)`; 
+        // Easter Egg (Пасхалка)
+        if (scrolled > 100 && typeof easterEggActive !== 'undefined' && easterEggActive) {
+            easterEggActive = false;
+            if (typeof easterEggTimer !== 'undefined') clearTimeout(easterEggTimer);
+            const greeting = document.getElementById('hero-random-greeting');
+            if (greeting && typeof initialGreetingText !== 'undefined') {
+                greeting.textContent = initialGreetingText;
+                greeting.style.opacity = '1';
             }
         }
+        
     });
 
     const lightbox = document.getElementById('lightbox');
