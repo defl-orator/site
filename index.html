@@ -1334,7 +1334,12 @@
             height: auto;
             display: block; 
             object-fit: contain; 
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.8s ease;
+            opacity: 0; 
+        }
+
+        .theme-image-wrapper img.loaded {
+            opacity: 1;
         }
 
         .theme-image-wrapper:hover img { transform: scale(1.03); }
@@ -2204,7 +2209,7 @@
             asst_valya_name: "Валя", asst_valya_desc: "Милее ассистента ты уже никогда не встретишь. Готовься к обилию теплоты, комплиментов и всего ми-ми-ми 🥰 (вызывает сильную привязанность).",
             
             theme_normal: "Обычная", theme_normal_dark: "Обычная тёмная",
-            theme_girly: "Девчачья", theme_girly_dark: "Девчачья тёмная",
+            theme_soft: "Нежная", theme_soft_dark: "Нежная тёмная",
             theme_emerald: "Изумрудная", theme_emerald_dark: "Изумрудная тёмная",
             theme_space: "Космическая", theme_space_dark: "Космическая тёмная",
             theme_noir: "Нуарная", theme_noir_dark: "Нуарная тёмная",
@@ -2266,7 +2271,7 @@
             asst_valya_name: "River", asst_valya_desc: "You will never meet a cuter assistant. Prepare for abundance of warmth, compliments and all things cute 🥰 (causes strong attachment).",
             
             theme_normal: "Standard", theme_normal_dark: "Standard Dark",
-            theme_girly: "Girly", theme_girly_dark: "Girly Dark",
+            theme_soft: "Soft", theme_soft_dark: "Soft Dark",
             theme_emerald: "Emerald", theme_emerald_dark: "Emerald Dark",
             theme_space: "Space", theme_space_dark: "Space Dark",
             theme_noir: "Noir", theme_noir_dark: "Noir Dark",
@@ -2372,8 +2377,8 @@
     const themesData = [
         { id: 'normal', base: 'theme_normal', nameKey: 'theme_normal', mode: 'light' },
         { id: 'normal_d', base: 'theme_normal', nameKey: 'theme_normal_dark', mode: 'dark' },
-        { id: 'girly', base: 'theme_girly', nameKey: 'theme_girly', mode: 'light' },
-        { id: 'girly_d', base: 'theme_girly', nameKey: 'theme_girly_dark', mode: 'dark' },
+        { id: 'soft', base: 'theme_soft', nameKey: 'theme_soft', mode: 'light' },
+        { id: 'soft_d', base: 'theme_soft', nameKey: 'theme_soft_dark', mode: 'dark' },
         { id: 'emerald', base: 'theme_emerald', nameKey: 'theme_emerald', mode: 'light' },
         { id: 'emerald_d', base: 'theme_emerald', nameKey: 'theme_emerald_dark', mode: 'dark' },
         { id: 'space', base: 'theme_space', nameKey: 'theme_space', mode: 'light' },
@@ -2416,7 +2421,7 @@
                             data-mode="${item.mode}" 
                             data-ext="png" 
                             alt="${item.id}"
-                            loading="lazy">
+                            class="theme-img-asset"> 
                     </div>
                     <h3>${translations[userLang][item.nameKey]}</h3>
                 `;
@@ -2598,6 +2603,8 @@
             // 2. ЗАПУСКАЕМ АНИМАЦИЮ (Контент полетит сразу, а картинка ассистента через 1с благодаря CSS delay)
             document.body.classList.add('animation-done');
 
+            preloadThemeImages();
+
             // 3. Запускаем физический полет (длительность 1 сек)
             introVizy.style.transition = 'transform 1.0s cubic-bezier(0.19, 1, 0.22, 1)'; 
             introVizy.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
@@ -2678,45 +2685,51 @@
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     function updateImages() {
-        // ВАЖНО: Сначала смотрим на класс BODY, а не на систему
         const bodyIsDark = document.body.classList.contains('dark-theme');
         const bodyIsLight = document.body.classList.contains('light-theme');
-        
-        let isDarkTheme = false;
-        
-        if (bodyIsDark) {
-            isDarkTheme = true;
-        } else if (bodyIsLight) {
-            isDarkTheme = false;
-        } else {
-            // Если классов нет (первый запуск), смотрим систему
-            isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        }
-
+        let isDarkTheme = bodyIsDark || (!bodyIsLight && window.matchMedia('(prefers-color-scheme: dark)').matches);
         const isMobile = window.innerWidth < 768; 
         
         document.querySelectorAll('img[data-base]').forEach(img => {
             const baseName = img.getAttribute('data-base'); 
             const ext = img.getAttribute('data-ext') || 'png';
             const noMobile = img.getAttribute('data-no-mobile') === 'true';
-            
             let newSrc = 'images/' + baseName; 
-            
             if (isMobile && !noMobile) newSrc += '_mobile';
             
-            // Если у картинки есть свой режим (например, только для темной темы), берем его
             const mode = img.getAttribute('data-mode');
-            if (mode) {
-                newSrc += '_' + mode;
-            } else {
-                // ИНАЧЕ ПОДСТАВЛЯЕМ СУФФИКС ТЕМЫ
-                newSrc += isDarkTheme ? '_dark' : '_light';
-            }
-            
+            newSrc += mode ? `_${mode}` : (isDarkTheme ? '_dark' : '_light');
             newSrc += '.' + ext;
             
-            // Меняем src только если он отличается, чтобы не мерцало лишний раз
-            if (!img.src.includes(newSrc)) img.src = newSrc;
+            if (img.src !== newSrc) {
+                img.src = newSrc;
+                // Если картинка уже в кеше (например, после предзагрузки), показываем сразу
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.onload = () => img.classList.add('loaded');
+                }
+            }
+        });
+    }
+
+    function preloadThemeImages() {
+        const isDark = document.body.classList.contains('dark-theme') || 
+                    (!document.body.classList.contains('light-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const isMobile = window.innerWidth < 768;
+
+        themesData.forEach(item => {
+            const img = new Image();
+            let src = `images/${item.base}`;
+            if (isMobile) src += '_mobile';
+            src += `_${item.mode}.png`; // Для тем используем их встроенный mode
+            img.src = src;
+            
+            // Когда картинка физически загрузилась в кеш, находим её в DOM и показываем
+            img.onload = () => {
+                const domImg = document.querySelector(`img[alt="${item.id}"]`);
+                if (domImg) domImg.classList.add('loaded');
+            };
         });
     }
 
