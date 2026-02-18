@@ -235,11 +235,21 @@
         .scroll-down-arrow {
             position: absolute; bottom: 30px; left: 50%;
             width: 30px; height: 30px;
-            border-bottom: 3px solid var(--color-text-main); border-right: 3px solid var(--color-text-main);
+            border-bottom: 3px solid var(--color-text-main); 
+            border-right: 3px solid var(--color-text-main);
             transform: translateX(-50%) rotate(45deg);
-            animation: arrowBlink 2s infinite; cursor: pointer; z-index: 10; transition: opacity 0.3s;
+            animation: arrowBlink 2s infinite; 
+            cursor: pointer; z-index: 10; 
+            
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .scroll-down-arrow.hidden { opacity: 0; pointer-events: none; }
+
+        /* Класс для скрытия */
+        .scroll-down-arrow.hidden { 
+            opacity: 0; 
+            visibility: hidden; /* Чтобы нельзя было кликнуть когда невидима */
+            pointer-events: none; 
+        }
         @keyframes arrowBlink {
             0% { transform: translateX(-50%) rotate(45deg) translate(0, 0); opacity: 0; }
             50% { opacity: 1; }
@@ -486,15 +496,12 @@
             .roadmap-status { margin-top: 10px; align-self: center; justify-self: center; }
             .roadmap-separator { width: 100%; padding: 0 20px; }
             .hero-right-content { padding-left: 0; padding-bottom: 20px; }
-            
-            /* FIXED FOOTER MOBILE */
-            .final-cta-section { height: auto; min-height: auto; padding: 60px 0 0 0; }
-            .final-cta-content-grid { display: flex; flex-direction: column; gap: 40px; padding-bottom: 0; height: auto; }
-            .footer-text-side { align-items: center; text-align: center; }
+
             .footer-text-side p { margin-left: auto; margin-right: auto; }
             
-            .footer-vizy-side { position: relative; width: 100%; height: auto; min-height: 350px; bottom: auto; left: auto; margin-top: 20px; }
-            .footer-asst-img { transform: translateY(0); max-height: 350px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+            .footer-text-side h2 {
+                font-size: 2.5rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -503,8 +510,18 @@
             section { padding: 60px 0; }
             
             /* HERO MOBILE */
-            .hero-new-grid { display: flex; flex-direction: column-reverse; text-align: center; gap: 0; }
-            .hero-left-vizy { width: 100%; justify-content: flex-end; margin-top: 20px; }
+            .hero-new-grid { 
+                display: flex; 
+                flex-direction: column; 
+                text-align: center; 
+                gap: 20px; 
+            }
+            
+            .hero-left-vizy { 
+                width: 100%; 
+                justify-content: center; 
+                margin-top: 40px; 
+            }
             
             .hero-vizy-main-img { max-height: 280px; }
             
@@ -523,10 +540,6 @@
 
             .hero-bg-img { transform: scale(1.15); transform-origin: center top; }
             .final-cta-img { transform: scale(1.15); transform-origin: center bottom; }
-            
-            .footer-asst-img { max-height: 300px; }
-            .final-cta-content-grid { padding-bottom: 0; }
-            .footer-vizy-side { min-height: 300px; }
 
             .mindmap-plain-text { font-size: 1.8rem !important; }
             .mm-capsule { font-size: 1.2rem; padding: 6px 16px; }
@@ -755,32 +768,34 @@
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s ease;
         }
 
-        /* 3. Асинхронные задержки (Как во втором файле) */
+        /* 3. Асинхронные задержки */
         body.animation-done .navbar { transition-delay: 0.0s; }
-        body.animation-done .hero-logo-row { transition-delay: 0.1s; }
-        body.animation-done .hero-subtitle-anim-wrapper { transition-delay: 0.25s; }
-        body.animation-done .telegram-cta { transition-delay: 0.4s; }
-        body.animation-done .scroll-down-arrow { transition-delay: 0.8s; }
+        
+        /* ТЕКСТ СПРАВА: Появляется СРАЗУ, пока ассистент летит */
+        body.animation-done .hero-logo-row { transition-delay: 0.0s; }
+        body.animation-done .hero-subtitle-anim-wrapper { transition-delay: 0.1s; }
+        body.animation-done .telegram-cta { transition-delay: 0.2s; }
+        body.animation-done .scroll-down-arrow { transition-delay: 0.4s; }
 
-        /* Ассистент появляется сразу после полета */
+        /* АССИСТЕНТ (Целевой): Появляется ТОЛЬКО через 1 сек (время полета) */
         body.animation-done .hero-vizy-main-img {
             opacity: 1;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.1s ease 1.0s; 
             animation: floatVizy 6s ease-in-out infinite;
         }
 
-        /* Баббл появляется самым последним */
+        /* БАББЛ С ФРАЗОЙ: Появляется ПОСЛЕ посадки */
         body.animation-done .hero-vizy-greeting-bubble {
             opacity: 1; 
             transform: translateY(0);
             filter: blur(0);
-            transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s; /* Большая задержка 0.8s */
+            transition: opacity 0.4s ease 1.0s, transform 0.4s ease 1.0s; 
         }
 
         /* === NEW CAPSULE NAVBAR STYLES === */
         .navbar-wrapper {
             position: fixed;
-            top: 25px;
+            top: 10px;
             left: 0;
             width: 100%;
             display: flex;
@@ -853,7 +868,7 @@
         /* Скрытие ссылок на мобильных */
         @media (max-width: 900px) {
             .nav-center { display: none; }
-            .navbar-wrapper { top: 15px; }
+            .navbar-wrapper { top: 10px; }
             .nav-right { border: none; }
         }
 
@@ -1154,26 +1169,101 @@
             .scroll-fade-gradient.right { background: linear-gradient(to left, var(--color-card-bg) 20%, rgba(0,0,0,0) 100%); }
         }
 
+        .icon-arrow-btn {
+            width: 20px; 
+            height: 20px;
+            background-color: currentColor; /* Берет цвет текста родителя */
+            
+            /* Маска для PNG */
+            -webkit-mask-image: url('images/right-arrow.png');
+            mask-image: url('images/right-arrow.png');
+            -webkit-mask-size: contain; mask-size: contain;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+            
+            display: inline-block;
+        }
+
+        /* Класс для разворота влево */
+        .arrow-left { transform: rotate(180deg); }
+
+        /* Принудительная светлая тема */
+        body.light-theme {
+            --color-bg: #ffffff;
+            --color-bg-secondary: #f0f2f5; 
+            --color-text-main: #1d1d1f;
+            --color-text-secondary: #86868b;
+            --color-border: #d1d1d6;
+            --color-card-bg: #ffffff;
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            --bubble-bg: #ffffff;
+            --bubble-text: #1d1d1f;
+            --footer-overlay: rgba(255, 255, 255, 0.3);
+            --footer-text-head: #1d1d1f;
+            --footer-text-body: #424245;
+            --sky-bg: #F0F8FF;
+            background-color: #ffffff;
+            color: #1d1d1f;
+        }
+        /* Принудительная светлая тема для блобов */
+        body.light-theme .blob-1 { background: #E0F7FA; opacity: 1; }
+        body.light-theme .blob-2 { background: #E3F2FD; opacity: 1; }
+        body.light-theme .blob-3 { background: #FFFFFF; opacity: 1; }
+        body.light-theme .navbar { background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(255,255,255,0) 100%); }
+        body.light-theme .glass-capsule { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.3); }
+        body.light-theme .hero-bg-container, 
+        body.light-theme .footer-bg-container { background: #F0F8FF; }
+
+        /* Принудительная тёмная тема */
+        body.dark-theme {
+            --color-bg: #121212; 
+            --color-bg-secondary: #1c1c1e;
+            --color-text-main: #f5f5f7;
+            --color-text-secondary: #a1a1a6;
+            --color-border: #38383a; 
+            --color-card-bg: #252526;
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --bubble-bg: #2c2c2e;
+            --bubble-text: #ffffff;
+            --footer-overlay: rgba(0, 0, 0, 0.0); 
+            --footer-text-head: #ffffff;
+            --footer-text-body: #e5e5e7;
+            --sky-bg: #050505;
+            background-color: #121212;
+            color: #f5f5f7;
+        }
+        /* Принудительная тёмная тема для блобов */
+        body.dark-theme .blob-1 { background: #1A237E; opacity: 0.5; }
+        body.dark-theme .blob-2 { background: #311B92; opacity: 0.4; }
+        body.dark-theme .blob-3 { background: #004D40; opacity: 0.3; }
+        body.dark-theme .navbar { background: linear-gradient(to bottom, var(--color-bg) 0%, rgba(0,0,0,0) 100%); }
+        body.dark-theme .glass-capsule { background: rgba(28, 28, 30, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body.dark-theme .hero-bg-container, 
+        body.dark-theme .footer-bg-container { background: #050505; }
+
         /* --- THEMES SLIDER STYLES --- */
 
         .themes-slider-wrapper {
             position: relative;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px 0;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            
+            padding: 40px 0;
+            overflow: hidden; /* Скрываем полосу прокрутки страницы, если вылезет */
         }
 
         .themes-track {
             display: flex;
             overflow-x: auto;
-            gap: 20px;
-            padding: 10px 40px; 
+            gap: 40px; 
+            
+            padding: 20px max(40px, calc(50vw - 500px)); 
+            
             scrollbar-width: none; 
             -ms-overflow-style: none;
-            scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            
-            align-items: flex-start; 
+            align-items: center; 
         }
         .themes-track::-webkit-scrollbar { display: none; }
 
@@ -1181,64 +1271,57 @@
             flex: 0 0 auto;
             background: transparent;
             border: none;
-            box-shadow: none;
             padding: 0;
             
-            width: 320px; 
+            width: 60vw; /* На десктопе занимают 60% экрана */
+            max-width: 900px; /* Но не больше 900px */
             
             display: flex;
             flex-direction: column;
             align-items: center;
-            scroll-snap-align: center;
             transition: transform 0.3s ease;
         }
 
-        .theme-item:hover {
-            transform: translateY(-5px);
+        /* На мобильных делаем почти во весь экран */
+        @media (max-width: 768px) {
+            .theme-item { width: 85vw; }
+            .themes-track { padding: 20px 20px; gap: 20px; }
         }
 
         .theme-image-wrapper {
             width: 100%;
-            border-radius: 20px;
-            
-            overflow: hidden;
-            
-            box-shadow: var(--shadow-card);
-            border: 1px solid var(--color-border);
-            background: var(--color-card-bg); 
-            
-            padding: 0;
-            margin: 0;
-            
+            height: auto; 
+            border-radius: 0; 
+            overflow: visible; 
+            box-shadow: none; 
+            border: none; 
+            background: transparent; 
             cursor: zoom-in;
             position: relative;
-            
-            display: flex; 
+            display: block;
+            line-height: 0; 
         }
 
         .theme-image-wrapper img {
             width: 100%;
             height: auto;
             display: block; 
-            object-fit: cover; 
-            margin: 0;
-            padding: 0;
-            border-radius: 0; 
+            object-fit: contain; 
             transition: transform 0.5s ease;
         }
 
-        .theme-image-wrapper:hover img {
-            transform: scale(1.03);
-        }
+        .theme-image-wrapper:hover img { transform: scale(1.03); }
 
-        /* Текст под картинкой (отдельно) */
         .theme-item h3 {
             margin-top: 15px;
-            margin-bottom: 0;
             font-size: 1.1rem;
             color: var(--color-text-main);
-            font-weight: 600;
-            text-align: center;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        .theme-image-wrapper:hover img {
+            transform: scale(1.02);
         }
 
         /* Кнопки навигации */
@@ -1292,6 +1375,42 @@
             .theme-item {
                 width: 85vw; 
             }
+        }
+
+        /* КНОПКА ТЕМЫ */
+        .theme-toggle-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-right: 8px; /* Отступ от переключателя языка */
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(128, 128, 128, 0.15); /* Легкий фон при наведении */
+            transform: scale(1.05);
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        .theme-icon-img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            display: block;
+            transition: filter 0.3s ease;
+        }
+
+        body.dark-theme .theme-icon-img {
+            filter: invert(1); 
         }
 
         /* --- NEW PRICING STYLES --- */
@@ -1406,7 +1525,93 @@
 
         /* Mobile Adapt */
         @media (max-width: 991px) {
+            .features-container { gap: 40px; }
+            .feature-row, .feature-row:nth-child(even) { display: flex; flex-direction: column; background: var(--color-card-bg); border: 1px solid var(--color-border); border-radius: 32px; box-shadow: var(--shadow-card); overflow: hidden; padding: 0; }
+            .feature-image { order: 1; margin: 0; width: 100%; }
+            .feature-row .image-wrapper { border-radius: 0; box-shadow: none; border: none; border-bottom: 1px solid var(--color-border); pointer-events: none; }
+            .feature-text { order: 2; text-align: center; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
             .pricing-grid { grid-template-columns: 1fr; }
+            .final-cta-section { 
+                height: auto; 
+                min-height: auto; 
+                padding: 40px 0 0 0;
+            }
+
+            .final-cta-content-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                padding: 40px 20px !important;
+            }
+
+            /* 2. Контейнер для ассистента — делаем его якорем для позиционирования */
+            .footer-vizy-side {
+                order: 1 !important; /* Ассистент СВЕРХУ */
+                width: 100% !important;
+                height: 300px !important;
+                position: relative !important;
+                display: block !important;
+                margin: 0 auto 20px auto !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+
+            /* 3. Исправляем саму картинку */
+            .footer-asst-img {
+                position: absolute !important; 
+                bottom: 0 !important;
+                left: 50% !important;
+                
+                transform: translate(-50%, 20px) !important;
+                
+                width: auto !important;
+                height: auto !important;
+                max-height: 280px !important;
+                max-width: 90% !important;
+                opacity: 0 !important;
+                transition: opacity 0.6s ease, transform 0.6s ease !important;
+                
+                /* ОТКЛЮЧАЕМ стандартную анимацию, она ломает центровку */
+                animation: none !important; 
+            }
+
+            /* 4. Когда картинка активна */
+            .footer-asst-img.active {
+                opacity: 1 !important;
+                transform: translate(-50%, 0) !important;
+                animation: floatVizyFooterMobile 6s ease-in-out infinite !important;
+                position: absolute !important;
+            }
+
+            /* 5. Текст под ассистентом */
+            .footer-text-side {
+                order: 2 !important; /* Текст СНИЗУ */
+                width: 100% !important;
+                align-items: center !important;
+            }
+
+            /* Специальная анимация, которая учитывает центровку -50% */
+            @keyframes floatVizyFooterMobile {
+                0%, 100% { 
+                    transform: translate(-50%, 0) rotate(0deg); 
+                }
+                50% { 
+                    transform: translate(-50%, -15px) rotate(2deg); 
+                }
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-vizy-side {
+                height: 300px;
+            }
+            .footer-asst-img {
+                max-height: 280px;
+            }
+            .footer-text-side {
+                margin-bottom: 40px;
+            }
         }
 
     </style>
@@ -1441,7 +1646,7 @@
             <!-- Лево: Логотип (круглый) и Название -->
             <a href="#" class="nav-left" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
                 <div class="logo-mask">
-                    <img src="images/visutype_logo_light.png" alt="Logo" class="nav-logo-img" data-base="visutype_logo" data-ext="png">
+                    <img src="images/visutype_logo_light.png" alt="Logo" class="nav-logo-img" data-base="visutype_logo" data-ext="png" data-no-mobile="true">
                 </div>
             </a>
 
@@ -1453,8 +1658,14 @@
                 <a href="#roadmap" data-i18n="nav_roadmap">Roadmap</a>
             </div>
 
-            <!-- Право: Язык -->
-            <div class="nav-right">
+            <!-- Право: Тема + Язык -->
+            <div class="nav-right" style="display: flex; align-items: center;">
+                <!-- Кнопка темы -->
+                <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Switch theme">
+                    <img src="" alt="Theme Icon" id="theme-icon" class="theme-icon-img">
+                </button>
+
+                <!-- Язык -->
                 <div class="lang-custom" id="lang-switcher">
                     <span class="current-lang" onclick="toggleLangMenu(event)">EN</span>
                     <div class="lang-list" id="lang-list">
@@ -1594,12 +1805,9 @@
                 </div>
 
                 <div class="themes-slider-wrapper fade-in">
-                    <button class="theme-nav-btn prev" onclick="scrollThemes('left')">‹</button>
-                    
                     <div class="themes-track" id="themes-track">
+                        <!-- Сюда JS добавляет картинки -->
                     </div>
-                    
-                    <button class="theme-nav-btn next" onclick="scrollThemes('right')">›</button>
                 </div>
             </div>
         </section>
@@ -1625,9 +1833,15 @@
 
                 <!-- OLD STRUCTURE: 3D Carousel Wrapper -->
                 <div class="carousel-wrapper-common fade-in">
-                    <button class="carousel-nav-btn btn-prev" onclick="moveCarousel('asst', -1)">‹</button>
+                    <button class="carousel-nav-btn btn-prev" onclick="moveCarousel('asst', -1)">
+                        <div class="icon-arrow-btn arrow-left"></div>
+                    </button>
+
                     <div class="carousel-track" id="asst-track"></div>
-                    <button class="carousel-nav-btn btn-next" onclick="moveCarousel('asst', 1)">›</button>
+
+                    <button class="carousel-nav-btn btn-next" onclick="moveCarousel('asst', 1)">
+                        <div class="icon-arrow-btn"></div>
+                    </button>
                 </div>
                 
                 <div class="asst-disclaimer-text fade-in" data-i18n="asst_bottom_disclaimer">
@@ -1874,7 +2088,10 @@
     <div id="lightbox" class="lightbox"><div class="lightbox-close" onclick="closeLightbox()">✕</div><img src="" alt="Full view" class="lightbox-img" id="lightbox-img"></div>
 
     <script>
-    const userLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+
+    const savedLang = localStorage.getItem('visutype_lang');
+    const systemLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
+    const userLang = savedLang || systemLang;
 
     const translations = {
         ru: {
@@ -2242,78 +2459,123 @@
     }
 
     async function runVizyAnimation() {
-    const introOverlay = document.getElementById('intro-overlay');
-    const introVizy = document.getElementById('intro-vizy');
-    const introBubble = document.getElementById('intro-bubble');
-    const targetVizy = document.querySelector('.hero-vizy-main-img');
-    
-    await waitForImage(introVizy);
-    document.getElementById('intro-loader').style.display = 'none';
-    introVizy.style.display = 'block';
-
-    const startWidth = 200; // Ширина #intro-vizy в вашем CSS
-
-    // Появление
-    requestAnimationFrame(() => {
-        introVizy.style.opacity = '1';
-        introVizy.style.transform = 'scale(1)';
-        introVizy.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease';
-    });
-
-    // Появление баббла интро
-    setTimeout(() => {
-        if(introBubble) introBubble.classList.add('visible');
-    }, 400);
-
-    // Подготовка к полету
-    const flightStartTime = 2000;
-    setTimeout(() => {
-        if(introBubble) introBubble.classList.remove('visible');
-        introVizy.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        introVizy.style.transform = 'scale(0.9)';
-    }, flightStartTime - 400);
-
-    // Полет
-    setTimeout(() => {
-        const targetRect = targetVizy.getBoundingClientRect();
-        const startCenterX = window.innerWidth / 2;
-        const startCenterY = window.innerHeight / 2;
-        const targetCenterX = targetRect.left + (targetRect.width / 2);
-        const targetCenterY = targetRect.top + (targetRect.height / 2);
-
-        const deltaX = targetCenterX - startCenterX;
-        const deltaY = targetCenterY - startCenterY;
-        const scale = targetRect.width / startWidth;
-
-        introVizy.style.transition = 'transform 1.1s cubic-bezier(0.19, 1, 0.22, 1)'; 
-        introVizy.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
-        introOverlay.style.background = 'transparent';
-
-        setTimeout(() => {
-            document.body.classList.add('animation-done');
-        }, 150);
-    }, flightStartTime);
-
-    // Завершение
-    setTimeout(() => {
-        document.body.classList.add('logo-landed');
-        introVizy.style.opacity = '0'; 
+        const introOverlay = document.getElementById('intro-overlay');
+        const introVizy = document.getElementById('intro-vizy');
+        const introBubble = document.getElementById('intro-bubble');
+        const targetVizy = document.querySelector('.hero-vizy-main-img');
         
+        // Ждем загрузку картинки
+        await waitForImage(introVizy);
+        document.getElementById('intro-loader').style.display = 'none';
+        introVizy.style.display = 'block';
+
+        const startWidth = 200; 
+
+        // === ЭТАП 1: ПРИВЕТСТВИЕ (1.2 сек) ===
+        // Появление
+        requestAnimationFrame(() => {
+            introVizy.style.opacity = '1';
+            introVizy.style.transform = 'scale(1)';
+            introVizy.style.transition = 'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease';
+        });
+
+        // Баббл "Привет"
         setTimeout(() => {
-            introOverlay.style.display = 'none';
-        }, 200);
-    }, flightStartTime + 1100); 
-}
+            if(introBubble) introBubble.classList.add('visible');
+        }, 100);
+
+        // Тайминг начала полета
+        const flightStartTime = 1200; 
+
+        // Подготовка к прыжку
+        setTimeout(() => {
+            if(introBubble) introBubble.classList.remove('visible');
+            introVizy.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            introVizy.style.transform = 'scale(0.9)';
+        }, flightStartTime - 300);
+
+        // === ЭТАП 2: ПОЛЕТ (1.0 сек) ===
+        setTimeout(() => {
+            const targetRect = targetVizy.getBoundingClientRect();
+            const startCenterX = window.innerWidth / 2;
+            const startCenterY = window.innerHeight / 2;
+            const targetCenterX = targetRect.left + (targetRect.width / 2);
+            const targetCenterY = targetRect.top + (targetRect.height / 2);
+
+            const deltaX = targetCenterX - startCenterX;
+            const deltaY = targetCenterY - startCenterY;
+            
+            let targetWidth = targetRect.width;
+            if (targetWidth === 0) targetWidth = 300; 
+            const scale = targetWidth / startWidth;
+
+            // 1. Убираем белый фон
+            introOverlay.style.background = 'transparent';
+
+            // 2. ЗАПУСКАЕМ АНИМАЦИЮ (Контент полетит сразу, а картинка ассистента через 1с благодаря CSS delay)
+            document.body.classList.add('animation-done');
+
+            // 3. Запускаем физический полет (длительность 1 сек)
+            introVizy.style.transition = 'transform 1.0s cubic-bezier(0.19, 1, 0.22, 1)'; 
+            introVizy.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+
+        }, flightStartTime);
+
+        // === ЭТАП 3: ПРИЗЕМЛЕНИЕ (через 1 сек после старта полета) ===
+        setTimeout(() => {
+            // Подменяем летящего на стационарного
+            document.body.classList.add('logo-landed');
+            introVizy.style.opacity = '0'; // Скрываем летящего
+            
+            // Убираем оверлей окончательно
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+            }, 200);
+
+            // === ЭТАП 4: СКРЫТИЕ ФРАЗЫ ЧЕРЕЗ 5 СЕКУНД ===
+            const heroBubble = document.querySelector('.hero-vizy-greeting-bubble');
+            if (heroBubble) {
+                // 5000мс = 5 секунд чтения
+                setTimeout(() => {
+                    heroBubble.style.transition = 'opacity 1s ease, transform 1s ease';
+                    heroBubble.style.opacity = '0';
+                    heroBubble.style.transform = 'translateY(-10px)'; 
+                }, 5000);
+            }
+
+        }, flightStartTime + 1000); // 1000мс = время полета
+    }
 
     /* === ЗАПУСК === */
     window.addEventListener('load', function() {
+        // 1. Сначала определяем тему 
+        initTheme();
+
+        // 2. Убираем прелоадер
         const p = document.getElementById('preloader');
         if(p) p.style.display = 'none';
 
+        // 3. Язык
         document.querySelector('.current-lang').textContent = userLang.toUpperCase();
+        
+        // 4. Обновляем картинки 
+        updateImages();
 
-        // Запускаем нашу логику
+        // 5. Запуск анимаций
+        // Установка фразы
+        const phrases = introPhrases[userLang] || introPhrases['en'];
+        const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+        const bubbleTextEl = document.getElementById('intro-bubble-text');
+        if (bubbleTextEl) bubbleTextEl.textContent = randomPhrase;
+
+        // Hero фраза
+        setHeroGreeting();
+        
+        // Визя
         runVizyAnimation();
+        
+        // Карусели
+        renderCarousels();
     });
 
     /* === LANGUAGE MENU === */
@@ -2330,9 +2592,9 @@
     });
 
     function setLang(lang) {
-        applyLanguage(lang);
-        // Обновляем текст в переключателе
-        document.querySelector('.current-lang').textContent = lang.toUpperCase();
+        localStorage.setItem('visutype_lang', lang);
+        // ПЕРЕЗАГРУЗКА
+        location.reload();
     }
 
     // Дополнительная страховка скролла
@@ -2341,8 +2603,23 @@
     }
 
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
     function updateImages() {
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // ВАЖНО: Сначала смотрим на класс BODY, а не на систему
+        const bodyIsDark = document.body.classList.contains('dark-theme');
+        const bodyIsLight = document.body.classList.contains('light-theme');
+        
+        let isDarkTheme = false;
+        
+        if (bodyIsDark) {
+            isDarkTheme = true;
+        } else if (bodyIsLight) {
+            isDarkTheme = false;
+        } else {
+            // Если классов нет (первый запуск), смотрим систему
+            isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
         const isMobile = window.innerWidth < 768; 
         
         document.querySelectorAll('img[data-base]').forEach(img => {
@@ -2354,15 +2631,18 @@
             
             if (isMobile && !noMobile) newSrc += '_mobile';
             
+            // Если у картинки есть свой режим (например, только для темной темы), берем его
             const mode = img.getAttribute('data-mode');
             if (mode) {
                 newSrc += '_' + mode;
             } else {
-                newSrc += isDark ? '_dark' : '_light';
+                // ИНАЧЕ ПОДСТАВЛЯЕМ СУФФИКС ТЕМЫ
+                newSrc += isDarkTheme ? '_dark' : '_light';
             }
             
             newSrc += '.' + ext;
             
+            // Меняем src только если он отличается, чтобы не мерцало лишний раз
             if (!img.src.includes(newSrc)) img.src = newSrc;
         });
     }
@@ -2470,6 +2750,46 @@
         window.addEventListener('resize', checkTableScroll);
         window.addEventListener('load', checkTableScroll);
     }
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('visutype_theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const icon = document.getElementById('theme-icon');
+        
+        // Логика: если сохранено 'dark' ИЛИ (ничего не сохранено, но система темная) -> Темная
+        let isDark = false;
+        if (savedTheme === 'dark') isDark = true;
+        else if (savedTheme === 'light') isDark = false;
+        else if (systemDark) isDark = true;
+
+        // Применяем классы
+        if (isDark) {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            if(icon) icon.src = 'images/light_theme.png'; // Иконка Солнца (переключить на светлую)
+        } else {
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+            if(icon) icon.src = 'images/dark_theme.png'; // Иконка Луны (переключить на темную)
+        }
+    }
+
+    function toggleTheme() {
+        // Проверяем текущий активный класс
+        const isDarkCurrently = document.body.classList.contains('dark-theme');
+        
+        if (isDarkCurrently) {
+            // Была темная -> Сохраняем светлую
+            localStorage.setItem('visutype_theme', 'light');
+        } else {
+            // Была светлая -> Сохраняем темную
+            localStorage.setItem('visutype_theme', 'dark');
+        }
+        
+        // ПЕРЕЗАГРУЗКА ДЛЯ ПРИМЕНЕНИЯ ВСЕХ КАРТИНОК
+        location.reload();
+    }
+
 
     </script>
 </body>
