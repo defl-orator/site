@@ -1614,6 +1614,49 @@
             }
         }
 
+        /* Специальный класс для скрытия баббла */
+        .hero-vizy-greeting-bubble.hide-me {
+            opacity: 0 !important;
+            transform: translateY(-20px) !important;
+            transition: opacity 1.5s ease, transform 1.5s ease !important;
+            pointer-events: none;
+        }
+
+        .site-footer {
+            position: relative;
+            background-color: #000;
+            padding: 5px 0;
+            z-index: 20;
+            text-align: center;
+        }
+
+        .footer-black-fade {
+            position: absolute;
+            top: -150px; 
+            left: 0;
+            width: 100%;
+            height: 150px; 
+            background: linear-gradient(to bottom, transparent, #000);
+            pointer-events: none;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.35); 
+            font-size: 0.8rem;
+            margin: 0;
+            letter-spacing: 0.03em;
+        }
+
+        @media (max-width: 768px) {
+            .site-footer {
+                padding: 40px 0 30px;
+            }
+            .footer-black-fade {
+                top: -120px;
+                height: 120px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -2085,6 +2128,13 @@
         </section>
     </main>
 
+    <footer class="site-footer">
+        <div class="footer-black-fade"></div>
+        <div class="container">
+            <p class="copyright">© 2026 visuType. <span data-i18n="footer_rights">All rights reserved.</span></p>
+        </div>
+    </footer>
+
     <div id="lightbox" class="lightbox"><div class="lightbox-close" onclick="closeLightbox()">✕</div><img src="" alt="Full view" class="lightbox-img" id="lightbox-img"></div>
 
     <script>
@@ -2152,7 +2202,9 @@
             hero_return: "С возвращением! Продолжим?",
             hero_return_en: "Welcome back! Shall we continue?",
 
-            nav_feat: "Возможности", nav_style: "Стиль", nav_price: "Цены", nav_roadmap: "План"
+            nav_feat: "Возможности", nav_style: "Стиль", nav_price: "Цены", nav_roadmap: "План",
+
+            footer_rights: "Все права защищены."
         },
         en: {
              hero_home: "Your home for",
@@ -2212,6 +2264,7 @@
             hero_return: "Welcome back! Shall we continue?",
             hero_return_en: "Welcome back! Shall we continue?",
             nav_feat: "Features", nav_style: "Style", nav_price: "Pricing", nav_roadmap: "Roadmap",
+            footer_rights: "All rights reserved."
         }
     };
 
@@ -2535,12 +2588,9 @@
             // === ЭТАП 4: СКРЫТИЕ ФРАЗЫ ЧЕРЕЗ 5 СЕКУНД ===
             const heroBubble = document.querySelector('.hero-vizy-greeting-bubble');
             if (heroBubble) {
-                // 5000мс = 5 секунд чтения
                 setTimeout(() => {
-                    heroBubble.style.transition = 'opacity 1s ease, transform 1s ease';
-                    heroBubble.style.opacity = '0';
-                    heroBubble.style.transform = 'translateY(-10px)'; 
-                }, 5000);
+                    heroBubble.classList.add('hide-me');
+                }, 5000); 
             }
 
         }, flightStartTime + 1000); // 1000мс = время полета
