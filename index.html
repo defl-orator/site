@@ -359,8 +359,6 @@
         .visutype-row .row-name { color: var(--gradient-start); font-size: 1.3rem; }
         .table-legend { margin-top: 20px; text-align: center; font-size: 0.9rem; color: var(--color-text-secondary); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
 
-        .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; align-items: stretch; position: relative; z-index: 2; }
-        .pricing-card { background: var(--color-card-bg); border: none; border-radius: 32px; padding: 60px 40px; display: flex; flex-direction: column; box-shadow: var(--shadow-card); position: relative; transition: transform 0.3s ease; min-width: 0; }
         .pricing-card:hover { transform: translateY(-10px); }
         .pricing-card.pro { border: 3px solid transparent; background: linear-gradient(var(--color-card-bg), var(--color-card-bg)) padding-box, linear-gradient(90deg, #FF2D55, #FF9500) border-box; box-shadow: 0 20px 60px rgba(255, 45, 85, 0.25); padding-bottom: 60px; }
         .price-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; text-align: center; color: var(--color-text-main); letter-spacing: -0.02em; }
@@ -483,7 +481,6 @@
             .feature-text { order: 2; text-align: center; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 150px; }
             .feature-text h3 { font-size: 1.8rem; margin-bottom: 15px; margin-top: 0; }
             .mindmap-header { align-items: center; } 
-            .pricing-grid { grid-template-columns: 1fr; }
             .roadmap-row { grid-template-columns: 1fr; gap: 15px; text-align: center; padding: 30px; }
             .roadmap-date { margin-bottom: 5px; }
             .roadmap-status { margin-top: 10px; align-self: center; justify-self: center; }
@@ -955,6 +952,463 @@
         /* Удаляем старые стили картинки, если остались */
         .final-cta-img { display: none; }
 
+        /* --- COMPARISON STYLES --- */
+
+        /* Базовый стиль иконки */
+        .comp-icon {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            background-color: currentColor;
+            vertical-align: middle;
+        }
+
+        /* 2. Цвета и изображения */
+
+        /* ЗЕЛЕНАЯ ГАЛОЧКА */
+        .comp-icon.check {
+            -webkit-mask-image: url('images/check.png');
+            mask-image: url('images/check.png');
+            background-color: #28cd41; /* Ярко-зеленый (Apple Green) */
+            box-shadow: 0 0 15px rgba(40, 205, 65, 0.4); /* Зеленое свечение */
+        }
+
+        /* ОРАНЖЕВОЕ ПРЕДУПРЕЖДЕНИЕ */
+        .comp-icon.warn {
+            -webkit-mask-image: url('images/warning.png');
+            mask-image: url('images/warning.png');
+            background-color: #FF9500;
+        }
+
+        /* СЕРЫЙ КРЕСТИК */
+        .comp-icon.cross {
+            -webkit-mask-image: url('images/cross.png');
+            mask-image: url('images/cross.png');
+            background-color: var(--color-border);
+            opacity: 0.6;
+        }
+        /* В темной теме крестик чуть светлее */
+        @media (prefers-color-scheme: dark) {
+            .comp-icon.cross { background-color: #636366; }
+        }
+
+        /* --- LEGEND STYLES (Верхний левый угол) --- */
+
+        /* 3. Выравнивание ячейки легенды */
+        .comparison-table th.legend-cell {
+            /* Важно: padding-left 40px выравнивает иконки ровно над названиями конкурентов */
+            padding-left: 40px !important; 
+            padding-top: 15px;
+            padding-bottom: 15px;
+            text-align: left; /* Принудительно влево */
+            vertical-align: middle;
+        }
+
+        .legend-icons-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px; /* Расстояние между иконками */
+        }
+
+        .legend-item {
+            position: relative;
+            cursor: help;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            padding: 4px;
+            transition: background 0.2s;
+        }
+
+        .legend-item:hover {
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        /* Уменьшенные иконки в легенде */
+        .comp-icon.small {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* 4. Тултипы (Бабблы) */
+        .legend-tooltip {
+            position: absolute;
+            /* Позиционируем ВНИЗУ (top: 100%) и чуть ПРАВЕЕ (left: 0), чтобы не обрезалось сверху/слева */
+            top: 100%; 
+            left: 0; 
+            margin-top: 8px; /* Отступ от иконки */
+            
+            background: var(--color-text-main);
+            color: var(--color-bg);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap; /* Текст в одну строку */
+            
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-5px);
+            transition: all 0.2s ease;
+            z-index: 100; /* Поверх всего */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            pointer-events: none;
+        }
+
+        /* Стрелочка тултипа (смотрит вверх на иконку) */
+        .legend-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; /* Прикрепляем к верху тултипа */
+            left: 10px; /* Сдвигаем влево, чтобы стрелка была под иконкой */
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent var(--color-text-main) transparent;
+        }
+
+        /* Показ при наведении или фокусе */
+        .legend-item:hover .legend-tooltip,
+        .legend-item:focus .legend-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Обертка для позиционирования стрелок */
+        .table-mobile-wrapper {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Контейнер подсказки (стрелка + градиент) */
+        .scroll-hint {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Чтобы сквозь градиент можно было скроллить пальцем */
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-hint.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-hint.left { left: 1px; justify-content: flex-start; padding-left: 10px; border-top-left-radius: 32px; border-bottom-left-radius: 32px; }
+        .scroll-hint.right { right: 1px; justify-content: flex-end; padding-right: 10px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; }
+
+        /* Градиентный фейд */
+        .scroll-fade-gradient {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .scroll-fade-gradient.left {
+            background: linear-gradient(to right, var(--color-card-bg) 20%, rgba(255,255,255,0) 100%);
+            border-top-left-radius: 32px; border-bottom-left-radius: 32px;
+        }
+        .scroll-fade-gradient.right {
+            background: linear-gradient(to left, var(--color-card-bg) 20%, rgba(255,255,255,0) 100%);
+            border-top-right-radius: 32px; border-bottom-right-radius: 32px;
+        }
+
+        /* Кнопка-стрелка */
+        .scroll-arrow-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            font-size: 1.5rem;
+            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            pointer-events: auto; /* Включаем клики для кнопки */
+            padding-bottom: 4px; /* Визуальная центровка символа */
+        }
+
+        /* На ПК скрываем эти элементы, они нужны только если есть скролл */
+        @media (min-width: 1025px) {
+            .scroll-hint { display: none; }
+        }
+
+        /* Темная тема для градиентов */
+        @media (prefers-color-scheme: dark) {
+            .scroll-fade-gradient.left { background: linear-gradient(to right, var(--color-card-bg) 20%, rgba(0,0,0,0) 100%); }
+            .scroll-fade-gradient.right { background: linear-gradient(to left, var(--color-card-bg) 20%, rgba(0,0,0,0) 100%); }
+        }
+
+        /* --- THEMES SLIDER STYLES --- */
+
+        .themes-slider-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .themes-track {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 40px; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            
+            align-items: flex-start; 
+        }
+        .themes-track::-webkit-scrollbar { display: none; }
+
+        .theme-item {
+            flex: 0 0 auto;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            
+            width: 320px; 
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scroll-snap-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .theme-image-wrapper {
+            width: 100%;
+            border-radius: 20px;
+            
+            overflow: hidden;
+            
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--color-border);
+            background: var(--color-card-bg); 
+            
+            padding: 0;
+            margin: 0;
+            
+            cursor: zoom-in;
+            position: relative;
+            
+            display: flex; 
+        }
+
+        .theme-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block; 
+            object-fit: cover; 
+            margin: 0;
+            padding: 0;
+            border-radius: 0; 
+            transition: transform 0.5s ease;
+        }
+
+        .theme-image-wrapper:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Текст под картинкой (отдельно) */
+        .theme-item h3 {
+            margin-top: 15px;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+            color: var(--color-text-main);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Кнопки навигации */
+        .theme-nav-btn {
+            position: absolute;
+            top: 40%; 
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            padding-bottom: 3px;
+        }
+
+        .theme-nav-btn:hover {
+            background: var(--color-bg-secondary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .theme-nav-btn.prev { left: 10px; } 
+        .theme-nav-btn.next { right: 10px; }
+
+        /* АДАПТИВНОСТЬ */
+        @media (min-width: 768px) {
+            .theme-item { width: 420px; } 
+            .theme-nav-btn.prev { left: -20px; }
+            .theme-nav-btn.next { right: -20px; }
+        }
+
+        @media (max-width: 767px) {
+            .theme-nav-btn { display: none; }
+            
+            .themes-slider-wrapper {
+                width: 100vw;
+                margin-left: -20px; 
+            }
+            
+            .themes-track {
+                padding: 20px 20px;
+                gap: 15px;
+            }
+            
+            .theme-item {
+                width: 85vw; 
+            }
+        }
+
+        /* --- NEW PRICING STYLES --- */
+
+        .pricing-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            align-items: stretch; 
+            position: relative; 
+            z-index: 2; 
+        }
+
+        .pricing-card { 
+            background: var(--color-card-bg); 
+            border: none; 
+            border-radius: 32px; 
+            padding: 60px 40px; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: var(--shadow-card); 
+            position: relative; 
+            transition: transform 0.3s ease; 
+            min-width: 0; 
+        }
+
+        .pricing-card:hover { 
+            transform: translateY(-10px); 
+        }
+
+        /* Updated PRO Card Style (Blue Gradient) */
+        .pricing-card.pro { 
+            border: 3px solid transparent; 
+            /* Сине-бирюзовый градиент рамки */
+            background: linear-gradient(var(--color-card-bg), var(--color-card-bg)) padding-box, 
+                        linear-gradient(90deg, var(--gradient-start), var(--gradient-end)) border-box; 
+            /* Синяя тень */
+            box-shadow: 0 20px 60px rgba(0, 122, 255, 0.25); 
+            padding-bottom: 60px; 
+        }
+
+        .price-title { 
+            font-size: 3.5rem; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            text-align: center; 
+            color: var(--color-text-main); 
+            letter-spacing: -0.02em; 
+        }
+
+        .price-cost-bottom { 
+            text-align: center; 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            margin-top: auto; 
+        }
+
+        /* --- LIST STYLES --- */
+        .pricing-card ul { 
+            list-style: none; 
+            margin-bottom: 40px; 
+            flex-grow: 1; 
+            padding: 0; 
+        }
+
+        .pricing-card ul li { 
+            padding: 15px 0; 
+            border-bottom: 1px solid var(--color-border); 
+            color: var(--color-text-secondary); 
+            font-size: 1.15rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            line-height: 1.4; 
+        }
+
+        /* Убираем линию у последнего элемента списка (ИСПРАВЛЕНИЕ) */
+        .pricing-card ul li:last-child {
+            border-bottom: none;
+        }
+
+        /* --- PRICE ICONS (Unique Colors) --- */
+        .price-icon {
+            width: 24px;
+            height: 24px;
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            flex-shrink: 0;
+        }
+
+        /* FREE ICONS */
+        .price-icon.edit     { -webkit-mask-image: url('images/edit.png'); mask-image: url('images/edit.png'); background-color: #FF9500; /* Оранжевый (Заметки) */ }
+        .price-icon.cloud    { -webkit-mask-image: url('images/cloud.png'); mask-image: url('images/cloud.png'); background-color: #5AC8FA; /* Небесно-голубой (iCloud) */ }
+        .price-icon.palette  { -webkit-mask-image: url('images/palette.png'); mask-image: url('images/palette.png'); background-color: #AF52DE; /* Фиолетовый (Творчество) */ }
+        .price-icon.import   { -webkit-mask-image: url('images/import.png'); mask-image: url('images/import.png'); background-color: #34C759; /* Зеленый (Вход) */ }
+        .price-icon.file     { -webkit-mask-image: url('images/file.png'); mask-image: url('images/file.png'); background-color: #8E8E93; /* Серый (Файлы) */ }
+
+        /* PRO ICONS */
+        .price-icon.infinity { -webkit-mask-image: url('images/infinity.png'); mask-image: url('images/infinity.png'); background-color: #007AFF; /* Синий (Бесконечность) */ }
+        .price-icon.sparkle  { -webkit-mask-image: url('images/sparkle.png'); mask-image: url('images/sparkle.png'); background-color: #FFD60A; /* Золотой (Премиум) */ }
+        .pricing-card.pro .price-icon.file { background-color: #5856D6; /* Индиго (Pro Export) */ } 
+
+        .price-icon.globe    { -webkit-mask-image: url('images/globe.png'); mask-image: url('images/globe.png'); background-color: #30B0C7; /* Бирюзовый (Веб) */ }
+        .price-icon.rocket   { -webkit-mask-image: url('images/rocket.png'); mask-image: url('images/rocket.png'); background-color: #FF3B30; /* Красный (Скорость/Новое) */ }
+        .price-icon.chat     { -webkit-mask-image: url('images/chat.png'); mask-image: url('images/chat.png'); background-color: #4CD964; /* Салатовый (Общение) */ }
+
+        /* Mobile Adapt */
+        @media (max-width: 991px) {
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 <body>
@@ -1134,18 +1588,18 @@
         <!-- CUSTOMIZATION (THEMES) -->
         <section id="customization" class="bg-primary">
             <div class="container">
-                <div class="vizy-narrator-block fade-in">
+                <div class="vizy-narrator-block fade-in" style="margin-bottom: 40px;">
                     <img src="images/vizy_surprised.png" alt="Vizy Surprised" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_custom">Wow! You can dress up the app to fit your mood? Look at the outfits I found!</div>
                 </div>
 
-                <div class="carousel-header" style="text-align: center; margin-bottom: 30px;">
-                    <h2 class="carousel-title"><span data-i18n="theme_head_1">Choose</span> <span class="highlight gradient-text" data-i18n="theme_head_2">your style</span></h2>
-                </div>
-
-                <!-- OLD STRUCTURE: Marquee Container -->
-                <div class="themes-marquee-container fade-in">
-                    <div class="themes-marquee-track" id="themes-marquee-track"></div>
+                <div class="themes-slider-wrapper fade-in">
+                    <button class="theme-nav-btn prev" onclick="scrollThemes('left')">‹</button>
+                    
+                    <div class="themes-track" id="themes-track">
+                    </div>
+                    
+                    <button class="theme-nav-btn next" onclick="scrollThemes('right')">›</button>
                 </div>
             </div>
         </section>
@@ -1191,11 +1645,32 @@
                     <div class="vizy-narrator-bubble" data-i18n="comment_comparison">Hmm, let's think... Why us? I made a chart, fair and square!</div>
                 </div>
 
-                <div class="table-container fade-in">
-                    <table class="comparison-table">
+                <div class="table-mobile-wrapper fade-in">
+                    <div class="scroll-hint left hidden" id="table-hint-left">
+                        <div class="scroll-fade-gradient left"></div>
+                        <button class="scroll-arrow-btn" onclick="scrollTable('left')">‹</button>
+                    </div>
+
+                    <div class="table-container" id="comparison-scroll-area">
+                        <table class="comparison-table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th class="legend-cell">
+                                        <div class="legend-icons-wrapper">
+                                            <div class="legend-item" tabindex="0">
+                                                <div class="comp-icon check small"></div>
+                                                <span class="legend-tooltip" data-i18n="legend_full">fully implemented</span>
+                                            </div>
+                                            <div class="legend-item" tabindex="0">
+                                                <div class="comp-icon warn small"></div>
+                                                <span class="legend-tooltip" data-i18n="legend_part">partially implemented</span>
+                                            </div>
+                                            <div class="legend-item" tabindex="0">
+                                                <div class="comp-icon cross small"></div>
+                                                <span class="legend-tooltip" data-i18n="legend_none">not implemented</span>
+                                            </div>
+                                        </div>
+                                </th>
                                 <th data-i18n="comp_col_1">Mind Maps</th>
                                 <th data-i18n="comp_col_2">Canvas</th>
                                 <th data-i18n="comp_col_3">Customization</th>
@@ -1206,19 +1681,26 @@
                         </thead>
                         <tbody>
                             <tr class="visutype-row">
-                                <td class="row-name">visuType</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
-                            </tr>
-                            <tr><td class="row-name">Notion</td><td>❌</td><td>❌</td><td>🟨</td><td>🟨</td><td>🟨</td><td>❌</td></tr>
-                            <tr><td class="row-name">Obsidian</td><td>🟨</td><td>✅</td><td>🟨</td><td>✅</td><td>❌</td><td>❌</td></tr>
-                            <tr><td class="row-name">Craft</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
-                            <tr><td class="row-name">Apple Notes</td><td>❌</td><td>🟨</td><td>❌</td><td>✅</td><td>✅</td><td>❌</td></tr>
+                                    <td class="row-name">visuType</td>
+                                    <td><div class="comp-icon check"></div></td>
+                                    <td><div class="comp-icon check"></div></td>
+                                    <td><div class="comp-icon check"></div></td>
+                                    <td><div class="comp-icon check"></div></td>
+                                    <td><div class="comp-icon check"></div></td>
+                                    <td><div class="comp-icon check"></div></td>
+                                </tr>
+                                <tr><td class="row-name">Notion</td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon cross"></div></td></tr>
+                                <tr><td class="row-name">Obsidian</td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon cross"></div></td></tr>
+                                <tr><td class="row-name">Craft</td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon cross"></div></td></tr>
+                                <tr><td class="row-name">Apple Notes</td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon warn"></div></td><td><div class="comp-icon cross"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon check"></div></td><td><div class="comp-icon cross"></div></td></tr>
                         </tbody>
-                    </table>
-                     <div class="table-legend">
-                         <span>✅ <span data-i18n="legend_full">fully implemented</span></span>
-                         <span>🟨 <span data-i18n="legend_part">partially implemented</span></span>
-                         <span>❌ <span data-i18n="legend_none">not implemented</span></span>
-                     </div>
+                        </table>
+                    </div>
+
+                    <div class="scroll-hint right" id="table-hint-right">
+                        <div class="scroll-fade-gradient right"></div>
+                        <button class="scroll-arrow-btn" onclick="scrollTable('right')">›</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1233,27 +1715,30 @@
                 </div>
 
                 <div class="pricing-grid">
+                    <!-- FREE CARD -->
                     <div class="pricing-card fade-in">
                         <div class="price-title">Free</div>
                         <ul>
-                            <li data-i18n="price_free_1">✍️ Best note editor for comfort</li>
-                            <li data-i18n="price_free_2">☁️ iCloud note synchronization</li>
-                            <li data-i18n="price_free_3">🎨 Basic themes/palettes</li>
-                            <li data-i18n="price_free_4">📥 Import notes from other apps</li>
-                            <li data-i18n="price_free_5">📄 Basic export of notes / mind maps / canvases</li>
+                            <li><div class="price-icon edit"></div><span data-i18n="price_free_1">Best note editor for comfort</span></li>
+                            <li><div class="price-icon cloud"></div><span data-i18n="price_free_2">iCloud note synchronization</span></li>
+                            <li><div class="price-icon palette"></div><span data-i18n="price_free_3">Basic themes/palettes</span></li>
+                            <li><div class="price-icon import"></div><span data-i18n="price_free_4">Import notes from other apps</span></li>
+                            <li><div class="price-icon file"></div><span data-i18n="price_free_5">Basic export of notes / mind maps / canvases</span></li>
                         </ul>
                     </div>
+
+                    <!-- PRO CARD -->
                     <div class="pricing-card pro fade-in" style="transition-delay: 0.2s;">
                         <div class="price-title">Pro</div>
                         <ul>
-                            <li data-i18n="price_pro_1">♾️ Everything in Free</li>
-                            <li data-i18n="price_pro_2">✨ Unlimited customization</li>
-                            <li data-i18n="price_pro_5">📤 Advanced export</li>
-                            <li data-i18n="price_pro_6">🌐 Publish note as a website</li>
-                            <li data-i18n="price_pro_3">🚀 Early access to new features</li>
-                            <li data-i18n="price_pro_4">💬 Unique dialogues with assistants</li>
+                            <li><div class="price-icon infinity"></div><span data-i18n="price_pro_1">Everything in Free</span></li>
+                            <li><div class="price-icon sparkle"></div><span data-i18n="price_pro_2">Unlimited customization</span></li>
+                            <li><div class="price-icon file"></div><span data-i18n="price_pro_5">Advanced export</span></li>
+                            <li><div class="price-icon globe"></div><span data-i18n="price_pro_6">Publish note as a website</span></li>
+                            <li><div class="price-icon rocket"></div><span data-i18n="price_pro_3">Early access to new features</span></li>
+                            <li><div class="price-icon chat"></div><span data-i18n="price_pro_4">Unique dialogues with assistants</span></li>
                         </ul>
-                        <div class="price-cost-bottom text-gradient-pro" data-i18n="price_pro_cost">$4.99 / mo</div>
+                        <div class="price-cost-bottom gradient-text" data-i18n="price_pro_cost">$4.99 / mo</div>
                     </div>
                 </div>
             </div>
@@ -1267,10 +1752,8 @@
                     <img src="images/vizy_waiting.png" alt="Vizy Waiting" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">I can't wait for these updates! Here is our plan for world domination.</div>
                 </div>
-                
-                <h2 class="roadmap-title" style="text-align: center; margin-bottom: 40px;" data-i18n="road_head_1">Development Roadmap</h2>
 
-                <!-- OLD STRUCTURE: Separator -> Card -> Row -->
+                <!-- Separator -> Card -> Row -->
                 <div class="roadmap-separator fade-in">
                     <div class="separator-line line-left"></div>
                     <span data-i18n="road_step_1">Stage 1: MVP</span>
@@ -1617,14 +2100,47 @@
         });
         updateCarouselVisuals('asst');
 
-        // Render Themes Marquee
-        const marqueeTrack = document.getElementById('themes-marquee-track');
-        if(marqueeTrack) {
-            const content = themesData.map(item => `<div class="theme-item"><img src="" data-base="${item.base}" data-mode="${item.mode}" data-ext="png" alt="${item.id}"><h3>${translations[userLang][item.nameKey]}</h3></div>`).join('');
-            marqueeTrack.innerHTML = content + content; 
+        // 2. Render Themes 
+        const themesTrack = document.getElementById('themes-track');
+        if(themesTrack) {
+            themesTrack.innerHTML = '';
+            
+            themesData.forEach(item => {
+                const themeDiv = document.createElement('div');
+                themeDiv.className = 'theme-item';
+                
+                themeDiv.innerHTML = `
+                    <div class="theme-image-wrapper" onclick="openLightbox(this)">
+                        <img src="" 
+                            data-base="${item.base}" 
+                            data-mode="${item.mode}" 
+                            data-ext="png" 
+                            alt="${item.id}"
+                            loading="lazy">
+                    </div>
+                    <h3>${translations[userLang][item.nameKey]}</h3>
+                `;
+                
+                themesTrack.appendChild(themeDiv);
+            });
         }
 
         updateImages();
+    }
+
+    /* --- THEMES SCROLL LOGIC --- */
+    function scrollThemes(direction) {
+        const track = document.getElementById('themes-track');
+        if(!track) return;
+        
+        // Ширина одной карточки + отступ (примерно 430px для десктопа)
+        const scrollAmount = 430; 
+        
+        if(direction === 'left') {
+            track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
     }
 
     function moveCarousel(type, direction) {
@@ -1904,6 +2420,56 @@
     
     darkModeQuery.addEventListener('change', updateImages);
     window.addEventListener('resize', updateImages);
+
+    /* --- TABLE SCROLL LOGIC --- */
+    const tableArea = document.getElementById('comparison-scroll-area');
+    const hintLeft = document.getElementById('table-hint-left');
+    const hintRight = document.getElementById('table-hint-right');
+
+    function checkTableScroll() {
+        if (!tableArea) return;
+        
+        // Погрешность в 1px для точности на разных экранах
+        const maxScrollLeft = tableArea.scrollWidth - tableArea.clientWidth - 1;
+        
+        // Если скроллить некуда (на ПК), скрываем всё
+        if (maxScrollLeft <= 0) {
+            hintLeft.classList.add('hidden');
+            hintRight.classList.add('hidden');
+            return;
+        }
+
+        // Логика левой стрелки
+        if (tableArea.scrollLeft > 5) {
+            hintLeft.classList.remove('hidden');
+        } else {
+            hintLeft.classList.add('hidden');
+        }
+
+        // Логика правой стрелки
+        if (tableArea.scrollLeft < maxScrollLeft) {
+            hintRight.classList.remove('hidden');
+        } else {
+            hintRight.classList.add('hidden');
+        }
+    }
+
+    function scrollTable(direction) {
+        if (!tableArea) return;
+        const scrollAmount = 200; // На сколько пикселей скроллить при клике
+        if (direction === 'left') {
+            tableArea.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            tableArea.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }
+
+    // Слушатели событий
+    if (tableArea) {
+        tableArea.addEventListener('scroll', checkTableScroll);
+        window.addEventListener('resize', checkTableScroll);
+        window.addEventListener('load', checkTableScroll);
+    }
 
     </script>
 </body>
