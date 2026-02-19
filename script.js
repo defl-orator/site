@@ -23,6 +23,8 @@ const tableArea = document.getElementById('comparison-scroll-area');
 const hintLeft = document.getElementById('table-hint-left');
 const hintRight = document.getElementById('table-hint-right');
 
+const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
 const assistantsData = [
     { id: 'alex', img: 'images/alex_assistant.png', nameKey: 'asst_alex_name', descKey: 'asst_alex_desc', color: 'linear-gradient(145deg, #4b5563, #1f2937)' },
     { id: 'vizy', img: 'images/vizy_assistant.png', nameKey: 'asst_vizy_name', descKey: 'asst_vizy_desc', color: 'linear-gradient(145deg, #007AFF, #00C7BE)' },
@@ -228,7 +230,6 @@ function setupWavyText(text) {
         });
     }
 }
-
 
 function renderCarousels() {
     const asstTrack = document.getElementById('asst-track');
@@ -523,13 +524,6 @@ function setLang(lang) {
     // ПЕРЕЗАГРУЗКА
     location.reload();
 }
-
-// Дополнительная страховка скролла
-window.onbeforeunload = function () {
-window.scrollTo(0, 0);
-}
-
-const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 function updateImages() {
     const bodyIsDark = document.body.classList.contains('dark-theme');
