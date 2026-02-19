@@ -103,6 +103,22 @@ const translations = {
         road_item_collab_date: "до конца 2026", road_item_collab_title: "Совместный режим", road_item_collab_desc: "Возможность работать над одной заметкой нескольким людям одновременно.",
         road_item_5_date: "до конца 2026", road_item_5_title: "Интеграции ИИ", road_item_5_desc: "И напоследок — ИИ-инструменты и локальная генерация.",
         
+        comment_faq: "Остались вопросы? Я собрал самые частые из них и подготовил ответы!",
+        
+        faq_q1: "Где хранятся мои данные и есть ли синхронизация?",
+        faq_a1: "Все твои заметки, карты мыслей и холсты хранятся на устройстве и автоматически синхронизируются через iCloud. Данные остаются исключительно в пределах твоего аккаунта Apple ID для максимальной конфиденциальности.",
+        
+        faq_q2: "Как работают карты мыслей и холсты внутри текста?",
+        faq_a2: "Ты можешь вставлять их прямо в текстовую заметку как интерактивные блоки (нажав меню «Вставить блок»). Нажатие на такой блок открывает полноэкранный редактор. Карты мыслей поддерживают авто-расстановку и темы, а холсты — свободное рисование.",
+        
+        faq_q3: "В чем особенность ИИ-Ассистента? Это просто чат-бот?",
+        faq_a3: "Нет, это не обычный ИИ-бот. Это виртуальный компаньон, который живет в приложении. Он реагирует на твою активность (например, долгую сессию письма), следит за ежедневными заходами (стриками), выдает достижения и комментирует процесс.",
+        
+        faq_q4: "Могу ли я поделиться своей заметкой с друзьями?",
+        faq_a4: "Да! Любую заметку (включая вложенные карты и холсты) можно экспортировать в красивый PDF. А если хочешь поделиться ссылкой, доступна функция «Опубликовать в Web», которая за пару секунд превратит заметку в веб-страницу.",
+        
+        faq_q5: "Нужен ли интернет для работы приложения?",
+        faq_a5: "Приложение работает абсолютно автономно. Ты можешь создавать заметки, рисовать и строить карты мыслей без сети. Интернет потребуется только для синхронизации по iCloud и публикации заметок в Web.",
         legend_full: "полная реализация", legend_part: "частичная реализация", legend_none: "не реализовано",
         
         hero_return: "С возвращением! Продолжим?",
@@ -165,6 +181,22 @@ const translations = {
         road_item_collab_date: "by end of 2026", road_item_collab_title: "Collaboration Mode", road_item_collab_desc: "Ability for multiple people to work on one note simultaneously.",
         road_item_5_date: "by end of 2026", road_item_5_title: "AI Integrations", road_item_5_desc: "Finally — AI tools and local generation.",
         
+        comment_faq: "Any questions left? I've collected the most common ones and prepared the answers!",
+        
+        faq_q1: "Where is my data stored and is there cloud sync?",
+        faq_a1: "All your notes, mind maps, and canvases are stored on your device and automatically synced via iCloud. Data remains exclusively within your Apple ID account for maximum privacy.",
+        
+        faq_q2: "How do mind maps and canvases work inside notes?",
+        faq_a2: "You can insert them directly into your text notes as interactive blocks. Clicking on such a block opens a full-screen editor. Mind maps support auto-layout and themes, while canvases offer freehand drawing tools.",
+        
+        faq_q3: "What makes the AI Assistant special? Is it just a chatbot?",
+        faq_a3: "No, it's not a standard AI chatbot. It's a virtual companion living in the app. It reacts to your activity (like a long writing session), tracks your daily streaks, awards achievements, and has customizable personalities ranging from strict to romantic.",
+        
+        faq_q4: "Can I share my notes with friends or colleagues?",
+        faq_a4: "Yes! Any note (including nested maps and canvases) can be exported as a beautiful PDF document. If you want to share a link, the 'Publish to Web' feature turns your note into a live webpage in seconds.",
+        
+        faq_q5: "Do I need an internet connection to use the app?",
+        faq_a5: "The app works completely offline. You can create notes, draw, and build mind maps without a network connection. Internet is only required for iCloud sync and publishing notes to the Web.",
         legend_full: "fully implemented", legend_part: "partially implemented", legend_none: "not implemented",
         
         hero_return: "Welcome back! Shall we continue?",
@@ -308,21 +340,25 @@ function updateCarouselVisuals(type) {
 }
 
 function setHeroGreeting() {
-    // Проверяем, был ли юзер тут раньше
     const isReturningUser = localStorage.getItem('visutype_visited');
+    const bubble = document.getElementById('hero-random-greeting');
     
     if (isReturningUser) {
-        // Если вернулся, берем фразу "С возвращением" из словаря
         initialGreetingText = translations[userLang].hero_return;
     } else {
-        // Если новичок, берем случайную фразу
         const list = randomGreetings[userLang];
         initialGreetingText = list[Math.floor(Math.random() * list.length)];
     }
     
-    document.getElementById('hero-random-greeting').textContent = initialGreetingText;
+    bubble.textContent = initialGreetingText;
     
-    // Запускаем таймер пасхалки
+    setTimeout(() => {
+        if (bubble && !bubble.classList.contains('hide-me')) {
+            bubble.classList.add('hide-me');
+            easterEggActive = false; 
+        }
+    }, 5000); 
+
     startEasterEggTimer();
 }
 
@@ -506,6 +542,8 @@ window.addEventListener('load', function() {
     
     // Карусели
     renderCarousels();
+
+    initFAQ();
 });
 
 function toggleLangMenu(event) {
@@ -705,4 +743,27 @@ function toggleTheme() {
     
     // ПЕРЕЗАГРУЗКА ДЛЯ ПРИМЕНЕНИЯ ВСЕХ КАРТИНОК
     location.reload();
+}
+
+function initFAQ() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const questionBtn = item.querySelector('.faq-question');
+        
+        questionBtn.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            
+            faqItems.forEach(otherItem => {
+                otherItem.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    });
 }
