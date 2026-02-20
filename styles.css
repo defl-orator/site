@@ -240,6 +240,23 @@ section { padding: 100px 0; position: relative; width: 100%; overflow: hidden; t
     50% { transform: translate(-50%, -15px) rotate(2deg); }
 }
 
+@keyframes arrowDownMove {
+    0% { 
+        bottom: 50px; 
+        opacity: 0; 
+        transform: translateX(-50%) rotate(90deg); 
+    }
+    50% { 
+        opacity: 1;  
+        transform: translateX(-50%) rotate(90deg); 
+    }
+    100% { 
+        bottom: 20px; 
+        opacity: 0;   
+        transform: translateX(-50%) rotate(90deg); 
+    }
+}
+
 /* Initial Hidden States Before Animation Done */
 body:not(.animation-done) .hero-logo-row,
 body:not(.animation-done) .hero-logo-img,
@@ -398,8 +415,41 @@ body.animation-done .hero-vizy-greeting-bubble {
 .hero-vizy-greeting-bubble::after { content: ''; position: absolute; top: -8.5px; left: 50%; transform: translateX(-50%); border-width: 0 10px 10px 10px; border-style: solid; border-color: transparent transparent var(--bubble-bg) transparent; }
 .hero-vizy-greeting-bubble.hide-me { opacity: 0 !important; transform: translateY(-20px) !important; transition: opacity 1.5s ease, transform 1.5s ease !important; pointer-events: none; }
 
-.scroll-down-arrow { position: absolute; bottom: 30px; left: 50%; width: 30px; height: 30px; border-bottom: 3px solid var(--color-text-main); border-right: 3px solid var(--color-text-main); transform: translateX(-50%) rotate(45deg); animation: arrowBlink 2s infinite; cursor: pointer; z-index: 10; transition: opacity 0.3s ease, visibility 0.3s ease; }
-.scroll-down-arrow.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.scroll-down-arrow { 
+    position: absolute; 
+    left: 50%; 
+    width: 24px; 
+    height: 24px; 
+    
+    -webkit-mask-image: url('images/right-arrow.png');
+    mask-image: url('images/right-arrow.png');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-color: var(--color-text-main); 
+    
+    transform: translateX(-50%) rotate(90deg);
+    transform-origin: center center;
+    
+    animation: arrowDownMove 2s infinite ease-in-out;
+    
+    cursor: pointer; 
+    z-index: 10; 
+    
+    transition: opacity 0.5s ease, visibility 0.5s ease; 
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Класс скрытия */
+.scroll-down-arrow.hidden { 
+    opacity: 0; 
+    visibility: hidden; 
+    pointer-events: none; 
+}
 
 .hero-right-content { padding-left: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .hero-logo-row { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; justify-content: center; }
@@ -668,8 +718,8 @@ body.animation-done .hero-vizy-greeting-bubble {
 .footer-asst-img { max-width: 100%; height: auto; max-height: 600px; filter: drop-shadow(0 10px 40px rgba(0,0,0,0.3)); transform: translateY(50px); position: absolute; bottom: 0; opacity: 0; transition: opacity 0.8s ease; animation: floatVizy 6s ease-in-out infinite; }
 .footer-asst-img.active { opacity: 1; position: relative; } 
 
-.site-footer { position: relative; background-color: var(--color-footer-bg); padding: 20px 0; z-index: 20; text-align: center; transition: background-color 0.5s ease; }
-.footer-black-fade { position: absolute; top: -150px; left: 0; width: 100%; height: 150px; background: linear-gradient(to bottom, transparent, var(--color-footer-bg)); pointer-events: none; transition: background 0.5s ease; }
+.site-footer { position: relative; background-color: var(--color-bg); padding: 20px 0; z-index: 20; text-align: center; transition: background-color 0.5s ease; margin-top: -1px; }
+.footer-black-fade { position: absolute; top: -150px; left: 0; width: 100%; height: 150px; background: linear-gradient(to bottom, transparent, var(--color-footer-bg)); pointer-events: none; transition: background 0.5s ease; z-index: -1; }
 .copyright { color: var(--color-footer-text); font-size: 0.8rem; margin: 0; letter-spacing: 0.03em; transition: color 0.5s ease; }
 
 /* ==========================================================================
@@ -682,7 +732,7 @@ body.animation-done .hero-vizy-greeting-bubble {
     padding-top: 20px;
     overflow: visible;
 }
-.faq-accordion { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 2; }
+.faq-accordion { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 50; }
 
 .faq-top-fade {
     position: absolute;
@@ -784,6 +834,10 @@ body.animation-done .hero-vizy-greeting-bubble {
     transform: translateY(0);
 }
 
+#faq.faq-section {
+    overflow: visible !important;
+}
+
 /* ==========================================================================
 15. MEDIA QUERIES
 ========================================================================== */
@@ -869,8 +923,18 @@ body.animation-done .hero-vizy-greeting-bubble {
     .footer-text-side { margin-bottom: 40px; }
     .final-cta-img { transform: scale(1.15); transform-origin: center bottom; }
     
-    .site-footer { padding: 40px 0 30px; }
-    .footer-black-fade { top: -120px; height: 120px; }
+    .site-footer { padding: 10px 0 20px; }
+    .footer-black-fade { top: -40px; height: 40px; }
+
+    .faq-section {
+        padding-bottom: 10px; 
+        padding-top: 40px;
+    }
+
+    .copyright {
+        font-size: 0.75rem;
+        opacity: 0.7;
+    }
 
     .image-wrapper,
     .theme-item img,

@@ -64,6 +64,10 @@
     }
     </script>
 
+    <!-- Preload Critical Assets -->
+    <link rel="preload" as="image" href="images/vizy_greeting.png">
+    <link rel="preload" as="image" href="images/visutype_logo_light.png">
+
     <link rel="stylesheet" href="styles.css">
 
 </head>
@@ -182,9 +186,9 @@
     <main>
         <!-- FEATURES -->
         <section class="features-section bg-secondary">
-            <div class="container">
+            <div class="container"> 
                 <div class="vizy-narrator-block fade-in">
-                    <img src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
+                    <img data-src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_features">Look what I can do! Everything to make your ideas feel at home.</div>
                 </div>
 
@@ -197,7 +201,7 @@
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
-                                <img src="images/notes_light.png" alt="Flexible Notes Interface" class="adaptive-img" data-base="notes" data-ext="png">
+                                <img src="..." alt="Flexible Notes Interface" class="adaptive-img" data-base="notes" data-ext="png">
                                 <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
                             </div>
                         </div>
@@ -218,7 +222,7 @@
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
-                                <img src="images/mindmap_light.png" alt="Mind Maps Interface" class="adaptive-img" data-base="mindmap" data-ext="png">
+                                <img src="..." alt="Mind Maps Interface" class="adaptive-img" data-base="mindmap" data-ext="png">
                                 <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
                             </div>
                         </div>
@@ -232,7 +236,7 @@
                         </div>
                         <div class="feature-image">
                             <div class="image-wrapper" onclick="openLightbox(this)">
-                                <img src="images/canvas_light.png" alt="Creative Canvas" class="adaptive-img" data-base="canvas" data-ext="png">
+                                <img src="..." alt="Creative Canvas" class="adaptive-img" data-base="canvas" data-ext="png">
                                 <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
                             </div>
                         </div>
@@ -246,7 +250,7 @@
         <section id="customization" class="bg-primary">
             <div class="container">
                 <div class="vizy-narrator-block fade-in" style="margin-bottom: 40px;">
-                    <img src="images/vizy_surprised.png" alt="Vizy Surprised" class="vizy-narrator-img">
+                    <img data-src="images/vizy_surprised.png" alt="Vizy Surprised" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_custom">Wow! You can dress up the app to fit your mood? Look at the outfits I found!</div>
                 </div>
 
@@ -264,16 +268,16 @@
             <div class="container">
                 
                 <div class="vizy-narrator-block fade-in" style="margin-bottom: 30px;">
-                    <img src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
+                    <img data-src="images/vizy_happy.png" alt="Vizy Happy" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_home_atmosphere">Make yourself at home! I'm here to create comfort and help with everything.</div>
                 </div>
 
                 <div class="ai-interface-preview fade-in">
-                    <img src="images/assistant_light.png" alt="App Interface with Assistant" data-base="assistant" data-ext="png">
+                    <img src="..." alt="App Interface with Assistant" data-base="assistant" data-ext="png">
                 </div>
                 
                 <div class="vizy-narrator-block fade-in" style="margin-top:80px;">
-                    <img src="images/vizy_cute.png" alt="Vizy Cute" class="vizy-narrator-img">
+                    <img data-src="images/vizy_cute.png" alt="Vizy Cute" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_assistants">And these are my friends (and me). Maybe you'll like someone more than me... 😪(😅)</div>
                 </div>
 
@@ -301,7 +305,7 @@
         <section id="comparison" class="bg-primary">
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
-                    <img src="images/vizy_thinking.png" alt="Vizy Thinking" class="vizy-narrator-img">
+                    <img data-src="images/vizy_thinking.png" alt="Vizy Thinking" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_comparison">Hmm, let's think... Why us? I made a chart, fair and square!</div>
                 </div>
 
@@ -370,7 +374,7 @@
             <div class="section-divider divider-top-in-gray"></div>
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
-                    <img src="images/vizy_cool.png" alt="Vizy Cool" class="vizy-narrator-img">
+                    <img data-src="images/vizy_cool.png" alt="Vizy Cool" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_pricing">Free is cool. But with Pro you become cosmic. Check out the terms.</div>
                 </div>
 
@@ -409,7 +413,7 @@
         <section id="roadmap" class="bg-primary">
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
-                    <img src="images/vizy_waiting.png" alt="Vizy Waiting" class="vizy-narrator-img">
+                    <img data-src="images/vizy_waiting.png" alt="Vizy Waiting" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">I can't wait for these updates! Here is our plan for world domination.</div>
                 </div>
 
@@ -519,7 +523,7 @@
                     <h2><span data-i18n="footer_news_head">Liked it?</span></h2>
                     <p data-i18n="footer_news_desc">If so, join our Telegram channel.</p>
                     <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <img src="images/telegram.png" alt="Telegram" class="tg-icon">
+                        <img data-src="images/telegram.png" alt="Telegram" class="tg-icon">
                         <span data-i18n="btn_news">Read in Telegram</span>
                     </a>
                 </div>
@@ -531,11 +535,11 @@
         </section>
 
         <!-- FAQ -->
-        <section id="faq" class="faq-section bg-primary" style="position: relative; z-index: 10; padding-top: 60px; padding-bottom: 100px;">
+        <section id="faq" class="faq-section bg-primary" style="position: relative; z-index: 10; padding-top: 60px; padding-bottom: 20px;">
             <div class="faq-top-fade"></div>
             <div class="container">
                 <div class="vizy-narrator-block fade-in" style="margin-bottom: 40px;">
-                    <img src="images/vizy_assistant.png" alt="Vizy Questions" class="vizy-narrator-img">
+                    <img data-src="images/vizy_assistant.png" alt="Vizy Questions" class="vizy-narrator-img">
                     <div class="vizy-narrator-bubble" data-i18n="comment_faq">Any questions left? I've collected the most common ones and prepared the answers!</div>
                 </div>
 
@@ -612,7 +616,6 @@
 
     <!-- 5. FOOTER -->
     <footer class="site-footer">
-        <div class="footer-black-fade"></div>
         <div class="container">
             <p class="copyright">© 2026 visuType. <span data-i18n="footer_rights">All rights reserved.</span></p>
         </div>

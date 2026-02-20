@@ -397,6 +397,10 @@ function changeGreetingWithAnimation(text) {
 function initFooterAnimation() {
     const container = document.getElementById('footer-asst-container');
     if(!container) return; 
+    
+    // === Очищаем контейнер от старых img перед созданием новых ===
+    container.innerHTML = ''; 
+
     footerAssistants.forEach((src, i) => {
         const img = document.createElement('img');
         img.src = src;
@@ -404,7 +408,10 @@ function initFooterAnimation() {
         container.appendChild(img);
     });
 
-    setInterval(() => {
+    // Очищаем предыдущий интервал, если функция вызывается повторно
+    if (window.footerInterval) clearInterval(window.footerInterval);
+
+    window.footerInterval = setInterval(() => {
         const images = document.querySelectorAll('.footer-asst-img');
         if(images.length > 0) {
             images[currentFooterAsst].classList.remove('active');
@@ -478,14 +485,16 @@ async function runVizyAnimation() {
         if (targetWidth === 0) targetWidth = 300; 
         const targetScale = targetWidth / startWidth;
 
-        // ФИКС ДВОЙНОГО АССИСТЕНТА:
         // Перебиваем CSS, скрывая конечную цель до самого момента посадки
         targetVizy.style.transition = 'none';
         targetVizy.style.opacity = '0';
 
         introOverlay.style.background = 'transparent';
         document.body.classList.add('animation-done');
+        updateImages(); 
+        renderCarousels();
         preloadThemeImages();
+        loadStaticImages();
 
         introVizy.style.transition = 'none';
 
@@ -545,37 +554,28 @@ async function runVizyAnimation() {
     }, flightStartTime);
 }
 
-window.addEventListener('load', function() {
-    // 1. Сначала определяем тему 
+document.addEventListener('DOMContentLoaded', function() {
     initTheme();
+    // 1. СРАЗУ загружаем только шапку и навбар (критический контент)
+    // Передаем конкретные блоки в функцию
+    updateImages(document.querySelector('.navbar-wrapper'));
+    updateImages(document.querySelector('.hero'));
 
-    // 2. Убираем прелоадер
-    const p = document.getElementById('preloader');
-    if(p) p.style.display = 'none';
-
-    // 3. Язык
     document.querySelector('.current-lang').textContent = userLang.toUpperCase();
     
-    // 4. Обновляем картинки 
-    updateImages();
-
-    // 5. Запуск анимаций
-    // Установка фразы
+    // Фразы и прочее
     const phrases = introPhrases[userLang] || introPhrases['en'];
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
     const bubbleTextEl = document.getElementById('intro-bubble-text');
     if (bubbleTextEl) bubbleTextEl.textContent = randomPhrase;
 
-    // Hero фраза
     setHeroGreeting();
     
-    // Визя
+    // Запускаем анимацию Визни
     runVizyAnimation();
     
-    // Карусели
-    renderCarousels();
-
     initFAQ();
+    initFooterAnimation();
 });
 
 function toggleLangMenu(event) {
@@ -595,13 +595,14 @@ function setLang(lang) {
     location.reload();
 }
 
-function updateImages() {
+function updateImages(container = document) {
     const bodyIsDark = document.body.classList.contains('dark-theme');
     const bodyIsLight = document.body.classList.contains('light-theme');
     let isDarkTheme = bodyIsDark || (!bodyIsLight && window.matchMedia('(prefers-color-scheme: dark)').matches);
     const isMobile = window.innerWidth < 768; 
     
-    document.querySelectorAll('img[data-base]').forEach(img => {
+    // Ищем картинки только внутри переданного контейнера
+    container.querySelectorAll('img[data-base]').forEach(img => {
         const baseName = img.getAttribute('data-base'); 
         const ext = img.getAttribute('data-ext') || 'png';
         const noMobile = img.getAttribute('data-no-mobile') === 'true';
@@ -612,9 +613,9 @@ function updateImages() {
         newSrc += mode ? `_${mode}` : (isDarkTheme ? '_dark' : '_light');
         newSrc += '.' + ext;
         
-        if (img.src !== newSrc) {
+        // Загружаем картинку
+        if (img.src !== newSrc && !img.src.endsWith(newSrc)) {
             img.src = newSrc;
-            // Если картинка уже в кеше (например, после предзагрузки), показываем сразу
             if (img.complete) {
                 img.classList.add('loaded');
             } else {
@@ -649,14 +650,42 @@ window.addEventListener('load', function() {
     setTimeout(() => document.getElementById('preloader').style.visibility = 'hidden', 500);
 });
 
+window.addEventListener('load', function() {
+    const p = document.getElementById('preloader');
+    if(p) {
+        p.style.opacity = '0';
+        setTimeout(() => p.style.visibility = 'hidden', 500);
+    }
+});
+
 window.addEventListener('scroll', function() {
     const scrolled = window.scrollY;
     
-    // Scroll Arrow (Стрелка)
-    const arrow = document.getElementById('scroll-arrow');
-    if (arrow) {
-        if (scrolled > 50) arrow.classList.add('hidden'); 
-        else arrow.classList.remove('hidden');
+    // Объявляем переменные для стрелки глобально или в начале скрипта
+    let arrowScrollTriggered = false;
+    const scrollArrow = document.getElementById('scroll-arrow');
+    let arrowHidePending = false; // Флаг: "нужно скрыть, когда анимация доиграет"
+
+    if (scrollArrow) {
+        // 1. Слушаем скролл
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                // Если прокрутили вниз — ставим флаг "скрыть позже"
+                arrowHidePending = true;
+            } else {
+                // Если вернулись наверх — ОТМЕНЯЕМ флаг и ПОКАЗЫВАЕМ СРАЗУ
+                arrowHidePending = false;
+                scrollArrow.classList.remove('hidden');
+            }
+        });
+
+        // 2. Слушаем каждый "круг" анимации (раз в 2 секунды)
+        scrollArrow.addEventListener('animationiteration', () => {
+            // Если флаг стоит — плавно скрываем стрелку
+            if (arrowHidePending) {
+                scrollArrow.classList.add('hidden');
+            }
+        });
     }
 
     // Easter Egg (Пасхалка)
@@ -797,5 +826,13 @@ function initFAQ() {
                 item.classList.remove('active');
             }
         });
+    });
+}
+
+function loadStaticImages() {
+    const images = document.querySelectorAll('img[data-src]');
+    images.forEach(img => {
+        img.src = img.getAttribute('data-src');
+        img.removeAttribute('data-src'); // Убираем атрибут, чтобы не грузить повторно
     });
 }
