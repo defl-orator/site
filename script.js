@@ -437,12 +437,9 @@ async function runVizyAnimation() {
 
     const startWidth = 200; 
 
-    // ПРОВЕРКА: Был ли пользователь здесь раньше?
     const isReturningUser = localStorage.getItem('visutype_visited');
-    // Сразу записываем, что он тут был
     localStorage.setItem('visutype_visited', 'true');
 
-    // Тайминг начала полета: 1200мс для новых, 100мс для старых (сразу летит)
     const flightStartTime = isReturningUser ? 100 : 1200;
 
     // === ЭТАП 1: ПРИВЕТСТВИЕ ===
@@ -453,23 +450,20 @@ async function runVizyAnimation() {
     });
 
     if (!isReturningUser) {
-        // Показываем баббл "Привет!" только новым пользователям
         setTimeout(() => {
             if(introBubble) introBubble.classList.add('visible');
         }, 100);
     } else {
-        // Прячем баббл для старых, чтобы не мелькал
         if(introBubble) introBubble.style.display = 'none';
     }
 
-    // Подготовка к прыжку (сжатие перед прыжком)
     setTimeout(() => {
         if(introBubble && !isReturningUser) introBubble.classList.remove('visible');
         introVizy.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         introVizy.style.transform = 'scale(0.9)';
-    }, Math.max(0, flightStartTime - 300)); // Если flightStartTime 100, сработает сразу (0)
+    }, Math.max(0, flightStartTime - 300));
 
-    // === ЭТАП 2: ПОЛЕТ ===
+    // === ЭТАП 2: ПОЛЕТ (Плавная дуга Безье) ===
     setTimeout(() => {
         const targetRect = targetVizy.getBoundingClientRect();
         const startCenterX = window.innerWidth / 2;
@@ -482,35 +476,73 @@ async function runVizyAnimation() {
         
         let targetWidth = targetRect.width;
         if (targetWidth === 0) targetWidth = 300; 
-        const scale = targetWidth / startWidth;
+        const targetScale = targetWidth / startWidth;
 
-        // 1. Убираем белый фон
+        // ФИКС ДВОЙНОГО АССИСТЕНТА:
+        // Перебиваем CSS, скрывая конечную цель до самого момента посадки
+        targetVizy.style.transition = 'none';
+        targetVizy.style.opacity = '0';
+
         introOverlay.style.background = 'transparent';
-
-        // 2. ЗАПУСКАЕМ АНИМАЦИЮ (Показываем интерфейс сайта)
         document.body.classList.add('animation-done');
-
         preloadThemeImages();
 
-        // 3. Запускаем физический полет (длительность 1 сек)
-        introVizy.style.transition = 'transform 1.0s cubic-bezier(0.19, 1, 0.22, 1)'; 
-        introVizy.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+        introVizy.style.transition = 'none';
+
+        // Делаем полет быстрее (850 мс вместо 1200)
+        const flightDuration = 850; 
+        let startTime = null;
+
+        // Точки кривой:
+        const p0 = { x: 0, y: 0 }; 
+        const p3 = { x: deltaX, y: deltaY };
+        const p1 = { x: deltaX * 0.15, y: 150 };  // Резко ныряет вниз на старте
+        const p2 = { x: deltaX * 0.75, y: deltaY - 120 }; // Плавно заходит на дугу выше цели
+
+        function getBezierPoint(t, p0, p1, p2, p3) {
+            const u = 1 - t;
+            const tt = t * t, uu = u * u;
+            const uuu = uu * u, ttt = tt * t;
+            return (uuu * p0) + (3 * uu * t * p1) + (3 * u * tt * p2) + (ttt * p3);
+        }
+
+        // Максимальная скорость в начале, очень плавное торможение в конце
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function animateFlight(timestamp) {
+            if (!startTime) startTime = timestamp;
+            let progress = (timestamp - startTime) / flightDuration;
+            if (progress > 1) progress = 1;
+
+            const t = easeOutCubic(progress);
+
+            const currentX = getBezierPoint(t, p0.x, p1.x, p2.x, p3.x);
+            const currentY = getBezierPoint(t, p0.y, p1.y, p2.y, p3.y);
+            const currentScale = 0.9 + (targetScale - 0.9) * t;
+
+            introVizy.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+
+            if (progress < 1) {
+                // Если полет еще идет - рисуем следующий кадр
+                requestAnimationFrame(animateFlight);
+            } else {
+                // === ЭТАП 3: ИДЕАЛЬНАЯ ПОСАДКА ===
+                // Вызывается ровно в тот кадр, когда летящая картинка достигла цели
+                targetVizy.style.opacity = '1';
+                
+                introVizy.style.opacity = '0';
+                introVizy.style.display = 'none';
+                
+                document.body.classList.add('logo-landed');
+                introOverlay.style.display = 'none';
+            }
+        }
+
+        requestAnimationFrame(animateFlight);
 
     }, flightStartTime);
-
-    // === ЭТАП 3: ПРИЗЕМЛЕНИЕ ===
-    setTimeout(() => {
-        document.body.classList.add('logo-landed');
-        
-        // Плавное исчезновение летящего ассистента
-        introVizy.style.transition = 'opacity 0.4s ease';
-        introVizy.style.opacity = '0'; 
-        
-        setTimeout(() => {
-            introOverlay.style.display = 'none';
-        }, 400);
-
-    }, flightStartTime + 1000); 
 }
 
 window.addEventListener('load', function() {

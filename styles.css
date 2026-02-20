@@ -835,17 +835,22 @@ body.animation-done .hero-vizy-greeting-bubble {
     .button { width: 100%; max-width: 340px; padding: 16px 24px; font-size: 1rem; margin: 0 auto; }
     section { padding: 60px 0; }
     
+    .hero { 
+        padding-top: 90px; 
+        padding-bottom: 20px;
+    }
+
     .hero-new-grid { display: flex; flex-direction: column; text-align: center; gap: 20px; }
-    .hero-left-vizy { width: 100%; justify-content: center; margin-top: 40px; }
-    .hero-vizy-main-img { max-height: 280px; }
+    .hero-left-vizy { width: 100%; justify-content: center; margin-top: 10px; }
+    .hero-vizy-main-img { max-height: 190px; }
     .hero-vizy-greeting-bubble { order: 0; margin-bottom: 10px; margin-top: 0; font-size: 0.9rem; padding: 10px 15px; width: 90%; }
     .hero-vizy-greeting-bubble::before { top: auto; bottom: -10px; border-width: 10px 10px 0 10px; border-color: var(--color-border) transparent transparent transparent; left: 50%; transform: translateX(-50%); }
     .hero-vizy-greeting-bubble::after { top: auto; bottom: -8.5px; border-width: 10px 10px 0 10px; border-color: var(--bubble-bg) transparent transparent transparent; left: 50%; transform: translateX(-50%); }
     
     .hero-right-content { padding-left: 0; display: flex; flex-direction: column; align-items: center; }
     .hero-logo-row { justify-content: center; }
-    .hero-title-main { font-size: 3rem; }
-    .hero-subtitle-anim-wrapper { align-items: center; font-size: 1.5rem; text-align: center; margin-bottom: 20px; }
+    .hero-title-main { font-size: 2.6rem; }
+    .hero-subtitle-anim-wrapper { align-items: center; font-size: 1.3rem; text-align: center; margin-bottom: 25px; }
     .static-prefix { font-size: 1.5rem; }
     .hero-bg-img { transform: scale(1.15); transform-origin: center top; }
     
