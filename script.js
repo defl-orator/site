@@ -1,21 +1,35 @@
 function checkSubscription() {
+    // Проверяем, есть ли пометка в кэше, что пользователь уже подписан
     if (localStorage.getItem('visutype_joined')) {
-        // Скрываем кнопки "Стань первооткрывателем"
-        document.querySelectorAll('.wishlist-btn').forEach(btn => {
-            btn.style.display = 'none';
-        });
-        // Если открыта модалка, показываем там сообщение вместо формы
+        const modal = document.getElementById('wishlist-modal');
+        if (!modal) return;
+
+        // 1. Скрываем элементы ввода
+        const toggle = modal.querySelector('.wishlist-toggle-wrapper');
+        const inputs = modal.querySelector('.wishlist-input-group');
+        const submitBtn = modal.querySelector('.wishlist-btn'); // Кнопка "Присоединиться" внутри модалки
+        const desc = modal.querySelector('p[data-i18n="wishlist_desc"]'); // Описание под заголовком
+
+        if (toggle) toggle.style.display = 'none';
+        if (inputs) inputs.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'none';
+        if (desc) desc.style.display = 'none';
+
+        // 2. Показываем сообщение об успехе
         const msg = document.getElementById('wishlist-msg');
         if (msg) {
             msg.style.display = 'block';
             msg.style.color = '#34C759';
+            msg.style.fontSize = '1.2rem';
+            msg.style.textAlign = 'center';
+            msg.style.marginTop = '20px';
+            msg.style.fontWeight = '600';
+            // Берем перевод фразы "Готово! Мы сообщим тебе о релизе"
             msg.innerText = window.translations[window.userLang].wishlist_success;
-            // Скрываем инпуты
-            document.querySelector('.wishlist-input-group').style.display = 'none';
-            document.querySelector('.wishlist-toggle-wrapper').style.display = 'none';
         }
     }
 }
+window.checkSubscription = checkSubscription;
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
@@ -648,8 +662,6 @@ async function runVizyAnimation() {
 
 document.addEventListener('DOMContentLoaded', function() {
     initTheme();
-    // 1. СРАЗУ загружаем только шапку и навбар (критический контент)
-    // Передаем конкретные блоки в функцию
     updateImages(document.querySelector('.navbar-wrapper'));
     updateImages(document.querySelector('.hero'));
 
@@ -910,6 +922,7 @@ function toggleTheme() {
 // --- Функции для открытия/закрытия модалки Wishlist ---
 function openWishlistModal() {
     document.getElementById('wishlist-modal').classList.add('active');
+    checkSubscription(); 
 }
 function closeWishlistModal() {
     document.getElementById('wishlist-modal').classList.remove('active');
