@@ -740,14 +740,12 @@
 
         // 2. Функция отправки Email в Firebase
         window.submitWishlist = async function() {
-            // Определяем, какое поле сейчас активно
             const isEmail = window.currentContactType === 'email';
             const inputId = isEmail ? 'wishlist-email' : 'wishlist-social';
             const inputEl = document.getElementById(inputId);
             const msg = document.getElementById('wishlist-msg');
             const contactValue = inputEl.value.trim();
             
-            // Простая проверка на пустоту
             if (!contactValue || (isEmail && !contactValue.includes('@'))) {
                 msg.style.display = 'block';
                 msg.style.color = '#FF3B30';
@@ -756,27 +754,42 @@
             }
 
             try {
-                // Сохраняем в базу тип контакта и само значение
-                await addDoc(collection(db, "wishlist_emails"), {
+                const batch = writeBatch(db);
+                
+                // 1. Создаем ссылку на новый документ в почтах
+                const newEmailRef = doc(collection(db, "wishlist_emails"));
+                batch.set(newEmailRef, {
                     contact: contactValue,
                     type: window.currentContactType,
-                    timestamp: new Date()
+                    timestamp: serverTimestamp() // Используем время сервера
                 });
+
+                // 2. Ссылка на счетчик
+                const statsRef = doc(db, "stats", "wishlist");
                 
+                await batch.commit(); // Атомарная запись почты
+                
+                // Сразу после этого обновляем счетчик
+                const { increment } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
                 await updateDoc(statsRef, { count: increment(1) });
+
+                // Сохраняем в кэш
+                localStorage.setItem('visutype_joined', 'true');
                 
                 msg.style.display = 'block';
                 msg.style.color = '#34C759';
                 msg.innerText = window.translations[window.userLang].wishlist_success;
-                inputEl.value = '';
                 
-                setTimeout(() => window.closeWishlistModal(), 2000);
+                setTimeout(() => {
+                    window.closeWishlistModal();
+                    checkSubscription(); // Скрываем кнопки на странице
+                }, 2000);
+
             } catch (error) {
-                msg.style.display = 'block';
-                msg.style.color = '#FF3B30';
                 msg.innerText = "Error. Try again.";
             }
         };
+        
     </script>
 
 </body>

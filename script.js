@@ -1,3 +1,22 @@
+function checkSubscription() {
+    if (localStorage.getItem('visutype_joined')) {
+        // Скрываем кнопки "Стань первооткрывателем"
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            btn.style.display = 'none';
+        });
+        // Если открыта модалка, показываем там сообщение вместо формы
+        const msg = document.getElementById('wishlist-msg');
+        if (msg) {
+            msg.style.display = 'block';
+            msg.style.color = '#34C759';
+            msg.innerText = window.translations[window.userLang].wishlist_success;
+            // Скрываем инпуты
+            document.querySelector('.wishlist-input-group').style.display = 'none';
+            document.querySelector('.wishlist-toggle-wrapper').style.display = 'none';
+        }
+    }
+}
+
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
 
