@@ -708,10 +708,20 @@
 
     <script src="script.js"></script>
 
-    <!-- Подключение Firebase (Модульный подход v10) -->
+    <!-- Подключение Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, collection, addDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            doc, 
+            onSnapshot, 
+            collection, 
+            addDoc, 
+            updateDoc, 
+            increment, 
+            serverTimestamp,
+            writeBatch 
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAazAL4VvPLTwGCM53Ew9gDqDzP23hPZLg",
@@ -726,71 +736,89 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. Слушаем статистику в реальном времени (Документ: stats / wishlist)
+        console.log("Firebase initialized successfully");
+
+        // 1. Слушаем статистику
         const statsRef = doc(db, "stats", "wishlist");
         onSnapshot(statsRef, (docSnap) => {
             if (docSnap.exists()) {
                 const count = docSnap.data().count || 0;
-                // Обновляем все счетчики на странице
                 document.querySelectorAll('.live-wishlist-count').forEach(el => {
                     el.innerText = count;
                 });
             }
         });
 
-        // 2. Функция отправки Email в Firebase
+        // 2. Функция отправки
         window.submitWishlist = async function() {
-            const isEmail = window.currentContactType === 'email';
-            const inputId = isEmail ? 'wishlist-email' : 'wishlist-social';
+            console.log("Button clicked!"); // Для теста в консоли
+
+            // Если типа нет (вдруг script.js не успел), ставим email по умолчанию
+            const type = window.currentContactType || 'email';
+            const inputId = type === 'email' ? 'wishlist-email' : 'wishlist-social';
             const inputEl = document.getElementById(inputId);
             const msg = document.getElementById('wishlist-msg');
+            
             const contactValue = inputEl.value.trim();
             
-            if (!contactValue || (isEmail && !contactValue.includes('@'))) {
+            // Базовая валидация
+            if (!contactValue || (type === 'email' && !contactValue.includes('@'))) {
                 msg.style.display = 'block';
                 msg.style.color = '#FF3B30';
                 msg.innerText = window.translations[window.userLang].wishlist_error;
                 return;
             }
 
+            // Блокируем кнопку от повторных нажатий
+            const btn = document.querySelector('.wishlist-modal-content .wishlist-btn');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
             try {
+                // Используем Batch для надежности (или по отдельности, если правила позволяют)
                 const batch = writeBatch(db);
-                
-                // 1. Создаем ссылку на новый документ в почтах
+
+                // Создаем запись почты (Поле 'contact', как в правилах!)
                 const newEmailRef = doc(collection(db, "wishlist_emails"));
                 batch.set(newEmailRef, {
                     contact: contactValue,
-                    type: window.currentContactType,
-                    timestamp: serverTimestamp() // Используем время сервера
+                    type: type,
+                    timestamp: serverTimestamp()
                 });
 
-                // 2. Ссылка на счетчик
-                const statsRef = doc(db, "stats", "wishlist");
-                
-                await batch.commit(); // Атомарная запись почты
-                
-                // Сразу после этого обновляем счетчик
-                const { increment } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
-                await updateDoc(statsRef, { count: increment(1) });
+                // Обновляем счетчик
+                batch.update(statsRef, {
+                    count: increment(1)
+                });
 
-                // Сохраняем в кэш
-                localStorage.setItem('visutype_joined', 'true');
-                
+                await batch.commit();
+                console.log("Success! Data saved.");
+
+                // Успех
                 msg.style.display = 'block';
                 msg.style.color = '#34C759';
                 msg.innerText = window.translations[window.userLang].wishlist_success;
                 
+                // Сохраняем в кэш
+                localStorage.setItem('visutype_joined', 'true');
+                
+                // Закрываем модалку через 2 сек
                 setTimeout(() => {
                     window.closeWishlistModal();
-                    checkSubscription(); // Скрываем кнопки на странице
+                    if (window.checkSubscription) window.checkSubscription();
                 }, 2000);
 
             } catch (error) {
-                msg.innerText = "Error. Try again.";
+                console.error("Firebase Error:", error);
+                msg.style.display = 'block';
+                msg.style.color = '#FF3B30';
+                msg.innerText = "Error: " + error.message;
+                btn.disabled = false;
+                btn.style.opacity = '1';
             }
         };
         
-    </script>
+</script>
 
 </body>
 </html>
