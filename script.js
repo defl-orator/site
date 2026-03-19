@@ -82,7 +82,7 @@ const translations = {
         asst_zhenya_name: "Женя", asst_zhenya_desc: "Ох, ну что про него сказать... Кому-то он нравится, кому-то нет. Если ты любишь комедии про плохишей, то этот индивид удовлетворит твои потребности на 110%.",
         asst_valya_name: "Валя", asst_valya_desc: "Милее ассистента ты уже никогда не встретишь. Готовься к обилию теплоты, комплиментов и всего ми-ми-ми 🥰 (вызывает сильную привязанность).",
         
-        theme_normal: "Обычная", theme_normal_dark: "Обычная тёмная",
+        theme_normal: "Стандартная", theme_normal_dark: "Стандартная тёмная",
         theme_soft: "Нежная", theme_soft_dark: "Нежная тёмная",
         theme_emerald: "Изумрудная", theme_emerald_dark: "Изумрудная тёмная",
         theme_space: "Космическая", theme_space_dark: "Космическая тёмная",
@@ -99,7 +99,7 @@ const translations = {
         
         road_head_1: "План развития",
         road_step_1: "Этап 1: MVP", road_item_1_date: "Сейчас", road_item_1_title: "macOS, iOS и iPadOS", road_item_1_desc: "Сначала — стабильность. Базовый редактор и хранение.", status_done: "Готово",
-        road_step_2: "Этап 2: Экосистема", road_item_2_date: "до 1 Янв 2026", road_item_2_title: "Облачная синхронизация", road_item_2_desc: "Потом — синхронизация. Бесшовная работа между устройствами.", status_dev: "В разработке",
+        road_step_2: "Этап 2: Экосистема", road_item_2_date: "Сейчас", road_item_2_title: "Облачная синхронизация", road_item_2_desc: "Потом — синхронизация. Бесшовная работа между устройствами.", status_dev: "В разработке",
         road_item_localization_date: "до 1 Июня 2026", road_item_localization_title: "Локализация", road_item_localization_desc: "Испанский, китайский, немецкий, японский и корейский языки.",
         road_item_3_date: "до 1 Июня 2026", road_item_3_title: "Релиз в App Store", road_item_3_desc: "Официальный выход приложения для широкой аудитории.", status_plan: "В планах",
         road_step_3: "Этап 3: Расширение", road_item_4_date: "до 1 Сент 2026", road_item_4_title: "Windows & Android", road_item_4_desc: "Затем — выход на все популярные платформы.",
@@ -115,7 +115,7 @@ const translations = {
         faq_a2: "Ты можешь вставлять их прямо в текстовую заметку как интерактивные блоки (нажав кнопку «Добавить»). Нажатие на такой блок открывает полноэкранный редактор. Карты мыслей поддерживают авто-расстановку и темы, а холсты — Apple Pencil.",
         
         faq_q3: "В чем особенность ИИ-Ассистента? Это просто чат-бот?",
-        faq_a3: "Нет, это не обычный ИИ-бот. Это виртуальный компаньон, который живет в приложении. Он реагирует на твою активность (например, долгую сессию письма), следит за ежедневными заходами (стриками), выдает достижения и комментирует процесс.",
+        faq_a3: "Нет, я не обычный ИИ-бот. Я виртуальный компаньон, который живет в приложении. Я реагирую на твою активность (например, если ты долго пишешь что-то), слежу как часто ты ко мне заходишь, выдаю достижения и комментирую процесс. Почти как Большой брат 😅",
         
         faq_q4: "Могу ли я поделиться своей заметкой с друзьями?",
         faq_a4: "Да! Любую заметку (включая вложенные карты и холсты) можно экспортировать в красивый PDF. А если хочешь поделиться ссылкой, доступна функция «Опубликовать в Web», которая за пару секунд превратит заметку в веб-страницу.",
@@ -197,7 +197,7 @@ const translations = {
         
         road_head_1: "Development Roadmap",
         road_step_1: "Stage 1: MVP", road_item_1_date: "Now", road_item_1_title: "macOS, iOS & iPadOS", road_item_1_desc: "First — stability. Basic editor and local storage.", status_done: "Done",
-        road_step_2: "Stage 2: Ecosystem", road_item_2_date: "by Jan 1, 2026", road_item_2_title: "Cloud Sync", road_item_2_desc: "Then — sync. Seamless work between devices.", status_dev: "In progress",
+        road_step_2: "Stage 2: Ecosystem", road_item_2_date: "Now", road_item_2_title: "Cloud Sync", road_item_2_desc: "Then — sync. Seamless work between devices.", status_dev: "In progress",
         road_item_localization_date: "by June 1, 2026", road_item_localization_title: "Localization", road_item_localization_desc: "Spanish, Chinese, German, Japanese, and Korean languages.",
         road_item_3_date: "by June 1, 2026", road_item_3_title: "App Store Release", road_item_3_desc: "Official release for a wide audience.", status_plan: "Planned",
         road_step_3: "Stage 3: Expansion", road_item_4_date: "by Sept 1, 2026", road_item_4_title: "Windows & Android", road_item_4_desc: "Then — expansion to all popular platforms.",
@@ -213,7 +213,7 @@ const translations = {
         faq_a2: "You can insert them directly into a text note as interactive blocks (by clicking the «Add» button). Clicking on such a block opens a full-screen editor. Mind maps support auto-arrangement and themes, and canvases support the Apple Pencil.",
         
         faq_q3: "What makes the AI Assistant special? Is it just a chatbot?",
-        faq_a3: "No, it's not a standard AI chatbot. It's a virtual companion living in the app. It reacts to your activity (like a long writing session), tracks your daily streaks, awards achievements, and has customizable personalities ranging from strict to romantic.",
+        faq_a3: "No, I'm not a regular AI bot. I'm a virtual companion that lives in the app. I react to your activity (for example, if you're writing for a long time), track how often you visit, give you achievements, and comment on your progress. Almost like Big Brother 😅",
         
         faq_q4: "Can I share my notes with friends or colleagues?",
         faq_a4: "Yes! Any note (including nested maps and canvases) can be exported as a beautiful PDF document. If you want to share a link, the 'Publish to Web' feature turns your note into a live webpage in seconds.",

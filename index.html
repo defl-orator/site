@@ -676,39 +676,33 @@
     <!-- Wishlist Modal -->
     <div id="wishlist-modal" class="lightbox">
         <div class="wishlist-modal-content">
-            <!-- Кнопка закрытия -->
             <div class="lightbox-close" onclick="closeWishlistModal()">✕</div>
             
             <h3 data-i18n="wishlist_title">Become a Pioneer</h3>
-            <p data-i18n="wishlist_desc" style="margin-bottom: 25px;"></p>
+            <p data-i18n="wishlist_desc">Leave your email to be the first to know about the release and get bonuses.</p>
             
-            <!-- Переключатель типа связи (Капсула) -->
             <div class="wishlist-toggle-wrapper">
                 <div class="wishlist-toggle-pill">
-                    <button class="toggle-btn active" id="toggle-email" onclick="switchContactType('email')" data-i18n="toggle_email">Email</button>
+                    <button class="toggle-btn active" id="toggle-email" onclick="switchContactType('email')" data-i18n="toggle_email">Mail</button>
                     <button class="toggle-btn" id="toggle-social" onclick="switchContactType('social')" data-i18n="toggle_social">Social</button>
                 </div>
             </div>
 
-            <!-- Счетчик -->
-            <div class="wishlist-counter-display">
-                <span data-i18n="wishlist_counter_text" style="color: var(--color-text-secondary);">Already waiting: </span>
+            <div class="wishlist-input-group">
+                <input type="email" id="wishlist-email" data-i18n="wishlist_placeholder" placeholder="Your mail...">
+                <input type="text" id="wishlist-social" data-i18n="wishlist_social_placeholder" placeholder="@username..." style="display: none;">
+            </div>
+            
+            <button class="button wishlist-btn" onclick="window.submitWishlist()">
+                <span data-i18n="wishlist_submit">Join</span>
+            </button>
+
+            <div class="wishlist-counter-simple">
+                <span data-i18n="wishlist_counter_text">Already waiting: </span>
                 <strong class="live-wishlist-count">0</strong>
             </div>
             
-            <!-- Группа ввода -->
-            <div class="wishlist-input-group" style="margin-bottom: 20px;">
-                <input type="email" id="wishlist-email" data-i18n="wishlist_placeholder" placeholder="Your email...">
-                <input type="text" id="wishlist-social" data-i18n="wishlist_social_placeholder" placeholder="@username (TG/Inst)..." style="display: none;">
-            </div>
-            
-            <!-- Кнопка отправки -->
-            <button class="button wishlist-btn" style="width: 100%; padding: 15px;" onclick="window.submitWishlist()">
-                <span data-i18n="wishlist_submit">Join now</span>
-            </button>
-            
-            <!-- Сообщение об успехе/ошибке -->
-            <p id="wishlist-msg" style="display:none; margin-top:15px; font-weight:600;"></p>
+            <p id="wishlist-msg" style="display:none; margin-top:10px; font-weight:600;"></p>
         </div>
     </div>
 
