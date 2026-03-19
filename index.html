@@ -169,10 +169,12 @@
                         <div style="margin-top: 5px;" data-i18n="hero_suffix">notes</div>
                     </div>
 
-                    <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <img src="images/telegram.png" alt="Telegram" class="tg-icon">
-                        <span data-i18n="btn_telegram">Try it out</span>
-                    </a>
+                    <button class="button wishlist-btn" onclick="openWishlistModal()">
+                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span data-i18n="btn_wishlist">Become a Pioneer</span>
+                    </button>
                 </div>
 
             </div>
@@ -181,6 +183,43 @@
         <div class="scroll-down-arrow" id="scroll-arrow"></div>
         <div class="hero-bottom-fade"></div>
     </header>
+
+    <!-- WHY SECTION -->
+    <section id="why" class="why-section bg-primary">
+        <!-- Верхний фейд для плавного перехода из Hero -->
+        <div class="why-top-fade"></div>
+
+        <div class="container">
+            <div class="why-grid">
+                <div class="why-content fade-in">
+                    <h2 class="why-title" data-i18n="why_title">Why us?</h2>
+                    <div class="why-text-container">
+                        <!-- Строка с проблемой -->
+                        <div class="why-text-item problem-row">
+                            <img src="images/sad.png" alt="Sad" class="why-emoji emoji-sad">
+                            <p class="why-text-problem" data-i18n="why_problem">
+                                I think you'll agree that productivity apps are often complex and confusing.
+                            </p>
+                        </div>
+
+                        <!-- Строка с решением -->
+                        <div class="why-text-item solution-row">
+                            <img src="images/happy.png" alt="Happy" class="why-emoji emoji-happy">
+                            <p class="why-text-solution" data-i18n="why_solution">
+                                Our goal is to fix this so that you can get exceptional pleasure from the learning or work process.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="why-image-side fade-in">
+                    <img data-src="images/vizy_thinking.png" alt="Vizy Thinking" class="why-vizy-img">
+                </div>
+            </div>
+        </div>
+
+        <!-- Нижний разделитель для перехода в серый блок Features -->
+        <div class="section-divider divider-bottom-to-gray"></div>
+    </section>
 
     <!-- 4. MAIN CONTENT -->
     <main>
@@ -249,15 +288,16 @@
         <!-- CUSTOMIZATION (THEMES) -->
         <section id="customization" class="bg-primary">
             <div class="container">
-                <div class="vizy-narrator-block fade-in" style="margin-bottom: 40px;">
+                <div class="vizy-narrator-block fade-in">
                     <img data-src="images/vizy_surprised.png" alt="Vizy Surprised" class="vizy-narrator-img">
-                    <div class="vizy-narrator-bubble" data-i18n="comment_custom">Wow! You can dress up the app to fit your mood? Look at the outfits I found!</div>
+                    <div class="vizy-narrator-bubble" data-i18n="comment_custom"></div>
                 </div>
+            </div>
 
-                <div class="themes-slider-wrapper fade-in">
-                    <div class="themes-track" id="themes-track">
-                        <!-- Сюда JS добавляет картинки -->
-                    </div>
+            <!-- Контейнер бегущей строки -->
+            <div class="marquee-viewport fade-in" id="marquee-viewport">
+                <div class="marquee-track" id="marquee-track">
+                    <!-- Сюда JS вставит карточки -->
                 </div>
             </div>
         </section>
@@ -306,7 +346,7 @@
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
                     <img data-src="images/vizy_thinking.png" alt="Vizy Thinking" class="vizy-narrator-img">
-                    <div class="vizy-narrator-bubble" data-i18n="comment_comparison">Hmm, let's think... Why us? I made a chart, fair and square!</div>
+                    <div class="vizy-narrator-bubble" data-i18n="comment_comparison">What makes us better than others? I made a table here, trying to give an honest assessment.</div>
                 </div>
 
                 <div class="table-mobile-wrapper fade-in">
@@ -375,7 +415,7 @@
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
                     <img data-src="images/vizy_cool.png" alt="Vizy Cool" class="vizy-narrator-img">
-                    <div class="vizy-narrator-bubble" data-i18n="comment_pricing">Free is cool. But with Pro you become cosmic. Check out the terms.</div>
+                    <div class="vizy-narrator-bubble" data-i18n="comment_pricing">You can use it for free, but if you become Pro, you'll get all our goodies 😊</div>
                 </div>
 
                 <div class="pricing-grid">
@@ -383,7 +423,7 @@
                     <div class="pricing-card fade-in">
                         <div class="price-title">Free</div>
                         <ul>
-                            <li><div class="price-icon edit"></div><span data-i18n="price_free_1">Best note editor for comfort</span></li>
+                            <li><div class="price-icon edit"></div><span data-i18n="price_free_1">The best user-friendly note editor</span></li>
                             <li><div class="price-icon cloud"></div><span data-i18n="price_free_2">iCloud note synchronization</span></li>
                             <li><div class="price-icon palette"></div><span data-i18n="price_free_3">Basic themes/palettes</span></li>
                             <li><div class="price-icon import"></div><span data-i18n="price_free_4">Import notes from other apps</span></li>
@@ -402,7 +442,11 @@
                             <li><div class="price-icon rocket"></div><span data-i18n="price_pro_3">Early access to new features</span></li>
                             <li><div class="price-icon chat"></div><span data-i18n="price_pro_4">Unique dialogues with assistants</span></li>
                         </ul>
-                        <div class="price-cost-bottom gradient-text" data-i18n="price_pro_cost">$4.99 / mo</div>
+                        <div class="price-cost-bottom">
+                            <span class="price-old" data-i18n="price_pro_old">$7.99</span>
+                            <span class="price-current gradient-text" data-i18n="price_pro_cost">$4.99 / mo</span>
+                            <span class="price-pioneer-label" data-i18n="price_pro_pioneer">For Pioneers</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -414,7 +458,7 @@
             <div class="container">
                 <div class="vizy-narrator-block fade-in">
                     <img data-src="images/vizy_waiting.png" alt="Vizy Waiting" class="vizy-narrator-img">
-                    <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">I can't wait for these updates! Here is our plan for world domination.</div>
+                    <div class="vizy-narrator-bubble" data-i18n="comment_roadmap">We're just getting started, so take a look at our plan for further development.</div>
                 </div>
 
                 <!-- Separator -> Card -> Row -->
@@ -521,11 +565,13 @@
             <div class="final-cta-content-grid">
                 <div class="footer-text-side">
                     <h2><span data-i18n="footer_news_head">Liked it?</span></h2>
-                    <p data-i18n="footer_news_desc">If so, join our Telegram channel.</p>
-                    <a href="https://t.me/visutype" target="_blank" class="button telegram-cta">
-                        <img data-src="images/telegram.png" alt="Telegram" class="tg-icon">
-                        <span data-i18n="btn_news">Read in Telegram</span>
-                    </a>
+                    <p data-i18n="footer_news_desc">If so, become a pioneer.</p>
+                    <button class="button wishlist-btn" onclick="openWishlistModal()">
+                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span data-i18n="btn_wishlist">Become a Pioneer</span>
+                    </button>
                 </div>
                 
                 <div class="footer-vizy-side" id="footer-asst-container">
@@ -565,7 +611,7 @@
                         </button>
                         <div class="faq-answer">
                             <div class="faq-answer-inner" data-i18n="faq_a2">
-                                You can insert them directly into your text notes as interactive blocks. Clicking on such a block opens a full-screen editor. Mind maps support auto-layout and themes, while canvases offer freehand drawing tools.
+                                You can insert them directly into a text note as interactive blocks (by clicking the «Add» button). Clicking on such a block opens a full-screen editor. Mind maps support auto-arrangement and themes, and canvases support the Apple Pencil.
                             </div>
                         </div>
                     </div>
@@ -616,14 +662,128 @@
 
     <!-- 5. FOOTER -->
     <footer class="site-footer">
-        <div class="container">
+        <div class="container footer-bottom-flex">
             <p class="copyright">© 2026 visuType. <span data-i18n="footer_rights">All rights reserved.</span></p>
+            <a href="https://t.me/visutype" target="_blank" class="footer-tg-link">
+                <img src="images/telegram.png" alt="TG" class="footer-tg-icon"> 
+                <span data-i18n="footer_tg_text"></span>
+            </a>
         </div>
     </footer>
 
     <div id="lightbox" class="lightbox"><div class="lightbox-close" onclick="closeLightbox()">✕</div><img src="" alt="Full view" class="lightbox-img" id="lightbox-img"></div>
 
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="lightbox">
+        <div class="wishlist-modal-content">
+            <!-- Кнопка закрытия -->
+            <div class="lightbox-close" onclick="closeWishlistModal()">✕</div>
+            
+            <h3 data-i18n="wishlist_title">Become a Pioneer</h3>
+            <p data-i18n="wishlist_desc" style="margin-bottom: 25px;"></p>
+            
+            <!-- Переключатель типа связи (Капсула) -->
+            <div class="wishlist-toggle-wrapper">
+                <div class="wishlist-toggle-pill">
+                    <button class="toggle-btn active" id="toggle-email" onclick="switchContactType('email')" data-i18n="toggle_email">Email</button>
+                    <button class="toggle-btn" id="toggle-social" onclick="switchContactType('social')" data-i18n="toggle_social">Social</button>
+                </div>
+            </div>
+
+            <!-- Счетчик -->
+            <div class="wishlist-counter-display">
+                <span data-i18n="wishlist_counter_text" style="color: var(--color-text-secondary);">Already waiting: </span>
+                <strong class="live-wishlist-count">0</strong>
+            </div>
+            
+            <!-- Группа ввода -->
+            <div class="wishlist-input-group" style="margin-bottom: 20px;">
+                <input type="email" id="wishlist-email" data-i18n="wishlist_placeholder" placeholder="Your email...">
+                <input type="text" id="wishlist-social" data-i18n="wishlist_social_placeholder" placeholder="@username (TG/Inst)..." style="display: none;">
+            </div>
+            
+            <!-- Кнопка отправки -->
+            <button class="button wishlist-btn" style="width: 100%; padding: 15px;" onclick="window.submitWishlist()">
+                <span data-i18n="wishlist_submit">Join now</span>
+            </button>
+            
+            <!-- Сообщение об успехе/ошибке -->
+            <p id="wishlist-msg" style="display:none; margin-top:15px; font-weight:600;"></p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+
+    <!-- Подключение Firebase (Модульный подход v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, collection, addDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAazAL4VvPLTwGCM53Ew9gDqDzP23hPZLg",
+            authDomain: "visutype.firebaseapp.com",
+            projectId: "visutype",
+            storageBucket: "visutype.firebasestorage.app",
+            messagingSenderId: "220316148986",
+            appId: "1:220316148986:web:bf4deeac85b635a3fad543",
+            measurementId: "G-E91TSL8LSR"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. Слушаем статистику в реальном времени (Документ: stats / wishlist)
+        const statsRef = doc(db, "stats", "wishlist");
+        onSnapshot(statsRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const count = docSnap.data().count || 0;
+                // Обновляем все счетчики на странице
+                document.querySelectorAll('.live-wishlist-count').forEach(el => {
+                    el.innerText = count;
+                });
+            }
+        });
+
+        // 2. Функция отправки Email в Firebase
+        window.submitWishlist = async function() {
+            // Определяем, какое поле сейчас активно
+            const isEmail = window.currentContactType === 'email';
+            const inputId = isEmail ? 'wishlist-email' : 'wishlist-social';
+            const inputEl = document.getElementById(inputId);
+            const msg = document.getElementById('wishlist-msg');
+            const contactValue = inputEl.value.trim();
+            
+            // Простая проверка на пустоту
+            if (!contactValue || (isEmail && !contactValue.includes('@'))) {
+                msg.style.display = 'block';
+                msg.style.color = '#FF3B30';
+                msg.innerText = window.translations[window.userLang].wishlist_error;
+                return;
+            }
+
+            try {
+                // Сохраняем в базу тип контакта и само значение
+                await addDoc(collection(db, "wishlist_emails"), {
+                    contact: contactValue,
+                    type: window.currentContactType,
+                    timestamp: new Date()
+                });
+                
+                await updateDoc(statsRef, { count: increment(1) });
+                
+                msg.style.display = 'block';
+                msg.style.color = '#34C759';
+                msg.innerText = window.translations[window.userLang].wishlist_success;
+                inputEl.value = '';
+                
+                setTimeout(() => window.closeWishlistModal(), 2000);
+            } catch (error) {
+                msg.style.display = 'block';
+                msg.style.color = '#FF3B30';
+                msg.innerText = "Error. Try again.";
+            }
+        };
+    </script>
 
 </body>
 </html>

@@ -3,7 +3,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 const savedLang = localStorage.getItem('visutype_lang');
 const systemLang = navigator.language.startsWith('ru') ? 'ru' : 'en';
-const userLang = savedLang || systemLang;
+let userLang = savedLang || systemLang; 
+window.userLang = userLang;
 
 let easterEggIndex = 0;
 let easterEggTimer = null;
@@ -15,6 +16,8 @@ const footerAssistants = ['images/vizy_assistant.png', 'images/alex_assistant.pn
 let currentFooterAsst = 0;
 
 let ticking = false;
+
+let currentContactType = 'email';
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
@@ -55,15 +58,15 @@ const translations = {
         word_1: "удобных", word_2: "уютных", word_3: "красивых", word_4: "функциональных", word_5: "визуальных", hero_suffix: "заметок",
         btn_telegram: "Попробовать", btn_news: "Читать в Telegram", btn_open: "🔍 Открыть",
         
-        comment_features: "Смотри, что я умею! Здесь всё, чтобы твои идеи чувствовали себя как дома.",
-        comment_custom: "Ого! Ты можешь переодеть всё приложение под своё настроение? Смотри, какие наряды я нашел!",
-        comment_home_atmosphere: "Чувствуй себя как дома! Я здесь, чтобы создать уют и помочь во всем.",
+        comment_features: "Смотри, что ты сможешь делать! Здесь всё, чтобы твои идеи чувствовали себя как дома.",
+        comment_custom: "Как насчёт того, чтобы переодеть приложение под своё настроение? Смотри какое оно бывает",
+        comment_home_atmosphere: "Чувствуй себя как дома! Я буду на главном меню, чтобы создать уют и помочь тебе во всем.",
         comment_assistants: "А вот это мои друзья (и я). Возможно тебе приглянётся кто-то больше, чем я... 😪(😅)",
-        comment_comparison: "Хм, давай подумаем... Почему мы? Я тут табличку составил, всё честно!",
-        comment_pricing: "Бесплатно — круто. Но с Pro ты становишься просто космос. Зацени условия.",
-        comment_roadmap: "Я жду не дождусь этих обновлений! Вот наш план захвата мира (ну или просто разработки).",
+        comment_comparison: "А чем мы лучше других? Я тут табличку составил, старался по-честному оценить",
+        comment_pricing: "Можешь пользоваться бесплатно, но если станешь Pro, то получишь всё наше добро 😊",
+        comment_roadmap: "Мы только начинаем, поэтому смотри какой у нас есть план дальнейшего развития.",
         footer_news_head: 'Понравилось?',
-        footer_news_desc: "Если зашло, то переходи в наш телеграм канал. Там все новости и анонсы нашего приложения.",
+        footer_news_desc: "Если зашло, то оставь свою почту. Я обязательно сообщу тебе, когда приложение станет доступным всем.",
         asst_bottom_disclaimer: "Мы все очень разные, поэтому советую подумать перед выбором своего помощника, чтобы опыт в приложении был на высшем уровне.",
         
         feat_1_title_suffix: " заметки", feat_1_desc: "Заметки, к которым вы привыкли — только удобнее и мощнее.",
@@ -85,7 +88,7 @@ const translations = {
         theme_space: "Космическая", theme_space_dark: "Космическая тёмная",
         theme_noir: "Нуарная", theme_noir_dark: "Нуарная тёмная",
         
-        price_free_1: "Лучший редактор заметок по удобству", price_free_2: "iCloud синхронизация заметок", price_free_3: "Базовые темы/палитры", price_free_4: "Импорт заметок из других приложений", price_free_5: "Базовый экспорт заметок / карт мыслей / холстов",
+        price_free_1: "Лучший удобный редактор заметок", price_free_2: "iCloud синхронизация заметок", price_free_3: "Базовые темы/палитры", price_free_4: "Импорт заметок из других приложений", price_free_5: "Базовый экспорт заметок / карт мыслей / холстов",
         price_pro_cost: "199 ₽ / мес",
         price_pro_1: "Всё, что в бесплатном", 
         price_pro_2: "Безлимитная кастомизация: карт мыслей / обложек / эмодзи / тем / иконок", 
@@ -109,7 +112,7 @@ const translations = {
         faq_a1: "Все твои заметки, карты мыслей и холсты хранятся на устройстве и автоматически синхронизируются через iCloud. Данные остаются исключительно в пределах твоего аккаунта Apple ID для максимальной конфиденциальности.",
         
         faq_q2: "Как работают карты мыслей и холсты внутри текста?",
-        faq_a2: "Ты можешь вставлять их прямо в текстовую заметку как интерактивные блоки (нажав меню «Вставить блок»). Нажатие на такой блок открывает полноэкранный редактор. Карты мыслей поддерживают авто-расстановку и темы, а холсты — свободное рисование.",
+        faq_a2: "Ты можешь вставлять их прямо в текстовую заметку как интерактивные блоки (нажав кнопку «Добавить»). Нажатие на такой блок открывает полноэкранный редактор. Карты мыслей поддерживают авто-расстановку и темы, а холсты — Apple Pencil.",
         
         faq_q3: "В чем особенность ИИ-Ассистента? Это просто чат-бот?",
         faq_a3: "Нет, это не обычный ИИ-бот. Это виртуальный компаньон, который живет в приложении. Он реагирует на твою активность (например, долгую сессию письма), следит за ежедневными заходами (стриками), выдает достижения и комментирует процесс.",
@@ -126,7 +129,27 @@ const translations = {
 
         nav_feat: "Возможности", nav_style: "Стиль", nav_price: "Цены", nav_roadmap: "План",
 
-        footer_rights: "Все права защищены."
+        footer_rights: "Все права защищены.",
+
+        btn_wishlist: "Стань первооткрывателем",
+        wishlist_title: "Стань первооткрывателем",
+        wishlist_desc: "Напиши свой контакт, чтобы первым узнать о релизе и получить бонусы.",
+        wishlist_placeholder: "Твоя почта...",
+        wishlist_submit: "Присоединиться",
+        wishlist_counter_text: "Уже ждут релиза: ",
+        wishlist_success: "Готово! Мы сообщим тебе о релизе.",
+        wishlist_error: "Ошибка. Проверь почту и попробуй снова.",
+        why_title: "Почему мы?",
+        why_lead: "Думаю, ты согласишься с тем, что приложения для продуктивности крайне сложные и запутанные. Наша цель это исправить, чтобы ты получал исключительно удовольствие и удобство от процесса обучения или работы.",
+        toggle_email: "Почта",
+        toggle_social: "Соцсеть",
+        wishlist_social_placeholder: "@юзернейм...",
+        why_problem: "Думаю, ты согласишься с тем, что приложения для продуктивности крайне сложные и запутанные.",
+        why_solution: "Наша цель это исправить, чтобы ты получал исключительно удовольствие и удобство от процесса обучения или работы.",
+        footer_tg_text: "Наш Telegram канал",
+        price_pro_old: "399 ₽",
+        price_pro_cost: "199 ₽ / мес",
+        price_pro_pioneer: "Для первооткрывателей"
     },
     en: {
             hero_home: "Your home for",
@@ -134,14 +157,14 @@ const translations = {
         btn_telegram: "Try it out", btn_news: "Project News in Telegram", btn_open: "🔍 Open",
         
         comment_features: "Look what I can do! Everything to make your ideas feel at home.",
-        comment_custom: "Wow! You can dress up the app to fit your mood? Look at the outfits I found!",
-        comment_home_atmosphere: "Make yourself at home! I'm here to create comfort and help with everything.",
+        comment_custom: "How about changing the app to suit your mood? See what it looks like.",
+        comment_home_atmosphere: "Make yourself at home! I'll be on the main menu to make you feel welcome and help you with everything.",
         comment_assistants: "And these are my friends (and me). Maybe you'll like someone more than me... 😪(😅)",
-        comment_comparison: "Hmm, let's think... Why us? I made a chart, totally honest!",
-        comment_pricing: "Free is cool. But Pro sends you to space. Check the terms.",
-        comment_roadmap: "I can't wait for these updates! Here is our plan for world domination (or just development).",
+        comment_comparison: "What makes us better than others? I made a table here, trying to give an honest assessment.",
+        comment_pricing: "You can use it for free, but if you become Pro, you'll get all our goodies 😊",
+        comment_roadmap: "We're just getting started, so take a look at our plan for further development.",
         footer_news_head: 'Liked what you saw?',
-        footer_news_desc: "If so, join our Telegram channel. All news and announcements of our application are there.",
+        footer_news_desc: "If you enjoyed it, please leave your email. I'll be sure to let you know when the app is available to everyone.",
         asst_bottom_disclaimer: "We are all very different, so I advise you to think before choosing your assistant so that the experience in the application is at the highest level.",
 
         feat_1_title_suffix: " notes", feat_1_desc: "Notes you are used to — just more convenient and powerful.",
@@ -163,7 +186,7 @@ const translations = {
         theme_space: "Space", theme_space_dark: "Space Dark",
         theme_noir: "Noir", theme_noir_dark: "Noir Dark",
 
-        price_free_1: "Best note editor experience", price_free_2: "iCloud note sync", price_free_3: "Basic themes/palettes", price_free_4: "Import notes from other apps", price_free_5: "Basic export for notes / mind maps / canvases",
+        price_free_1: "The best user-friendly note editor", price_free_2: "iCloud note sync", price_free_3: "Basic themes/palettes", price_free_4: "Import notes from other apps", price_free_5: "Basic export for notes / mind maps / canvases",
         price_pro_cost: "$4.99 / month",
         price_pro_1: "Everything in Free", 
         price_pro_2: "Unlimited customization: mind maps / covers / emojis / themes / icons", 
@@ -187,7 +210,7 @@ const translations = {
         faq_a1: "All your notes, mind maps, and canvases are stored on your device and automatically synced via iCloud. Data remains exclusively within your Apple ID account for maximum privacy.",
         
         faq_q2: "How do mind maps and canvases work inside notes?",
-        faq_a2: "You can insert them directly into your text notes as interactive blocks. Clicking on such a block opens a full-screen editor. Mind maps support auto-layout and themes, while canvases offer freehand drawing tools.",
+        faq_a2: "You can insert them directly into a text note as interactive blocks (by clicking the «Add» button). Clicking on such a block opens a full-screen editor. Mind maps support auto-arrangement and themes, and canvases support the Apple Pencil.",
         
         faq_q3: "What makes the AI Assistant special? Is it just a chatbot?",
         faq_a3: "No, it's not a standard AI chatbot. It's a virtual companion living in the app. It reacts to your activity (like a long writing session), tracks your daily streaks, awards achievements, and has customizable personalities ranging from strict to romantic.",
@@ -202,9 +225,31 @@ const translations = {
         hero_return: "Welcome back! Shall we continue?",
         hero_return_en: "Welcome back! Shall we continue?",
         nav_feat: "Features", nav_style: "Style", nav_price: "Pricing", nav_roadmap: "Roadmap",
-        footer_rights: "All rights reserved."
+        footer_rights: "All rights reserved.",
+
+        btn_wishlist: "Become a Pioneer",
+        wishlist_title: "Become a Pioneer",
+        wishlist_desc: "Leave your email to be the first to know about the release and get bonuses.",
+        wishlist_placeholder: "Your email...",
+        wishlist_submit: "Join now",
+        wishlist_counter_text: "Already waiting: ",
+        wishlist_success: "Success! We will notify you about the release.",
+        wishlist_error: "Error. Please check your email and try again.",
+        why_title: "Why us?",
+        why_lead: "I think you'll agree that productivity apps are often complex and confusing. Our goal is to fix this so that you can get exceptional pleasure and convenience from the learning or work process.",
+        toggle_email: "Email",
+        toggle_social: "Social",
+        wishlist_social_placeholder: "@username...",
+        why_problem: "I think you'll agree that productivity apps are often complex and confusing.",
+        why_solution: "Our goal is to fix this so that you can get exceptional pleasure and convenience from the learning or work process.",
+        footer_tg_text: "Our Telegram channel",
+        price_pro_old: "$7.99",
+        price_pro_cost: "$4.99 / mo",
+        price_pro_pioneer: "For Pioneers"
     }
 };
+
+window.translations = translations;
 
 const introPhrases = {
     ru: ["Привет!", "Полетели!"],
@@ -234,19 +279,47 @@ const easterEggPhrasesEn = [
 ];
 
 function applyLanguage(lang) {
-    if (lang === 'en') {
-            setupWavyText("Flexible"); // Запускаем анимацию волны для EN
-            return; 
-    }
-
-    // Если язык русский - заменяем текст
     if (translations[lang]) {
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if(translations[lang][key]) el.innerHTML = translations[lang][key];
+            const translation = translations[lang][key];
+            
+            if (translation) {
+                // Если это инпут (почта), меняем плейсхолдер
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = translation;
+                } else {
+                    // Для всех остальных элементов меняем текст внутри
+                    el.innerHTML = translation;
+                }
+            }
         });
-        // Обновляем волнистый текст для русского
-        setupWavyText(translations[lang].wavy_title); 
+        
+        // Обновляем специфические вещи
+        const wavyTitle = translations[lang].wavy_title || "Flexible";
+        setupWavyText(wavyTitle);
+        updateHeroBubbleText(lang); 
+    }
+}
+
+function updateHeroBubbleText(lang) {
+    const bubble = document.getElementById('hero-random-greeting');
+    if (!bubble) return;
+
+    const isReturningUser = localStorage.getItem('visutype_visited');
+    
+    // Если сейчас отображается пасхалка (easter egg), переводим её по индексу
+    if (easterEggIndex > 0) {
+        const phrases = lang === 'ru' ? easterEggPhrasesRu : easterEggPhrasesEn;
+        // Берем последнюю сказанную фразу (индекс - 1)
+        bubble.textContent = phrases[easterEggIndex - 1];
+    } else {
+        // Иначе переводим обычное приветствие
+        if (isReturningUser) {
+            bubble.textContent = translations[lang].hero_return;
+        } else {
+            bubble.textContent = randomGreetings[lang][0]; 
+        }
     }
 }
 
@@ -576,6 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initFAQ();
     initFooterAnimation();
+    initMarquee();
 });
 
 function toggleLangMenu(event) {
@@ -591,8 +665,13 @@ window.addEventListener('click', () => {
 
 function setLang(lang) {
     localStorage.setItem('visutype_lang', lang);
-    // ПЕРЕЗАГРУЗКА
-    location.reload();
+    userLang = lang; 
+    window.userLang = lang; // Обновляем глобальную переменную для Firebase
+    
+    document.querySelector('.current-lang').textContent = lang.toUpperCase();
+    applyLanguage(lang); // Мгновенный перевод
+    renderCarousels(); // Обновление текста в каруселях
+    initMarquee();
 }
 
 function updateImages(container = document) {
@@ -791,19 +870,31 @@ function initTheme() {
 }
 
 function toggleTheme() {
-    // Проверяем текущий активный класс
     const isDarkCurrently = document.body.classList.contains('dark-theme');
+    const icon = document.getElementById('theme-icon');
     
     if (isDarkCurrently) {
-        // Была темная -> Сохраняем светлую
         localStorage.setItem('visutype_theme', 'light');
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+        if(icon) icon.src = 'images/dark_theme.png';
     } else {
-        // Была светлая -> Сохраняем темную
         localStorage.setItem('visutype_theme', 'dark');
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+        if(icon) icon.src = 'images/light_theme.png';
     }
-    
-    // ПЕРЕЗАГРУЗКА ДЛЯ ПРИМЕНЕНИЯ ВСЕХ КАРТИНОК
-    location.reload();
+    updateImages();
+    preloadThemeImages();
+}
+
+// --- Функции для открытия/закрытия модалки Wishlist ---
+function openWishlistModal() {
+    document.getElementById('wishlist-modal').classList.add('active');
+}
+function closeWishlistModal() {
+    document.getElementById('wishlist-modal').classList.remove('active');
+    document.getElementById('wishlist-msg').style.display = 'none'; // сброс сообщения
 }
 
 function initFAQ() {
@@ -835,4 +926,116 @@ function loadStaticImages() {
         img.src = img.getAttribute('data-src');
         img.removeAttribute('data-src'); // Убираем атрибут, чтобы не грузить повторно
     });
+}
+
+window.currentContactType = 'email'; // Глобальная переменная для Firebase
+
+window.switchContactType = function(type) {
+    window.currentContactType = type;
+    const emailInput = document.getElementById('wishlist-email');
+    const socialInput = document.getElementById('wishlist-social');
+    const btns = document.querySelectorAll('.toggle-btn');
+    
+    btns.forEach(btn => {
+        const isTarget = btn.getAttribute('onclick').includes(type);
+        btn.classList.toggle('active', isTarget);
+    });
+
+    if (type === 'email') {
+        emailInput.style.display = 'block';
+        socialInput.style.display = 'none';
+    } else {
+        emailInput.style.display = 'none';
+        socialInput.style.display = 'block';
+    }
+}
+
+let marqueePos = 0;
+let marqueeSpeed = 1; 
+let targetSpeed = 1;
+const acceleration = 0.05;
+
+// Переменные для перетаскивания
+let isDragging = false;
+let startX = 0;
+let scrollLeftAtStart = 0;
+
+function initMarquee() {
+    const track = document.getElementById('marquee-track');
+    const viewport = document.getElementById('marquee-viewport');
+    if (!track || !viewport) return;
+
+    // 1. Рендерим контент (удваиваем для бесконечности)
+    const items = [...themesData, ...themesData]; 
+    track.innerHTML = items.map(item => `
+        <div class="theme-marquee-item">
+            <div class="img-wrapper" onclick="if(!isDragging) openLightbox(this)">
+                <img src="images/${item.base}${window.innerWidth < 768 ? '_mobile' : ''}_${item.mode}.png" alt="${item.id}">
+                <div class="img-overlay"><div class="open-btn" data-i18n="btn_open">🔍 Open</div></div>
+            </div>
+            <h3>${translations[userLang][item.nameKey]}</h3>
+        </div>
+    `).join('');
+
+    function animate() {
+        if (!isDragging) {
+            // Плавное изменение скорости
+            if (marqueeSpeed < targetSpeed) marqueeSpeed += acceleration;
+            if (marqueeSpeed > targetSpeed) marqueeSpeed -= acceleration;
+
+            marqueePos -= marqueeSpeed;
+
+            // Бесшовный цикл (в обе стороны)
+            const halfWidth = track.scrollWidth / 2;
+            if (marqueePos <= -halfWidth) marqueePos = 0;
+            if (marqueePos > 0) marqueePos = -halfWidth;
+        }
+
+        track.style.transform = `translateX(${marqueePos}px)`;
+        requestAnimationFrame(animate);
+    }
+
+    // --- ОБРАБОТКА СОБЫТИЙ ---
+
+    // Остановка при наведении
+    viewport.addEventListener('mouseenter', () => targetSpeed = 0);
+    viewport.addEventListener('mouseleave', () => {
+        if (!isDragging) targetSpeed = 1;
+    });
+
+    // НАЧАЛО перетаскивания
+    const startDrag = (e) => {
+        isDragging = true;
+        targetSpeed = 0;
+        marqueeSpeed = 0;
+        startX = (e.pageX || e.touches[0].pageX);
+        scrollLeftAtStart = marqueePos;
+    };
+
+    // ПРОЦЕСС перетаскивания
+    const moveDrag = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = (e.pageX || e.touches[0].pageX);
+        const walk = (x - startX); // Дистанция сдвига
+        marqueePos = scrollLeftAtStart + walk;
+    };
+
+    // КОНЕЦ перетаскивания
+    const endDrag = () => {
+        isDragging = false;
+        targetSpeed = 1; // Возвращаем движение
+    };
+
+    // Мышь
+    viewport.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    // Тач (мобилки)
+    viewport.addEventListener('touchstart', startDrag);
+    viewport.addEventListener('touchmove', moveDrag, { passive: false });
+    viewport.addEventListener('touchend', endDrag);
+
+    animate();
 }
