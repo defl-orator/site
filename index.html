@@ -714,9 +714,9 @@
         import { 
             getFirestore, 
             doc, 
+            getDoc,
             onSnapshot, 
             collection, 
-            addDoc, 
             updateDoc, 
             increment, 
             serverTimestamp,
@@ -736,8 +736,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        console.log("Firebase initialized successfully");
-
         // 1. Слушаем статистику
         const statsRef = doc(db, "stats", "wishlist");
         onSnapshot(statsRef, (docSnap) => {
@@ -751,15 +749,12 @@
 
         // 2. Функция отправки
         window.submitWishlist = async function() {
-            console.log("Button clicked!"); // Для теста в консоли
-
-            // Если типа нет (вдруг script.js не успел), ставим email по умолчанию
             const type = window.currentContactType || 'email';
             const inputId = type === 'email' ? 'wishlist-email' : 'wishlist-social';
             const inputEl = document.getElementById(inputId);
             const msg = document.getElementById('wishlist-msg');
             
-            const contactValue = inputEl.value.trim();
+            let contactValue = inputEl.value.trim().toLowerCase(); // Переводим в нижний регистр для защиты от дублей вида Test@mail.ru и test@mail.ru
             
             // Базовая валидация
             if (!contactValue || (type === 'email' && !contactValue.includes('@'))) {
@@ -769,18 +764,39 @@
                 return;
             }
 
-            // Блокируем кнопку от повторных нажатий
             const btn = document.querySelector('.wishlist-modal-content .wishlist-btn');
             btn.disabled = true;
             btn.style.opacity = '0.5';
 
             try {
-                // Используем Batch для надежности (или по отдельности, если правила позволяют)
+                // Убираем возможные слеши из юзернеймов, так как Firestore не разрешает слеши в ID документов
+                const docId = contactValue.replace(/\//g, '_'); 
+                
+                // Ссылка на документ, где ID — это сама почта или юзернейм
+                const userRef = doc(db, "wishlist_emails", docId);
+                
+                // ПРОВЕРКА: Существует ли уже такой контакт?
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    // Контакт уже есть в базе
+                    msg.style.display = 'block';
+                    msg.style.color = '#FF9500'; // Оранжевый цвет для предупреждения
+                    msg.innerText = window.translations[window.userLang].wishlist_exists || "Уже в списке!";
+                    
+                    // Сразу помечаем в localStorage, чтобы модалка в будущем открывалась как "Уже подписан"
+                    localStorage.setItem('visutype_joined', 'true');
+                    
+                    setTimeout(() => {
+                        window.closeWishlistModal();
+                        if (window.checkSubscription) window.checkSubscription();
+                    }, 2000);
+                    return; // Прерываем выполнение, ничего не записываем
+                }
+
+                // Если контакта нет, идем дальше и записываем
                 const batch = writeBatch(db);
 
-                // Создаем запись почты (Поле 'contact', как в правилах!)
-                const newEmailRef = doc(collection(db, "wishlist_emails"));
-                batch.set(newEmailRef, {
+                batch.set(userRef, {
                     contact: contactValue,
                     type: type,
                     timestamp: serverTimestamp()
@@ -792,17 +808,14 @@
                 });
 
                 await batch.commit();
-                console.log("Success! Data saved.");
 
                 // Успех
                 msg.style.display = 'block';
                 msg.style.color = '#34C759';
                 msg.innerText = window.translations[window.userLang].wishlist_success;
                 
-                // Сохраняем в кэш
                 localStorage.setItem('visutype_joined', 'true');
                 
-                // Закрываем модалку через 2 сек
                 setTimeout(() => {
                     window.closeWishlistModal();
                     if (window.checkSubscription) window.checkSubscription();
@@ -817,8 +830,7 @@
                 btn.style.opacity = '1';
             }
         };
-        
-</script>
+    </script>
 
 </body>
 </html>

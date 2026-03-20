@@ -4,28 +4,39 @@ function checkSubscription() {
         const modal = document.getElementById('wishlist-modal');
         if (!modal) return;
 
-        // 1. Скрываем элементы ввода
+        // 1. Находим элементы
         const toggle = modal.querySelector('.wishlist-toggle-wrapper');
         const inputs = modal.querySelector('.wishlist-input-group');
         const submitBtn = modal.querySelector('.wishlist-btn'); // Кнопка "Присоединиться" внутри модалки
-        const desc = modal.querySelector('p[data-i18n="wishlist_desc"]'); // Описание под заголовком
 
+        // 2. Скрываем ТОЛЬКО элементы ввода и переключатель
         if (toggle) toggle.style.display = 'none';
         if (inputs) inputs.style.display = 'none';
-        if (submitBtn) submitBtn.style.display = 'none';
-        if (desc) desc.style.display = 'none';
 
-        // 2. Показываем сообщение об успехе
+        // 3. Кнопку НЕ скрываем, а просто делаем визуально заблокированной
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'default';
+            submitBtn.style.display = 'inline-flex'; // На случай, если она была скрыта
+        }
+
+        // 4. Показываем сообщение об успехе и ставим его на место инпутов
         const msg = document.getElementById('wishlist-msg');
         if (msg) {
             msg.style.display = 'block';
             msg.style.color = '#34C759';
             msg.style.fontSize = '1.2rem';
             msg.style.textAlign = 'center';
-            msg.style.marginTop = '20px';
+            msg.style.marginTop = '10px';
+            msg.style.marginBottom = '25px'; // Добавляем отступ до кнопки
             msg.style.fontWeight = '600';
-            // Берем перевод фразы "Готово! Мы сообщим тебе о релизе"
             msg.innerText = window.translations[window.userLang].wishlist_success;
+            
+            // Перемещаем сообщение прямо перед кнопкой (туда, где были инпуты)
+            if (submitBtn && submitBtn.parentNode) {
+                submitBtn.parentNode.insertBefore(msg, submitBtn);
+            }
         }
     }
 }
@@ -182,7 +193,8 @@ const translations = {
         footer_tg_text: "Наш Telegram канал",
         price_pro_old: "399 ₽",
         price_pro_cost: "199 ₽ / мес",
-        price_pro_pioneer: "Для первооткрывателей"
+        price_pro_pioneer: "Для первооткрывателей",
+        wishlist_exists: "Этот контакт уже в списке первооткрывателей!"
     },
     en: {
             hero_home: "Your home for",
@@ -278,7 +290,8 @@ const translations = {
         footer_tg_text: "Our Telegram channel",
         price_pro_old: "$7.99",
         price_pro_cost: "$4.99 / mo",
-        price_pro_pioneer: "For Pioneers"
+        price_pro_pioneer: "For Pioneers",
+        wishlist_exists: "This contact is already on the pioneers list!"
     }
 };
 
