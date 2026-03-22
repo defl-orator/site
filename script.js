@@ -307,6 +307,23 @@ const randomGreetings = {
     en: ["Oh, hi! You came at the right time. Scroll down, I'll tell you everything.", "Hello! Glad to see you. Let me show you around.", "Greetings! Just in time, I have something cool to show you.", "Hey! Come in, make yourself at home. It's cozy here.", "Hi there! Ready to see the best tool for your thoughts?"]
 };
 
+const returningGreetings = {
+    ru: [
+        "С возвращением! Продолжим?",
+        "Рад тебя видеть снова! Что нового?",
+        "Твои идеи скучали по тебе. Поработаем?",
+        "О, ты вернулся! Заходи, располагайся.",
+        "Готов создать что-то великое сегодня?"
+    ],
+    en: [
+        "Welcome back! Shall we continue?",
+        "Glad to see you again! What's new?",
+        "Your ideas missed you. Ready to work?",
+        "Oh, you're back! Make yourself at home.",
+        "Ready to create something great today?"
+    ]
+};
+
 const easterEggPhrasesRu = [
     "А ты чего всё ещё здесь? На анимацию залип?",
     "Ну ладно, подожду тебя пока ты там налюбуешься чем-то",
@@ -463,14 +480,18 @@ function setHeroGreeting() {
     const bubble = document.getElementById('hero-random-greeting');
     
     if (isReturningUser) {
-        initialGreetingText = translations[userLang].hero_return;
+        // Выбираем случайную фразу из списка для вернувшихся
+        const list = returningGreetings[userLang];
+        initialGreetingText = list[Math.floor(Math.random() * list.length)];
     } else {
+        // Фраза для новичков
         const list = randomGreetings[userLang];
         initialGreetingText = list[Math.floor(Math.random() * list.length)];
     }
     
     bubble.textContent = initialGreetingText;
     
+    // Прячем баббл через 5 секунд (по желанию можно увеличить время)
     setTimeout(() => {
         if (bubble && !bubble.classList.contains('hide-me')) {
             bubble.classList.add('hide-me');
