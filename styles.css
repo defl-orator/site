@@ -1186,7 +1186,7 @@ body.dark-theme .faq-item {
         margin: 0 auto;
     }
     .scroll-down-arrow {
-        bottom: 20px;
+        bottom: 10px;
     }
     .static-prefix { font-size: 1.5rem; }
     .hero-bg-img { transform: scale(1.15); transform-origin: center top; }
