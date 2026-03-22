@@ -250,8 +250,16 @@
                     <div class="feature-row fade-in">
                         <div class="feature-text">
                             <div class="mindmap-header">
-                                <h3 class="mindmap-plain-text" data-i18n="feat_2_plain_text" style="margin: 0;">Visual</h3>
-                                <div class="mindmap-capsules">
+                                <!-- Верхний ряд: Наглядные (сдвинем влево) -->
+                                <div class="mm-top-tier">
+                                    <h3 class="mm-capsule capsule-0" data-i18n="feat_2_plain_text" style="margin: 0; display: inline-block;">Visual</h3>
+                                </div>
+                                
+                                <!-- Диагональная линия соединения -->
+                                <div class="mm-diag-line"></div>
+                                
+                                <!-- Нижний ряд: карты - мыслей (сдвинем вправо) -->
+                                <div class="mindmap-capsules mm-bottom-tier">
                                     <span class="mm-capsule capsule-1" data-i18n="feat_2_cap_1">mind</span>
                                     <span class="mm-line"></span>
                                     <span class="mm-capsule capsule-2" data-i18n="feat_2_cap_2">maps</span>
@@ -313,7 +321,12 @@
                 </div>
 
                 <div class="ai-interface-preview fade-in">
-                    <img src="..." alt="App Interface with Assistant" data-base="assistant" data-ext="png">
+                    <div class="image-wrapper" onclick="openLightbox(this)">
+                        <img src="..." alt="App Interface with Assistant" data-base="assistant" data-ext="png">
+                        <div class="img-overlay">
+                            <div class="open-btn" data-i18n="btn_open">🔍 Open</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="vizy-narrator-block fade-in" style="margin-top:80px;">
@@ -321,7 +334,7 @@
                     <div class="vizy-narrator-bubble" data-i18n="comment_assistants">And these are my friends (and me). Maybe you'll like someone more than me... 😪(😅)</div>
                 </div>
 
-                <!-- OLD STRUCTURE: 3D Carousel Wrapper -->
+                <!-- 3D Carousel Wrapper -->
                 <div class="carousel-wrapper-common fade-in">
                     <button class="carousel-nav-btn btn-prev" onclick="moveCarousel('asst', -1)">
                         <div class="icon-arrow-btn arrow-left"></div>

@@ -1010,7 +1010,6 @@ function initMarquee() {
     const viewport = document.getElementById('marquee-viewport');
     if (!track || !viewport) return;
 
-    // 1. Рендерим контент (удваиваем для бесконечности)
     const items = [...themesData, ...themesData]; 
     track.innerHTML = items.map(item => `
         <div class="theme-marquee-item">
@@ -1022,15 +1021,21 @@ function initMarquee() {
         </div>
     `).join('');
 
+    if (window.innerWidth < 768) {
+        track.style.transform = 'none';
+        track.style.display = 'flex';
+        track.style.flexWrap = 'nowrap';
+        viewport.style.overflowX = 'auto';
+        return; 
+    }
+
     function animate() {
         if (!isDragging) {
-            // Плавное изменение скорости
             if (marqueeSpeed < targetSpeed) marqueeSpeed += acceleration;
             if (marqueeSpeed > targetSpeed) marqueeSpeed -= acceleration;
 
             marqueePos -= marqueeSpeed;
 
-            // Бесшовный цикл (в обе стороны)
             const halfWidth = track.scrollWidth / 2;
             if (marqueePos <= -halfWidth) marqueePos = 0;
             if (marqueePos > 0) marqueePos = -halfWidth;
@@ -1084,3 +1089,32 @@ function initMarquee() {
 
     animate();
 }
+
+// --- Плавный параллакс эффект для секции "Почему мы?" ---
+let parallaxTicking = false;
+
+window.addEventListener('scroll', function() {
+    if (!parallaxTicking) {
+        window.requestAnimationFrame(function() {
+            const whySection = document.getElementById('why');
+            if (whySection) {
+                const rect = whySection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                
+                if (rect.top <= windowHeight && rect.bottom >= 0) {
+                    
+                    const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+                    
+                    const yOffset = (progress - 0.5) * -100; 
+                    
+                    const whyGrid = whySection.querySelector('.why-grid');
+                    if (whyGrid) {
+                        whyGrid.style.transform = `translate3d(0, ${yOffset}px, 0)`;
+                    }
+                }
+            }
+            parallaxTicking = false;
+        });
+        parallaxTicking = true;
+    }
+});
