@@ -159,7 +159,7 @@ const translations = {
         faq_a2: "Ты можешь вставлять их прямо в текстовую заметку как интерактивные блоки (нажав кнопку «Добавить»). Нажатие на такой блок открывает полноэкранный редактор. Карты мыслей поддерживают авто-расстановку и темы, а холсты — Apple Pencil.",
         
         faq_q3: "В чем особенность ИИ-Ассистента? Это просто чат-бот?",
-        faq_a3: "Нет, я не обычный ИИ-бот. Я виртуальный компаньон, который живет в приложении. Я реагирую на твою активность (например, если ты долго пишешь что-то), слежу как часто ты ко мне заходишь, выдаю достижения и комментирую процесс. Почти как Большой брат 😅",
+        faq_a3: "Нет, я не обычный ИИ-бот. Я виртуальный компаньон, который живет в приложении. Я реагирую на твою активность (например, если ты долго пишешь что-то), слежу как часто ты ко мне заходишь, выдаю достижения и комментирую процесс. Почти как Большой брат 🌚 (шутка 😅)",
         
         faq_q4: "Могу ли я поделиться своей заметкой с друзьями?",
         faq_a4: "Да! Любую заметку (включая вложенные карты и холсты) можно экспортировать в красивый PDF. А если хочешь поделиться ссылкой, доступна функция «Опубликовать в Web», которая за пару секунд превратит заметку в веб-страницу.",
@@ -258,7 +258,7 @@ const translations = {
         faq_a2: "You can insert them directly into a text note as interactive blocks (by clicking the «Add» button). Clicking on such a block opens a full-screen editor. Mind maps support auto-arrangement and themes, and canvases support the Apple Pencil.",
         
         faq_q3: "What makes the AI Assistant special? Is it just a chatbot?",
-        faq_a3: "No, I'm not a regular AI bot. I'm a virtual companion that lives in the app. I react to your activity (for example, if you're writing for a long time), track how often you visit, give you achievements, and comment on your progress. Almost like Big Brother 😅",
+        faq_a3: "No, I'm not a regular AI bot. I'm a virtual companion that lives in the app. I react to your activity (for example, if you're writing for a long time), track how often you visit, give you achievements, and comment on your progress. Almost like Big Brother 🌚 (just kidding 😅)",
         
         faq_q4: "Can I share my notes with friends or colleagues?",
         faq_a4: "Yes! Any note (including nested maps and canvases) can be exported as a beautiful PDF document. If you want to share a link, the 'Publish to Web' feature turns your note into a live webpage in seconds.",
