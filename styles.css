@@ -930,7 +930,25 @@ body.dark-theme .roadmap-row:last-child {
 .roadmap-content h4 { margin-bottom: 5px; font-size: 1.3rem; }
 .roadmap-content p { font-size: 1rem; margin: 0; }
 
-.roadmap-status { display: inline-flex; align-items: center; justify-content: center; padding: 6px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; text-align: center; white-space: nowrap; border: none; letter-spacing: 0.02em;}
+.roadmap-status { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 6px 16px; 
+    border-radius: 100px; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    text-align: center; 
+    white-space: nowrap; 
+    letter-spacing: 0.02em;
+    
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
+}
+
 .status-done {
     background: rgba(52, 199, 89, 0.12); 
     color: #248a3d;
@@ -939,15 +957,30 @@ body.dark-theme .roadmap-row:last-child {
     background: rgba(0, 122, 255, 0.12); 
     color: #007AFF;
 }
-
 .status-planned {
     background: rgba(142, 142, 147, 0.12);
     color: var(--color-text-secondary);
 }
 
-body.dark-theme .status-done { color: #34c759; background: rgba(52, 199, 89, 0.15); }
-body.dark-theme .status-progress { color: #5ac8fa; background: rgba(0, 122, 255, 0.15); }
-body.dark-theme .status-planned { color: #a1a1a6; background: rgba(255, 255, 255, 0.08); }
+/* Темная тема */
+body.dark-theme .status-done { 
+    background: rgba(52, 199, 89, 0.15);
+    border: 1px solid rgba(52, 199, 89, 0.25);
+    color: #34c759; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+body.dark-theme .status-progress { 
+    background: rgba(0, 122, 255, 0.15);
+    border: 1px solid rgba(0, 122, 255, 0.25);
+    color: #5ac8fa; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+body.dark-theme .status-planned { 
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #a1a1a6; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
 
 /* ==========================================================================
 13. SECTION: FOOTER & FINAL CTA
@@ -2082,10 +2115,4 @@ body.dark-theme .roadmap-row {
 
 .roadmap-row:last-child {
     border-bottom: none;
-}
-
-/* Свечение этапов (Done, Planned) делаем тоже мягче */
-.status-done, .status-progress, .status-planned {
-    box-shadow: none;
-    border: 1px solid rgba(0,0,0,0.05);
 }

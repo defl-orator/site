@@ -144,11 +144,11 @@ const translations = {
         road_head_1: "План развития",
         road_step_1: "Этап 1: MVP", road_item_1_date: "Сейчас", road_item_1_title: "macOS, iOS и iPadOS", road_item_1_desc: "Сначала — стабильность. Базовый редактор и хранение.", status_done: "Готово",
         road_step_2: "Этап 2: Экосистема", road_item_2_date: "Сейчас", road_item_2_title: "Облачная синхронизация", road_item_2_desc: "Потом — синхронизация. Бесшовная работа между устройствами.", status_dev: "В разработке",
-        road_item_localization_date: "до 1 Июня 2026", road_item_localization_title: "Локализация", road_item_localization_desc: "Испанский, китайский, немецкий, японский и корейский языки.",
-        road_item_3_date: "до 1 Июня 2026", road_item_3_title: "Релиз в App Store", road_item_3_desc: "Официальный выход приложения для широкой аудитории.", status_plan: "В планах",
-        road_step_3: "Этап 3: Расширение", road_item_4_date: "до 1 Сент 2026", road_item_4_title: "Windows & Android", road_item_4_desc: "Затем — выход на все популярные платформы.",
-        road_item_collab_date: "до конца 2026", road_item_collab_title: "Совместный режим", road_item_collab_desc: "Возможность работать над одной заметкой нескольким людям одновременно.",
-        road_item_5_date: "до конца 2026", road_item_5_title: "Интеграции ИИ", road_item_5_desc: "И напоследок — ИИ-инструменты и локальная генерация.",
+        road_item_localization_date: "до 1 Сентября 2026", road_item_localization_title: "Локализация", road_item_localization_desc: "Испанский, китайский, немецкий, японский и корейский языки.",
+        road_item_3_date: "до 1 Сентября 2026", road_item_3_title: "Релиз в App Store", road_item_3_desc: "Официальный выход приложения для широкой аудитории.", status_plan: "В планах",
+        road_step_3: "Этап 3: Расширение", road_item_4_date: "до 1 Января 2027", road_item_4_title: "Windows & Android", road_item_4_desc: "Затем — выход на все популярные платформы.",
+        road_item_collab_date: "до конца 2027", road_item_collab_title: "Совместный режим", road_item_collab_desc: "Возможность работать над одной заметкой нескольким людям одновременно.",
+        road_item_5_date: "до конца 2027", road_item_5_title: "Интеграции ИИ", road_item_5_desc: "И напоследок — ИИ-инструменты и локальная генерация.",
         
         comment_faq: "Остались вопросы? Я собрал самые частые из них и подготовил ответы!",
         
@@ -243,12 +243,12 @@ const translations = {
         road_head_1: "Development Roadmap",
         road_step_1: "Stage 1: MVP", road_item_1_date: "Now", road_item_1_title: "macOS, iOS & iPadOS", road_item_1_desc: "First — stability. Basic editor and local storage.", status_done: "Done",
         road_step_2: "Stage 2: Ecosystem", road_item_2_date: "Now", road_item_2_title: "Cloud Sync", road_item_2_desc: "Then — sync. Seamless work between devices.", status_dev: "In progress",
-        road_item_localization_date: "by June 1, 2026", road_item_localization_title: "Localization", road_item_localization_desc: "Spanish, Chinese, German, Japanese, and Korean languages.",
-        road_item_3_date: "by June 1, 2026", road_item_3_title: "App Store Release", road_item_3_desc: "Official release for a wide audience.", status_plan: "Planned",
-        road_step_3: "Stage 3: Expansion", road_item_4_date: "by Sept 1, 2026", road_item_4_title: "Windows & Android", road_item_4_desc: "Then — expansion to all popular platforms.",
-        road_item_collab_date: "by end of 2026", road_item_collab_title: "Collaboration Mode", road_item_collab_desc: "Ability for multiple people to work on one note simultaneously.",
-        road_item_5_date: "by end of 2026", road_item_5_title: "AI Integrations", road_item_5_desc: "Finally — AI tools and local generation.",
-        
+        road_item_localization_date: "by September 1, 2026", road_item_localization_title: "Localization", road_item_localization_desc: "Spanish, Chinese, German, Japanese, and Korean languages.",
+        road_item_3_date: "by September 1, 2026", road_item_3_title: "App Store Release", road_item_3_desc: "Official release for a wide audience.", status_plan: "Planned",
+        road_step_3: "Stage 3: Expansion", road_item_4_date: "by September 1, 2026", road_item_4_title: "Windows & Android", road_item_4_desc: "Then — expansion to all popular platforms.",
+        road_item_collab_date: "by end of 2027", road_item_collab_title: "Collaboration Mode", road_item_collab_desc: "Ability for multiple people to work on one note simultaneously.",
+        road_item_5_date: "by end of 2027", road_item_5_title: "AI Integrations", road_item_5_desc: "Finally — AI tools and local generation.",
+
         comment_faq: "Any questions left? I've collected the most common ones and prepared the answers!",
         
         faq_q1: "Where is my data stored and is there cloud sync?",
@@ -695,7 +695,7 @@ async function runVizyAnimation() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initTheme();
+    syncSystemTheme();
     updateImages(document.querySelector('.navbar-wrapper'));
     updateImages(document.querySelector('.hero'));
 
@@ -740,9 +740,7 @@ function setLang(lang) {
 }
 
 function updateImages(container = document) {
-    const bodyIsDark = document.body.classList.contains('dark-theme');
-    const bodyIsLight = document.body.classList.contains('light-theme');
-    let isDarkTheme = bodyIsDark || (!bodyIsLight && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    let isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isMobile = window.innerWidth < 768; 
     
     // Ищем картинки только внутри переданного контейнера
@@ -864,7 +862,19 @@ renderCarousels();
 updateImages();
 initFooterAnimation(); 
 
-darkModeQuery.addEventListener('change', updateImages);
+function syncSystemTheme() {
+    if (darkModeQuery.matches) {
+        document.body.classList.add('dark-theme');
+        document.body.classList.remove('light-theme');
+    } else {
+        document.body.classList.add('light-theme');
+        document.body.classList.remove('dark-theme');
+    }
+    updateImages();
+}
+
+// Слушаем переключение темы на уровне ОС
+darkModeQuery.addEventListener('change', syncSystemTheme);
 window.addEventListener('resize', updateImages);
 
 function checkTableScroll() {
@@ -909,48 +919,6 @@ if (tableArea) {
     tableArea.addEventListener('scroll', checkTableScroll);
     window.addEventListener('resize', checkTableScroll);
     window.addEventListener('load', checkTableScroll);
-}
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('visutype_theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const icon = document.getElementById('theme-icon');
-    
-    // Логика: если сохранено 'dark' ИЛИ (ничего не сохранено, но система темная) -> Темная
-    let isDark = false;
-    if (savedTheme === 'dark') isDark = true;
-    else if (savedTheme === 'light') isDark = false;
-    else if (systemDark) isDark = true;
-
-    // Применяем классы
-    if (isDark) {
-        document.body.classList.add('dark-theme');
-        document.body.classList.remove('light-theme');
-        if(icon) icon.src = 'images/light_theme.png'; // Иконка Солнца (переключить на светлую)
-    } else {
-        document.body.classList.add('light-theme');
-        document.body.classList.remove('dark-theme');
-        if(icon) icon.src = 'images/dark_theme.png'; // Иконка Луны (переключить на темную)
-    }
-}
-
-function toggleTheme() {
-    const isDarkCurrently = document.body.classList.contains('dark-theme');
-    const icon = document.getElementById('theme-icon');
-    
-    if (isDarkCurrently) {
-        localStorage.setItem('visutype_theme', 'light');
-        document.body.classList.remove('dark-theme');
-        document.body.classList.add('light-theme');
-        if(icon) icon.src = 'images/dark_theme.png';
-    } else {
-        localStorage.setItem('visutype_theme', 'dark');
-        document.body.classList.remove('light-theme');
-        document.body.classList.add('dark-theme');
-        if(icon) icon.src = 'images/light_theme.png';
-    }
-    updateImages();
-    preloadThemeImages();
 }
 
 // --- Функции для открытия/закрытия модалки Wishlist ---
